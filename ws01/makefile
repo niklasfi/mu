@@ -1,20 +1,29 @@
 CXX = g++
-DEBUG = -DDEBUG
+DEBUG = -DDEBUG -g -Wall
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream
 LDFLAGS = -L. -lz
-OBJECTS = main.o word.o lexicon.o
+OBJECTS = word.o lexicon.o
 
-default: ${OBJECTS}
-	${CXX} ${LDFLAGS} -o run.exe ${OBJECTS} gzstream/gzstream.o
+default: ${OBJECTS} main.o
+	${CXX} ${LDFLAGS} -o run.exe main.o ${OBJECTS} gzstream/gzstream.o
 
-main.o: main.cpp main.h lexicon.h
+tests: ${OBJECTS} tests.o
+	${CXX} ${LDFLAGS} -o tests.exe tests.o ${OBJECTS} gzstream/gzstream.o
+	#run the tests
+	./tests.exe
+	#ok!
+
+main.o: main.cpp main.h lexicon.h language.h word.h
 	${CXX} ${CPPFLAGS} main.cpp
 
-word.o: word.cpp word.h
+tests.o: tests.cpp tests.h lexicon.h language.h word.h
+	${CXX} ${CPPFLAGS} tests.cpp
+
+word.o: word.cpp word.h language.h
 	${CXX} ${CPPFLAGS} word.cpp
 
-lexicon.o: lexicon.cpp lexicon.h word.h
+lexicon.o: lexicon.cpp lexicon.h word.h language.h
 	${CXX} ${CPPFLAGS} lexicon.cpp
 
 clean:
-	rm -f *.o run.exe
+	rm -f *.o *.exe
