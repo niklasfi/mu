@@ -1,6 +1,6 @@
 #include "lexicon.h"
 
-Lexicon::Lexicon(Language lang):lang(lang),nextword(0){}
+Lexicon::Lexicon(Language lang):nextword(0),lang(lang){}
 Lexicon::Lexicon(const Lexicon&):nextword(0){
 	throw lexiconMustNotBeCopiedError();
 }
