@@ -1,25 +1,28 @@
 #include "lexicon.h"
 
-Lexicon::Lexicon(Word::Language lang):lang(lang){}
+Lexicon::Lexicon(Language lang):lang(lang),nextword(0){}
+Lexicon::Lexicon(const Lexicon&):nextword(0){
+	throw lexiconMustNotBeCopiedError();
+}
 
-Word Lexicon::add(const char* str){
+Language Lexicon::getLanguage(){return lang;}
+
+Word Lexicon::add(std::string str){
 	#ifdef DEBUG
 		if(map[str] != 0) throw wordExistsError();
 	#endif
 	
-	Word w = Word(lang);
+	Word w = Word(lang * Word::lowestLangbit + (nextword++));
 	
 	map[str] = w;
 	arr.push_back(str);
 	return w;
 }
 
-Word Lexicon::getWord(const char* str){
-		return Word(map[str] | lang); 
-		/* | lang stellt sicher, dass die Sprache auch dann noch stimmt, wenn kein
-			 wort gefunden wurde */
+Word Lexicon::getWord(std::string str){
+		return Word(lang,map[str]);
 }
 
-const char* Lexicon::getString(const Word& w){
-	return arr[w];
+std::string Lexicon::getString(const Word& w){
+	return arr[w.wordId()];
 }

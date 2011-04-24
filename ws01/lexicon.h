@@ -1,32 +1,32 @@
 #pragma once
 
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <vector>
 #include <unordered_map>
 
+#include "language.h"
 #include "word.h"
 
 class Lexicon{
 	private:
 	
-	struct eqstr{
-		bool operator()(const char* s1, const char* s2) const{
-			return strcmp(s1,s2) == 0;
-		}
-	};
+	uint nextword;
+	std::vector<std::string> arr;
+	std::unordered_map<std::string, uint> map;
+	Language lang;
 	
-	Word::Language lang;
-	std::vector<const char*> arr;
-	std::unordered_map<const char*, uint, std::hash<const char*>, eqstr> map;
-		
 	public:
 	
 	class wordExistsError{};
+	class lexiconMustNotBeCopiedError{};
 	
-	Lexicon(Word::Language);
-	Word add(const char* word);
-	Word getWord(const char* str);
-	const char* getString(const Word& w);
+	Language getLanguage();
+	Lexicon(Language l = (Language)0);
+	Lexicon(const Lexicon& l);
+	
+	Word add(std::string str);
+	Word getWord(std::string str);
+	std::string getString(const Word& w);
 };
 
