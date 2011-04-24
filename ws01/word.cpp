@@ -1,35 +1,18 @@
 #include "word.h"
 
-uint Word::nextE = 1;
-uint Word::nextF = 1;
-
-Word::Word(Word::Language l){
-	if(l == french)
-		_id = nextF++;
-	else
-		_id = english + nextE++;
+Word::Word(uint from):storage(from){}
+Word::Word(const Word& w):storage(w.storage){}
+Word::Word(Language l, uint id){
+	storage = id | l * lowestLangbit;
+}
+Word::operator uint(){
+	return storage;
 }
 
-Word::Word(uint _id):_id(_id){}
-
-Word::Language Word::language() const{
-	return (Word::Language) (_id & langbit);
+uint Word::wordId() const{
+	return storage & (~langbits);
 }
 
-uint Word::id() const{
-	return idbits & _id;
-}
-
-Word::operator uint() const{
-	return _id;
-}
-
-bool Word::NotAWord() const{
-	return !id();
-}
-
-std::ostream& Word::operator<<(std::ostream& os){
-	os << (language() == english ? "e" : "f");
-	os << std::setw(10)<< std::setfill('0') << id();
-	return os;
+Language Word::getLanguage() const{
+	return Language(storage & langbits);
 }
