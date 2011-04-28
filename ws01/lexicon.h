@@ -20,6 +20,7 @@ class Lexicon{
 	
 	class wordExistsError{};
 	class lexiconMustNotBeCopiedError{};
+	class wrongLanguageError{};
 	
 	Language getLanguage();
 	Lexicon(Language l = (Language)0);

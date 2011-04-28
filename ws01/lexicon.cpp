@@ -20,9 +20,10 @@ Word Lexicon::add(std::string str){
 }
 
 Word Lexicon::getWord(std::string str){
-		return Word(lang,map[str]);
+		return Word(map[str]); // wenn nichts gefunden wird, dann kommt 0 -> yeti
 }
 
 std::string Lexicon::getString(const Word& w){
-	return arr[w.wordId()];
+	//if(w.getLanguage() != lang) throw wrongLanguageError();
+	return arr[w.wordId()]; // wort muss im lexicon existieren, da es hier er kommt.
 }
