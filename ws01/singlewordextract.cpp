@@ -1,4 +1,4 @@
-#include "main.h"
+#include "singlewordextract.h"
 #include <string>
 #include <sstream>
 
