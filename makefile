@@ -10,8 +10,8 @@ all: singlewordextract.exe
 	${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
 
 tests: ${TESTS}
-	@for i in *.test.exe; do (echo -n "\033[33m$$i\033[0m " && ./$$i && echo "\033[32mok\033[0m") || (echo "\033[31merror\033[0m" && exit 2); done;
-	@echo "\033[32meverything is ok!\033[0m"
+	@for i in *.test.exe; do (echo -n -e "\033[33m$$i\033[0m " && ./$$i && echo -e "\033[32mok\033[0m") || (echo -e "\033[31merror\033[0m" && exit 2); done;
+	@echo -e "\033[32meverything is ok!\033[0m"
 
 .PRECIOUS: %.test.o
 %.test.o: %.test %.h
