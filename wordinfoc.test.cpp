@@ -1,7 +1,6 @@
 #include "wordinfoc.h"
 
 #include <assert.h>
-#include <iostream>
 
 void maxlen(){
 	WordinfoC::set_maxlen(3);
@@ -87,11 +86,37 @@ void singlecount(){
 	catch (WordinfoC::singleCountAlreadySetException s){}
 }
 
+void conversion(){
+	Wordinfo wi;
+	wi.pairs[132]=12;
+	wi.pairs[78]=8;
+	wi.pairs[4]=4;
+	wi.pairs[8]=24;
+	wi.pairs[13]=24;
+	wi.singlecount = 72;
+
+	WordinfoC wic(wi);
+
+	double result[3] = {wi.relFreq(13),wi.relFreq(8),wi.relFreq(132)};
+	uint resultW[3] = {13,8,132};
+
+	{
+		plist::iterator it;
+		uint i = 0;
+		for(it = wic.pairs.begin(); it != wic.pairs.end(); it++){
+			assert( result[i] == it->first);
+			assert( resultW[i] == it->second);
+			i++;
+		}
+	}
+}
+
 int main(){
 	maxlen(); //sets maxlen to 3	
 	straight();
 	mixed();
 	straightRev();
 	singlecount();
+	conversion();
 	return 0;
 }

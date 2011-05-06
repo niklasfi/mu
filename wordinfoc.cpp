@@ -3,7 +3,11 @@
 uint WordinfoC::maxlen = 0;
 
 WordinfoC::WordinfoC():singlecount(0),pairs(){}
-//TODO: WordinfoC::WordinfoC(Wordinfo w)
+WordinfoC::WordinfoC(Wordinfo w):singlecount(w.singlecount){
+	for(std::map<uint,uint>::iterator it = w.pairs.begin(); it!=w.pairs.end(); it++){
+		add_translation(it->first,w.relFreq(it->first));
+	}
+}
 WordinfoC::WordinfoC(uint singlecount):singlecount(singlecount),pairs(){}
 
 void WordinfoC::add_translation(Word w, double rel_freq){
