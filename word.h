@@ -14,8 +14,8 @@ public:
 
 	operator uint();
 	
-	static const uint langbits = 0xC0000000;
-	static const uint lowestLangbit = 0x40000000;
+	static const uint langbits = 2 << 30; //0xC0000000;
+	static const uint lowestLangbit = 1 << 30; //0x40000000;
 	uint wordId() const;
 	Language getLanguage() const;
 	

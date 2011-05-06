@@ -1,6 +1,5 @@
 #include "lexicon.h"
 
-
 int main(){
 	Lexicon elex(english);
 

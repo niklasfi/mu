@@ -14,5 +14,5 @@ uint Word::wordId() const{
 }
 
 Language Word::getLanguage() const{
-	return Language(storage & langbits);
+	return Language(storage >> 30);
 }
