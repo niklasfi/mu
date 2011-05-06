@@ -3,7 +3,7 @@ DEBUG = -DDEBUG -g -Wall
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream
 LDFLAGS = -L. -lz
 OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o
-TESTS = wordinfoc.test.exe word.test.exe
+TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe
 all: singlewordextract.exe
 
 %.exe: %.o ${OBJECTS}
