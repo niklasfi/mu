@@ -10,9 +10,8 @@ all: singlewordextract.exe
 	${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
 
 tests: ${TESTS}
-	#it's ok, if it ends with #ok
-	for i in *.test.exe; do	./$$i || (echo "something is wrong with $$i" && exit 1); done;
-	#ok!
+	@for i in *.test.exe; do (echo -n "\033[33m$$i\033[0m " && ./$$i && echo "\033[32mok\033[0m\n") || (echo "\033[31merror\033[0m\n" && exit 2); done;
+	@echo "\033[32meverything is ok!\033[0m"
 
 .PRECIOUS: %.test.o
 %.test.o: %.test %.h
