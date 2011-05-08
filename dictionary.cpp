@@ -16,10 +16,10 @@ void Dictionary::add(std::string f, std::string e){
 		Wordinfo winf;
 		ewa.push_back(winf);
 	}
-	
+
 	fwa[fwd.wordId()].singlecount ++;
 	ewa[ewd.wordId()].singlecount ++;
-	
+
 	fwa[fwd.wordId()].pairs[ewd.wordId()] ++;
 	ewa[ewd.wordId()].pairs[fwd.wordId()] ++;
 }
