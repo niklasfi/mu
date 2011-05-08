@@ -10,7 +10,10 @@ class Wordinfo{
 	public:
 	uint singlecount;
 	std::map<uint, uint> pairs;
-	
+
 	Wordinfo();
-	double relFreq(Word w);
+
+	uint get_translation_count(Word relatedWord) const;
+
+	double relFreq(Word w) const;
 };
