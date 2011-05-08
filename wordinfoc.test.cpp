@@ -1,10 +1,8 @@
 #include "wordinfoc.h"
 
-#include <assert.h>
-
 void maxlen(){
 	WordinfoC::set_maxlen(3);
-	
+
 	try{
 		WordinfoC::set_maxlen(5);
 		assert(false);
@@ -35,7 +33,7 @@ void mixed(){
 	uint sortedI[3] = {0,1,6};
 
 	WordinfoC winfo2;
-	
+
 	for (uint i = 0; i<7; i++)
 		winfo2.add_translation(i,data[i]);
 
@@ -69,7 +67,7 @@ void straightRev(){
 
 void singlecount(){
 	WordinfoC winfo1(3);
-	
+
 	try{
 		winfo1.set_singlecount(4);
 		assert (false);
@@ -112,7 +110,7 @@ void conversion(){
 }
 
 int main(){
-	maxlen(); //sets maxlen to 3	
+	maxlen(); //sets maxlen to 3
 	straight();
 	mixed();
 	straightRev();
