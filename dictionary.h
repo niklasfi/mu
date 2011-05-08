@@ -11,17 +11,17 @@
 typedef unsigned int uint;
 
 class Dictionary{
+	public:
+
 	std::vector<Wordinfo> fwa; //frenchWordArray
 	std::vector<Wordinfo> ewa;
-	
+
 	Lexicon flex;
 	Lexicon elex;
-	
-	public:
-	
+
 	Dictionary();
-	
+
 	void add(std::string f, std::string e);
-	
+
 	void printall();
 };
