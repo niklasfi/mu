@@ -12,7 +12,7 @@ class PartialTranslation{
       private:
              
              double cost;
-             int translation;
+             unsigned int translation;
              HypothesisNode* origin;
              
       public:
