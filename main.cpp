@@ -38,7 +38,7 @@ void Suchalgorithmus(DictionaryC dic){
 				double cost_old=Knoten.back().getBestcost();
 				if(it==translations->begin()){
 					node_next.setBestcost(cost_old+relfreq); //setzt die besten Kosten auf das erste auf der liste
-					//out << ??????????????????.getWord();
+					out << dic.elex.getString(id_english);
 				}
 				PartialTranslation Kante= PartialTranslation(relfreq,id_english,&node_next);
 				Knoten.back().add_Translation(Kante);
