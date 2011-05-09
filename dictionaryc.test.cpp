@@ -84,6 +84,6 @@ void readline(){
 
 int main(){
 	WordinfoC::set_maxlen(4);
-	//conversion();
+	conversion();
 	readline();
 }
