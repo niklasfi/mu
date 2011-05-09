@@ -1,15 +1,7 @@
-#include "gzstream/gzstream.h"
-#include "PartialTranslation.h"
-#include "HypothesisNode.h"
-#include "dictionaryc.h"
-#include <vector>
-#include <sstream>
+#include "suchalgorithmus.h"
 
-
-
-void Suchalgorithmus(DictionaryC dic){
-	igzstream in("test");
-	ogzstream out("test_uebersetzung");
+void Suchalgorithmus(DictionaryC dic,char* eingabe){
+	igzstream in(eingabe);
 	Lexicon flex=dic.flex;
 	
 	
@@ -38,7 +30,7 @@ void Suchalgorithmus(DictionaryC dic){
 				double cost_old=Knoten.back().getBestcost();
 				if(it==translations->begin()){
 					node_next.setBestcost(cost_old+relfreq); //setzt die besten Kosten auf das erste auf der liste
-					out << dic.elex.getString(id_english);
+					std::cout << dic.elex.getString(id_english) << " ";
 				}
 				PartialTranslation Kante= PartialTranslation(relfreq,id_english,&node_next);
 				Knoten.back().add_Translation(Kante);
@@ -47,9 +39,10 @@ void Suchalgorithmus(DictionaryC dic){
 			Knoten.push_back(node_next);
 		}
 		
-		out << endl;
-		}
+		std::cout << "\n";
+		aStar astar;
+		astar.search(Knoten);
+	}
+
 }
 
-int main(){
-}
