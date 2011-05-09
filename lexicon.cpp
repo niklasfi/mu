@@ -25,3 +25,7 @@ std::string Lexicon::getString(const Word& w){
 	if(w.getLanguage() != lang) throw wrongLanguageError();
 	return arr[w.wordId()]; // wort muss im lexicon existieren, da es hier er kommt.
 }
+
+std::string Lexicon::getString(uint id){
+	return getString(Word(lang,id));
+}

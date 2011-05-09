@@ -28,5 +28,6 @@ class Lexicon{
 	Word add(std::string str);
 	Word getWord(std::string str);
 	std::string getString(const Word& w);
+	std::string getString(uint id);
 };
 
