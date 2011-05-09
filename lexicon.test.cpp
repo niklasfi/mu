@@ -31,6 +31,8 @@ int main(){
 	assert(flex.getWord("sourie") == mword);
 	assert(flex.getWord("chien") == dword);
 
+	assert(flex.getString(kword.wordId()) == "chat");
+
 	return 0;
 }
 
