@@ -2,7 +2,7 @@ CXX = g++
 DEBUG = -DDEBUG -g #-Wall
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream
 LDFLAGS = -L. -lz
-OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o
+OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o
 TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe
 
 ifndef NOCOLORS
@@ -11,8 +11,8 @@ RED = \033[31m
 GREEN = \033[32m
 YELLOW = \033[33m
 endif
-
-all: singlewordextract.exe parse_singlewordextract.exe
+default: all
+all: singlewordextract.exe parse_singlewordextract.exe main.exe
 
 %.test.exe: %.test.o ${OBJECTS}
 	@${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
