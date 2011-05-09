@@ -2,7 +2,7 @@ CXX = g++
 DEBUG = -DDEBUG -g #-Wall
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream
 LDFLAGS = -L. -lz
-OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o
+OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o suchalgorithmus.o
 TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe
 
 ifndef NOCOLORS
