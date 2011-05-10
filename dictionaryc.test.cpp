@@ -36,7 +36,7 @@ void conversion(){
 		assert(dc.fwa[fwords[i]].get_singlecount() == d.fwa[fwords[i]].singlecount);
 		uint* ids = solutions[i];
 		for(std::list<std::pair<double,uint>>::iterator it=dc.fwa[fwords[i]].pairs.begin(); it != dc.fwa[fwords[i]].pairs.end();it++){
-			/*std::cout << "first: " << it-> first << ", second: " << it -> second << ", foobar: " << d.fwa[fwords[i]].relFreq(it->second) 
+			/*std::cout << "first: " << it-> first << ", second: " << it -> second << ", foobar: " << d.fwa[fwords[i]].relFreq(it->second)
 				<< "\n\tdelta: " << (it->first - d.fwa[fwords[i]].relFreq(it->second))
 				<< "\n\tdelt2: "<< (it->first - (log(d.fwa[i].singlecount)-log(d.fwa[fwords[i]].pairs[it->second]))) << "\n";*/
 			assert(fabs(it->first - d.fwa[fwords[i]].relFreq(it->second)) < 1e-14); //wieso ist das hier nicht genau?
@@ -51,26 +51,26 @@ void readline(){
 	dc.read_line_singlewordExtract("7.59696 1.9548 # le # organized");
 	dc.read_line_singlewordExtract("8.98325 4.66108 # le # her");
 	dc.read_line_singlewordExtract("10.3695 5.86647 # le # strategic");
-	
-	
-	
+
+
+
 	Word le = dc.flex.getWord("le");
-	
+
 	Word to = dc.elex.getWord("to");
 	Word the = dc.elex.getWord("the");
 	Word organized = dc.elex.getWord("organized");
 	Word her = dc.elex.getWord("her");
 	Word strategic = dc.elex.getWord("strategic");
-	
+
 	assert(le!=0);
 	assert(to!=0);
 	assert(organized!=0);
 	assert(her!=0);
 	assert(strategic!=0);
-	
+
 	uint sln_ids[4]={the,organized,her,to};
 	double sln_vals[4] = {0.389607, 7.59696, 8.98325, 9.6764};
-	
+
 	{
 		uint i = 0;
 		for(plist::iterator it = dc.fwa[le].pairs.begin(); it != dc.fwa[le].pairs.end(); it++){
@@ -78,12 +78,12 @@ void readline(){
 			assert(it->second == sln_ids[i]);
 			i++;
 		}
-		assert(i==4);
+		assert(i==3);
 	}
 }
 
 int main(){
-	WordinfoC::set_maxlen(4);
+	WordinfoC::set_maxlen(3);
 	conversion();
 	readline();
 }

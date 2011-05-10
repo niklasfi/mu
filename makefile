@@ -18,7 +18,7 @@ all: singlewordextract.exe parse_singlewordextract.exe main.exe
 	@${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
 	@echo -ne "${YELLOW}$@${BLACK}"
 	@./$@ && echo -e " ${GREEN}ok${BLACK}"
-	@rm $@
+	#@rm $@
 
 %.exe: %.o ${OBJECTS}
 	${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o

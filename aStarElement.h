@@ -1,15 +1,18 @@
-#include <string>
+#include <vector>
+#include <iostream>
+#include "global.h"
+
+using namespace std;
 
 class aStarElement {
+	public:
 	double cost;	//Teilkosten
-	std:string trl; //Teilübersetzung
-	int pos;	//aktueller HypothesisNode
+	vector<unsigned int> trl; //Teilübersetzung in IDs rückwärts aufgeschrieben
 
-	aStarElement(std:string t, double c);
-	double getCost();
-	sdt:string getTrl();
-	int getPos();
-	setCost(double c);
-	setTrl(sdt:string t);
-	setPost (int p);
-}
+	aStarElement(const aStarElement& origin);
+	aStarElement(vector<unsigned int>&  t, double c);
+	void addWord(uint w);
+	void print();
+
+	bool operator<(const aStarElement& a) const;
+};

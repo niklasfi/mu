@@ -6,8 +6,8 @@ class PartialTranslation;
 HypothesisNode::HypothesisNode(){
                 bestcost= 0;
 }
-             
-             
+
+
 double HypothesisNode::getBestcost(){
        return bestcost;
 }
@@ -18,14 +18,14 @@ vector<PartialTranslation*>& HypothesisNode::getVektor(){
                              return inbound;
 }
 
-void HypothesisNode::add_Translation(PartialTranslation& Uebersetzung){
-   inbound.push_back(&Uebersetzung);
+void HypothesisNode::add_Translation(PartialTranslation* Uebersetzung){
+   inbound.push_back(Uebersetzung);
 }
 
 void HypothesisNode::remove_Translation(unsigned int pos){
      inbound.erase(inbound.begin()+pos);
 }
 
-             
+
 
 

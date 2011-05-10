@@ -6,8 +6,9 @@
 
 int main(int argc, char*argv[])
 {
+	WordinfoC::set_maxlen(10);
 	DictionaryC dc;
-	
+
 	std::ifstream swe_in(argv[1]); //swe=singlewordextract
 	std::string line;
 
