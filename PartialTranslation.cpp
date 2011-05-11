@@ -1,5 +1,7 @@
 #include "PartialTranslation.h"
 
+//Constructor
+
 PartialTranslation::PartialTranslation(){
                                          cost=0;
                                          translation=0;
@@ -16,14 +18,15 @@ PartialTranslation::PartialTranslation(double kosten, int uebersetzung, Hypothes
      this->translation=uebersetzung;
 }
 
-
+//Copy-Constructor
 PartialTranslation::PartialTranslation(const PartialTranslation& original){
      this->cost=original.cost;
      this->origin=original.origin;
      this->translation=original.translation;
                                                 
 }           
-             
+
+//getter und setter            
 double PartialTranslation::getCost(){
        return cost;
 }
@@ -42,6 +45,8 @@ HypothesisNode* PartialTranslation::getNode(){
 void PartialTranslation::setOrigin(HypothesisNode* Ursprung){
      origin=Ursprung;
 }
+
+
 
 PartialTranslation PartialTranslation::operator=(PartialTranslation& original){
      this->cost=original.cost;

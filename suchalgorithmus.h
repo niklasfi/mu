@@ -10,4 +10,4 @@
 #include <iostream>
 
 
-void Suchalgorithmus(DictionaryC dic,char* eingabe);//coutet die übersetzung einer datei dessen Pfad mit eingabe übergeben wird
+void Suchalgorithmus(DictionaryC dic,char* eingabe);//coutet die übersetzung(en) einer datei dessen Pfad mit eingabe übergeben wird

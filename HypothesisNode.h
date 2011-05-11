@@ -14,16 +14,16 @@ class HypothesisNode{
 
       private:
 
-             double bestcost;
-             vector<PartialTranslation*> inbound;
+             double bestcost; //minimalen Kosten bis zu diesem Knoten
+             vector<PartialTranslation*> inbound; //alle möglichen uebersetzung um zu diesem Knoten zu kommen
 
       public:
-             HypothesisNode();
+             HypothesisNode(); //Constructor
              double getBestcost();
              void setBestcost(double cost);
              vector<PartialTranslation*>& getVektor();
-             void add_Translation(PartialTranslation* Uebersetzung);
-             void remove_Translation(unsigned int pos); //es fängt von 0 an zu zählen
+             void add_Translation(PartialTranslation* Uebersetzung); //ein Pointer wird hinzugefügt
+             void remove_Translation(unsigned int pos); //es fängt von 0 an zu zählen, beliebiges Element kann gelöscht werden
 
 
 };

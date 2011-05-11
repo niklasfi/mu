@@ -14,17 +14,19 @@
 class aStar {
 	DictionaryC* dc;
 	vector<HypothesisNode> vect;
-  list<aStarElement> stack;
+ 	list<aStarElement> stack;
 
 
 	bool compare1(aStarElement e1, aStarElement e2);	//Vergleichsfunktion zum Sortieren des Stack
 
-	uint getStarElementPosition(const aStarElement& a);
+	uint getStarElementPosition(const aStarElement& a);  //git an bei welchem Knoten die Teilübersetzung ist
 
 	public:
+	//Constructor
 	aStar(DictionaryC* dc, vector<HypothesisNode> vect);
+
 	void search();	//A*-Suche
 
-	void print();
+	void print();   //Ausgabefunktion
 };
 
