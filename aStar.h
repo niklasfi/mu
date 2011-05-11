@@ -16,6 +16,8 @@ class aStar {
 	vector<HypothesisNode> vect;
  	list<aStarElement> stack;
 
+	static uint max_SentenceTranslation;
+
 
 	bool compare1(aStarElement e1, aStarElement e2);	//Vergleichsfunktion zum Sortieren des Stack
 
@@ -24,6 +26,8 @@ class aStar {
 	public:
 	//Constructor
 	aStar(DictionaryC* dc, vector<HypothesisNode> vect);
+
+	static void set_max_SentenceTranslation(uint size);
 
 	void search();	//A*-Suche
 
