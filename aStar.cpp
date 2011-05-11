@@ -1,7 +1,15 @@
 #include "aStar.h"
 
+uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
+
 //Constructor
 aStar::aStar(DictionaryC* dc, vector<HypothesisNode> vect):dc(dc),vect(vect){}
+
+
+void aStar::set_max_SentenceTranslation(uint size){
+	//if(aStar::max_SentenceTranslation != 0) throw max_SentenceTranslationAlreadySetException();
+	aStar::max_SentenceTranslation = size;
+}
 
 //Vergleichsfunktion zum Sortieren
 bool compare1 (aStarElement e1, aStarElement e2) {
@@ -30,8 +38,8 @@ void aStar::search() {
 	aStarElement elementI(vtemp, vect.back().getBestcost()); //erstesElement initialisiert
 	stack.push_front(elementI);
 
-	int n=0;
-	while(n<10) {	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
+	uint n =0;
+	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
 
 		if(getStarElementPosition(stack.front()) == 0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
