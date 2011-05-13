@@ -1,7 +1,10 @@
 CXX = g++
 DEBUG = -DDEBUG -g #-Wall
-CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream
-LDFLAGS = -L. -lz
+ifdef PROFILE
+	PROF = -pg
+endif
+CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF}
+LDFLAGS = -L. -lz ${PROF}
 OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o suchalgorithmus.o
 TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe
 
