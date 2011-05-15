@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include "suchalgorithmus.h"
+#include "aStar.h"
 
 int main(int argc, char*argv[])
 {
@@ -16,5 +16,5 @@ int main(int argc, char*argv[])
 	while ( getline(swe_in,line) ) {
 		dc.read_line_singlewordExtract(line);
 	}
-	Suchalgorithmus(dc,argv[2]);
+	aStar::Suchalgorithmus(dc,argv[2]);
 }

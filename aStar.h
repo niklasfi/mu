@@ -8,6 +8,7 @@
 #include "PartialTranslation.h"
 #include "aStarElement.h"
 #include "dictionaryc.h"
+#include "gzstream/gzstream.h"
 #include "global.h"
 
 
@@ -32,5 +33,7 @@ class aStar {
 	void search();	//A*-Suche
 
 	void print();   //Ausgabefunktion
+	
+	static void Suchalgorithmus(DictionaryC dic,char* eingabe);
 };
 
