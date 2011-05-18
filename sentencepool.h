@@ -1,15 +1,15 @@
-#include "Lexicon.h"
+#include "lexicon.h"
 #include <vector>
 #include <string>
 #include <iostream>
 
-class sentencepool {
+class SentencePool {
 
 	public:
-	enum target = {reference, guess};
+	enum target {ref, gue};
 	Lexicon elex;
-	vector<vector<int>*> reference;
-	vector<vector<int>*> guess;
+	std::vector< std::vector<int>* > reference;
+	std::vector< std::vector<int>* > guess;
 
 	void addSentence(target, std::string);
-}
+};

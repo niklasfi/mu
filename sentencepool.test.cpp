@@ -1,21 +1,28 @@
 #include <assert.h>
 
 #include "sentencepool.h"
-typedef unsigned int uint;
 
 int main(){
 	//dieser test soll eigentlich nur sicherstellen, dass die enum implementiert ist. auf die Zahlen kommt es mir nicht an.
 	
-	assert( SentencePool::reference == 0);
-	assert( SentencePool::guess == 1);
+	assert( SentencePool::ref == 0);
+	assert( SentencePool::gue == 1);
 	
 	{
-		SentencePool sp(); //leerer konstruktor
-		sp.addSentence("a b c d e f", "d e");
-		sp.addSentence("a a a", "g h");
-		sp.addSentence("g h k", "g k");
-		sp.addSentence("",""); //mal gucken was passiert, wenn wir den leeren Satz einfügen
+		SentencePool sp; //leerer konstruktor
+
+		sp.addSentence(SentencePool::ref, "a b c d e f");
+		sp.addSentence(SentencePool::gue, "d e");
+
+		sp.addSentence(SentencePool::ref, "a a a");
+		sp.addSentence(SentencePool::gue, "g h");
+
+		sp.addSentence(SentencePool::ref,"");
+		sp.addSentence(SentencePool::gue,""); //mal gucken was passiert, wenn wir den leeren Satz einfügen
 		
+		sp.addSentence(SentencePool::ref, "g h k");
+		sp.addSentence(SentencePool::gue, "g k");
+
 		uint a = sp.elex.getWord("a");
 		uint b = sp.elex.getWord("b");
 		uint c = sp.elex.getWord("c");
@@ -50,7 +57,7 @@ int main(){
 				assert(gue[i] == (*sp.guess[1])[i]);
 		}
 
-		{ //3. Satz
+		{ //4. Satz
 			assert((*sp.reference[2]).size() == 3);
 			uint ref[] = {g,h,k};
 			for (uint i = 0; i< 3; i++)
