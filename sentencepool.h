@@ -8,8 +8,8 @@ class SentencePool {
 	public:
 	enum target {ref, gue};
 	Lexicon elex;
-	std::vector< std::vector<int>* > reference;
-	std::vector< std::vector<int>* > guess;
+	std::vector< std::vector<uint>* > reference;
+	std::vector< std::vector<uint>* > guess;
 
 	void addSentence(target, std::string);
 };
