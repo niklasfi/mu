@@ -1,6 +1,6 @@
-class SentencePool;
-
 #include <algorithm>
+#include "sentencepool.h"
+
 
 typedef unsigned int uint;
 
@@ -15,17 +15,20 @@ double bleu_bp(uint referenceSize, uint guessSize){
 double bleu(SentencePool& sp){
 	uint N = 4;
 
-	uint* matchcount = new uint[N] = {0}; //c++0x!
-	//std::fill(matchcount, matchcount + N, 0);//alles auf 0 setzen
+	uint* matchcount = new uint[N];
+	std::fill(matchcount, matchcount + N, 0);//alles auf 0 setzen
 	
-	uint* gramcount = new uint[N] = {0};
-	//std::fill(gramcount, gramcount + N, 0);
+	uint* gramcount = new uint[N];
+	std::fill(gramcount, gramcount + N, 0);
+	
+	uint refsize = 0;
+	uint guesssize = 0;
 	
 	for(int sent = 0; sent < sp.guess.size(); sent++){
-		vector<uint>& gs = sp.guess[sent], ref = sp.reference[sent];
+		std::vector<uint>& gs = *sp.guess[sent], ref = *sp.reference[sent];
 		
-		char* guess_n = new byte[gs.size()] = {0};
-		//std::fill(guess_n, guess_n + gs.size(), 0);
+		char* guess_n = new char[gs.size()];
+		std::fill(guess_n, guess_n + gs.size(), 0);
 		
 		for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
 			for(int l = 0; l < gs.size(); l++){ //l index des wortes im Ü-Vorschlag
@@ -47,7 +50,21 @@ double bleu(SentencePool& sp){
 				}
 			}
 		}
+		refsize += ref.size();
+		guesssize += gs.size();
+		
+		for(int i = 0; i < N; i++)
+			gramcount[i] += ref.size() - i;
 	}
 	
 	//matchcount und gramcount jetzt korrekt
+	
+	double result = 0;
+
+	for( int i = 0; i<N; i++)
+		result += log(((double) matchcount[i])/gramcount[i]);
+
+	result /= N;
+
+	return result * bleu_bp(refsize,guesssize);
 }
