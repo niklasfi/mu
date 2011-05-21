@@ -1,6 +1,7 @@
 #include "lexicon.h"
 #include <vector>
 #include <string>
+#include <sstream>
 #include <iostream>
 
 class SentencePool {
