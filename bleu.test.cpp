@@ -66,7 +66,9 @@ int main(){
   sen3.reference.push_back(vek5);
   sen3.guess.push_back(vek6); 
 
-  double c=exp(0.25*log(4./5.)+0.25*log(3./4.)+0.25*(2./3.)+0.25*log(1./2.));
+  double r = 0.25*log(4./5.)+0.25*log(3./4.)+0.25*(2./3.)+0.25*log(1./2.);
+  double r2 = 0.25*(log(4./5.)+log(3./4.)+log(2./3.)+log(1./2.));
+  double c=exp(r2);
 
   assert(fabs(bleu(sen3,4)-c)<=1e-5);//Test auf 4-grams
 

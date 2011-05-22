@@ -25,23 +25,24 @@ double bleu(SentencePool& sp, uint N = 4){
 		std::fill(gramsize, gramsize + hyp.size(), 0);
 		
 		for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
-			int seq = 0;
-			for(int l = 0; l < hyp.size() - seq; l++){ //l index des wortes im Ü-Vorschlag
-				if(seq + k >= ref.size()) goto nextRef;
+			int rseq = 0;
+			for(int l = 0; l < hyp.size() - rseq; l++){ //l index des wortes im Ü-Vorschlag
+				int hseq = 0;
 				if(gramsize[l] >= N) goto nextHyp; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
+				if(rseq + k >= ref.size()) goto nextRef;
 				
 				/*assert(seq+k < ref.size());
 				assert(seq+l < hyp.size());*/
-				while(ref[seq+k] == hyp[seq+l]){
-					if(seq >= gramsize[l]){
+				while(ref[hseq+k] == hyp[hseq+l]){
+					if(hseq >= gramsize[l]){
 						matchcount[gramsize[l]]++;
 						gramsize[l]++;
+						rseq = hseq + 1;
+						if(rseq + l >= hyp.size() || rseq+k >= ref.size())
+							goto nextRef;
 					}
-					seq++;
-					
-					if(seq + l >= hyp.size() || seq+k >= ref.size())
-						goto nextRef;
-					if(seq >= N)
+					hseq++;
+					if(hseq + l >= hyp.size() || hseq+k >= ref.size() || hseq >= N)
 						goto nextHyp;
 				}
 				nextHyp: ;
