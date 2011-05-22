@@ -3,9 +3,7 @@
 #include <cmath>
 #include "sentencepool.h"
 #include "math.h"
-//#include "bleu.cpp"
-
-double BLEU (SentencePool,int);
+#include "bleu.cpp"
 
 using namespace std;
 
@@ -39,22 +37,22 @@ int main(){
   (*vek4)[2]=1;
 
   SentencePool sen;
-  sen.reference[0]=vek;
-  sen.reference[1]=vek3;
-  sen.guess[0]=vek2;
-  sen.guess[1]=vek4;
+  sen.reference.push_back(vek);
+  sen.reference.push_back(vek3);
+  sen.guess.push_back(vek2);
+  sen.guess.push_back(vek4);
 
   double a = exp(1-(9./7.))*exp((1./3.)*log(6./7.)+(1./3.)*log(3./5.)+(1./3.)*log(1./3.));
-  assert(fabs(BLEU(sen,3)-a)<=1e-5); //Test mit kleiner Hypothesenlänge
+  assert(fabs(bleu(sen,3)-a)<=1e-5); //Test mit kleiner Hypothesenlänge
 
   SentencePool sen2;
-  sen2.reference[0]=vek2;
-  sen2.reference[1]=vek4;
-  sen2.guess[0]=vek;
-  sen2.guess[1]=vek3;
+  sen2.reference.push_back(vek2);
+  sen2.reference.push_back(vek4);
+  sen2.guess.push_back(vek);
+  sen2.guess.push_back(vek3);
 
   double b =exp((1./3.)*log(6./9.)+(1./3.)*log(3./7.)+(1./3.)*log(1./5.));
-  assert(fabs(BLEU(sen,3)-b)<=1e-5);//Test mit Referenz kleiner als Hypothese
+  assert(fabs(bleu(sen,3)-b)<=1e-5);//Test mit Referenz kleiner als Hypothese
 
   vector<unsigned int>* vek5=new vector<unsigned int> (4);
   vector<unsigned int>* vek6=new vector<unsigned int> (5);  
@@ -65,15 +63,15 @@ int main(){
   }
   (*vek6)[4]=7;
   SentencePool sen3;
-  sen3.reference[0]=vek5;
-  sen3.guess[0]=vek6; 
+  sen3.reference.push_back(vek5);
+  sen3.guess.push_back(vek6); 
 
   double c=exp(0.25*log(4./5.)+0.25*log(3./4.)+0.25*(2./3.)+0.25*log(1./2.));
 
-  assert(fabs(BLEU(sen,4)-c)<=1e-5);//Test auf 4-grams
+  assert(fabs(bleu(sen,4)-c)<=1e-5);//Test auf 4-grams
 
   SentencePool sen4;
-  assert(BLEU(sen4,4) ==0);//Test auf leeren Pool
+  assert(bleu(sen4,4) ==0);//Test auf leeren Pool
 
   delete vek;
   delete vek2;
