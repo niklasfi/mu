@@ -3,10 +3,14 @@
 
 SentencePool::SentencePool():elex(english){}
 SentencePool::~SentencePool(){
-	for(uint i = 0; i < reference.size(); i++)
+	for(uint i = 0; i < reference.size(); i++){
 		delete reference[i];
-	for(uint j = 0; j < guess.size(); j++)
+		reference[i] = 0;
+	}
+	for(uint j = 0; j < guess.size(); j++){
 		delete guess[j];
+		guess[j] = 0;
+	}
 }
 void SentencePool::addSentence(target t, std::string s){
 
