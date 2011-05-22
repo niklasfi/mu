@@ -6,7 +6,7 @@ endif
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF}
 LDFLAGS = -L. -lz ${PROF}
 OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o
-TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe
+TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe bleu.test.exe
 
 ifndef NOCOLORS
 BLACK = \033[0m
@@ -21,12 +21,13 @@ all: singlewordextract.exe parse_singlewordextract.exe
 	@${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
 	@echo -ne "${YELLOW}$@${BLACK}"
 	@./$@ && echo -e " ${GREEN}ok${BLACK}"
-	#@rm $@
 
 %.exe: %.o ${OBJECTS}
 	${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
 
+.PHONY: tests
 tests: ${TESTS}
+	@echo -e "\n${GREEN}--> everything's good! <--${BLACK}"
 
 .PRECIOUS: %.test.o
 %.test.o: %.test %.h
@@ -36,5 +37,11 @@ tests: ${TESTS}
 %.o: %.cpp %.h
 	${CXX} ${CPPFLAGS} -c -o $@ $<
 
+.PHONY: clean
 clean:
 	rm -f *.o *.exe
+
+.PHONY: ctests 
+ctests:
+	rm -f ${TESTS}
+	make tests
