@@ -5,10 +5,10 @@
 int main () {
 	
 	int i;
-	std::vector<int> ref (5);	//Referenzsatz
-	std::vector<int> gss (5);	//Hypothese
-	std::vector<int> *r;
-	std::vector<int> *g;
+	std::vector<unsigned int> ref (5);	//Referenzsatz
+	std::vector<unsigned int> gss (5);	//Hypothese
+	std::vector<unsigned int> *r;
+	std::vector<unsigned int> *g;
 	r = &ref;
 	g = &gss;
 
