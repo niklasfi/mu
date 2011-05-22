@@ -58,15 +58,15 @@ int main(){
 		}
 
 		{ //4. Satz
-			assert((*sp.reference[2]).size() == 3);
+			assert((*sp.reference[3]).size() == 3);
 			uint ref[] = {g,h,k};
 			for (uint i = 0; i< 3; i++)
-				assert(ref[i] == (*sp.reference[2])[i]);
+				assert(ref[i] == (*sp.reference[3])[i]);
 			
-			assert((*sp.guess[2]).size() == 2);
+			assert((*sp.guess[3]).size() == 2);
 			uint gue[] = {g,k};
 			for (uint i = 0; i< 2; i++)
-				assert(gue[i] == (*sp.guess[2])[i]);
+				assert(gue[i] == (*sp.guess[3])[i]);
 		}	
 	}	
 	
