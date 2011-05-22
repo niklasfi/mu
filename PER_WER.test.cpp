@@ -1,16 +1,16 @@
 #include <vector>
 #include <iostream>
-//#include "sentencepool.h"
+#include "sentencepool.h"
 //#include "Fehlerrate.cpp"
 
 using namespace std;
 
-class sentencepool;
+//class sentencepool;
 
-double PER_global(sentencepool);
-double PER(vector<int>* r, vector <int>* g);
-double WER(vector<int>* r, vector <int>* g);
-double WER_global(sentencepool);
+double PER_global(SentencePool);
+double PER(vector<unsigned int>* r, vector <unsigned int>* g);
+double WER(vector<unsigned int>* r, vector <unsigned int>* g);
+double WER_global(SentencePool);
 
 
 
@@ -18,12 +18,12 @@ int main(){
   
   bool ok=true;
   
-  vector<int>* vek = new vector<int>;
-  for (int i=0; i<10; i++){
+  vector<unsigned int>* vek = new vector<unsigned int>;
+  for (unsigned int i=0; i<10; i++){
      vek->push_back(i);
   }
   
-  vector<int>* vek2=new vector<int>;
+  vector<unsigned int>* vek2=new vector<unsigned int>;
   (*vek2)=(*vek);
   
   if (PER(vek,vek2) != 0){	
@@ -31,8 +31,8 @@ int main(){
     ok=false;
   }
   
-  vector<int>* vek3=new vector<int>;
-  for (int i=5; i<25; i++){
+  vector<unsigned int>* vek3=new vector<unsigned int>;
+  for (unsigned int i=5; i<25; i++){
       vek3->push_back(i);
   }
   
@@ -41,7 +41,7 @@ int main(){
     ok=false;
   }
   
-  sentencepool sen;
+  SentencePool sen;
   sen.reference[0]=vek;
   sen.reference[1]=vek2;
   sen.guess[0]=vek;
@@ -57,8 +57,8 @@ int main(){
   delete[] vek;
   delete[] vek3;
   
-  vek=new vector<int> [6];
-  vek3=new vector<int> [6];
+  vek=new vector<unsigned int> [6];
+  vek3=new vector<unsigned int> [6];
   
   (*vek)[0]=2;
   (*vek)[1]=1;
