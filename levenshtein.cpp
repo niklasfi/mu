@@ -12,7 +12,7 @@ int Levenshtein:: min(int i, int j){ //gibt den Wert für i,j zurück
 }
 
 
-Levenshtein::Levenshtein(vector<int>* reference, vector<int>* guess){
+Levenshtein::Levenshtein(vector<unsigned int>* reference, vector<unsigned int>* guess){
 	_height=reference->size()+1;
 	_width=guess->size()+1;
 

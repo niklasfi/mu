@@ -16,7 +16,7 @@ public:
 	unsigned int* data;
 	unsigned int** matrix;
 	
-	Levenshtein(std::vector<int>* reference, std::vector<int>* guess);//Eingabe sind die Referenzübersetzung und die zu bewertende Übersetzung, allerdings in ID's 
+	Levenshtein(std::vector<unsigned int>* reference, std::vector<unsigned int>* guess);//Eingabe sind die Referenzübersetzung und die zu bewertende Übersetzung, allerdings in ID's 
 	~Levenshtein();
 	
 	//void print(Lexicon* elex);//gibt die nötigen Veränderungen von guess auf reference aus.
