@@ -1,3 +1,5 @@
+#pragma once
+
 #include "lexicon.h"
 #include <vector>
 #include <string>
