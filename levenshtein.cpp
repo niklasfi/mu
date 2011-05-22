@@ -11,8 +11,45 @@ int Levenshtein:: min(int i, int j){ //gibt den Wert für i,j zurück
 	return min;
 }
 
+void Levenshtein:: back(int& i, int& j, Lexicon* elex){ //gibt den nächsten Schritt im Rückweg an
+	if (i ==0){
+	       j--;
+	       cout << "Löschung von  " << elex->getString((*guess)[j]) << endl;
+     }	
+	else{
+	     if (j==0){
+		i--;
+		cout << "Einfügen von  " << elex->getString((*reference)[i]) << endl;
+	     }
+	     else{
+		  bool insertion=true; //gibt an, ob es sich um ein Einfügen handelt
+		  i--; //betrachte die Zelle über dem akt. Standpunkt
+		  if (matrix[i][j-1] < matrix[i][j]){  //die Zelle schräg über dem akt. Standpunkt ist besser, d.h. Substitution
+		       j--; 
+		       insertion=false;
+		       if(matrix[i+1][j] < matrix[i][j]){ //Löschen ist am besten, akt=Substition
+			      i++;
+			      cout << "Löschung von " << elex->getString((*guess)[j]) << endl;
+			}
+			else //Substituieren ist am besten
+			     if ((*guess)[j] == (*reference)[i])	cout << "Passend bei " << elex->getString((*guess)[j])<<endl;
+			     else	cout << "Substituieren von " << elex->getString((*guess)[j]) << " durch " << elex->getString((*reference)[i])<< endl;
+		  }
+		  if (matrix[i+1][j-1] < matrix[i][j]){ //die Zelle links ist besser (akt pos. ist einfügen), also Löschen
+			i++;
+			j--;
+			insertion=false;
+			cout << "Löschung von " << elex->getString((*guess)[j]) << endl;
+		  }
+		  if (insertion)	cout << "Einfügen von " << elex->getString((*reference)[i])<< endl;
+		       
+	       }
+	}
+}       
 
 Levenshtein::Levenshtein(vector<unsigned int>* reference, vector<unsigned int>* guess){
+	this->reference=reference;
+	this->guess=guess;
 	_height=reference->size()+1;
 	_width=guess->size()+1;
 
@@ -36,8 +73,12 @@ Levenshtein::~Levenshtein(){
 	delete[] matrix;
 }
 
-//void Levenshtein::print(Lexicon* elex){
-//}
+void Levenshtein::print(Lexicon* elex){
+	int i=_height-1, j=_width-1;
+	while(i!=0 || j != 0){
+	  back(i, j, elex);
+	}
+}
 
 int Levenshtein::distance(){
   return matrix[_height-1][_width-1];
