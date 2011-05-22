@@ -1,17 +1,9 @@
 #include <vector>
 #include <iostream>
 #include "sentencepool.h"
-//#include "Fehlerrate.cpp"
+#include "PER_WER.cpp"
 
 using namespace std;
-
-//class sentencepool;
-
-double PER_global(SentencePool);
-double PER(vector<unsigned int>* r, vector <unsigned int>* g);
-double WER(vector<unsigned int>* r, vector <unsigned int>* g);
-double WER_global(SentencePool);
-
 
 
 int main(){

@@ -6,7 +6,7 @@ endif
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF}
 LDFLAGS = -L. -lz ${PROF}
 OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o
-TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe
+TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe
 
 ifndef NOCOLORS
 BLACK = \033[0m
