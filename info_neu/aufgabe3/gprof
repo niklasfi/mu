@@ -1,0 +1,104 @@
+gprof analysiert in Programmen, welche Methoden am meisten Zeit brauchen. Gerade bei komplexen Programmen kann so festgestellt werden, welche Stellen am besten überarbeitet werden sollen.
+Um gprof auf ein Programm anzuwenden muss beim Kompilieren das zusätzliche Compilerflag -pg gesetzt werden und dann das Programm noch einmal kompiliert werden.
+Anschließend lässt man das Programm ganz normal laufen.
+Dabei liegt gprof eine Datei mit Namen gmon.out an.
+Um jetzt an die Daten zu gelangen, gibt man in das Terminal gprof Programmname > output-file. Dabei ist die output-file natürlich optional.
+
+Am Beispiel unseres Programmes aus Aufgabe 2 mit folgenden Vorgaben:
+Pruning=20 - es werden die 20 besten Übersetzungen im Dictionary gespeichert
+Sätze=20 - es werden die 20 besten Übersetzungen ausgegeben
+
+Dabei hat sich der unten stehende output ergeben. 
+Der Output besteht aus einem Flat profile und einem call graph.
+Im flat profile kann man angucken, wie viel Zeit man in den Funktionen verbringt und wie oft es aufgerufen wird.
+Der call graph ist ausführlicher, er gibt für jede Funktion an, welche Unterfunktionen sie wie oft aufruft und wie viel Zeit sie verbraucht.
+
+In beiden Analysen sind die angezeigten Funktionen nach der verbrauchten Zeit geordnet.
+
+Für uns ist abzulesen, wir verbringen die meiste Zeit beim Vergleichen von aStarElements, diese Funktion wird auch am häufigsten aufgerufen. Bei Verwaltung der Liste von aStarElementen entsteht allgemein der größte Zeitverlust. 
+
+
+
+OUTPUT von gprof:
+
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+  9.03      0.34     0.34 53896463     0.00     0.00  std::_List_iterator<aStarElement>::operator!=(std::_List_iterator<aStarElement> const&) const
+  9.03      0.67     0.34  4521293     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::merge(std::list<aStarElement, std::allocator<aStarElement> >&&)
+  5.80      0.89     0.21 26895765     0.00     0.00  std::_List_iterator<aStarElement>::operator++()
+  5.66      1.09     0.21    10923     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::sort()
+  4.31      1.25     0.16 45062918     0.00     0.00  std::_List_iterator<aStarElement>::operator*() const
+  4.18      1.41     0.15 22407942     0.00     0.00  aStarElement::operator<(aStarElement const&) const
+  4.04      1.56     0.15  8935616     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::swap(std::list<aStarElement, std::allocator<aStarElement> >&)
+  3.50      1.69     0.13  4487823     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::splice(std::_List_iterator<aStarElement>, std::list<aStarElement, std::allocator<aStarElement> >&&, std::_List_iterator<aStarElement>)
+  3.37      1.81     0.12 27527929     0.00     0.00  std::_List_iterator<aStarElement>::_List_iterator(std::_List_node_base*)
+  3.23      1.94     0.12  9009116     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::_M_check_equal_allocators(std::list<aStarElement, std::allocator<aStarElement> >&)
+  2.96      2.04     0.11  8975646     0.00     0.00  std::_List_iterator<aStarElement>::operator==(std::_List_iterator<aStarElement> const&) const
+  2.56      2.14     0.10 13333473     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::empty() const
+  2.16      2.22     0.08  4487823     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::splice(std::_List_iterator<aStarElement>, std::list<aStarElement, std::allocator<aStarElement> >&, std::_List_iterator<aStarElement>)
+  1.89      2.29     0.07 18281838     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::begin()
+  1.75      2.35     0.07   928139     0.00     0.00  unsigned int std::_Fnv_hash_base<4u>::hash<char>(char const*, unsigned int, unsigned int)
+  1.62      2.42     0.06   300116     0.00     0.00  DictionaryC::add_translation(std::string, std::string, double)
+  1.35      2.46     0.05 36297012     0.00     0.00  std::_List_base<aStarElement, std::allocator<aStarElement> >::_M_get_Node_allocator()
+  1.35      2.52     0.05  9246091     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::end()
+  1.21      2.56     0.04  9586565     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::_M_transfer(std::_List_iterator<aStarElement>, std::_List_iterator<aStarElement>, std::_List_iterator<aStarElement>)
+  1.08      2.60     0.04  5057794     0.00     0.00  std::_List_const_iterator<std::pair<double, unsigned int> >::operator++()
+  1.08      2.64     0.04   807127     0.00     0.00  std::__detail::_Map_base<std::string, std::pair<std::string const, unsigned int>, std::_Select1st<std::pair<std::string const, unsigned int> >, true, std::_Hashtable<std::string, std::pair<std::string const, unsigned int>, std::allocator<std::pair<std::string const, unsigned int> >, std::_Select1st<std::pair<std::string const, unsigned int> >, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, false, false, true> >::operator[](std::string const&)
+  1.08      2.68     0.04   534863     0.00     0.00  std::iterator_traits<std::_List_const_iterator<std::pair<double, unsigned int> > >::difference_type std::__distance<std::_List_const_iterator<std::pair<double, unsigned int> > >(std::_List_const_iterator<std::pair<double, unsigned int> >, std::_List_const_iterator<std::pair<double, unsigned int> >, std::input_iterator_tag)
+  0.94      2.71     0.04   710264     0.00     0.00  std::_List_base<aStarElement, std::allocator<aStarElement> >::_M_clear()
+  0.81      2.75     0.03   300116     0.00     0.00  WordinfoC::add_translation(Word, double)
+  0.81      2.77     0.03        5     0.01     0.01  std::_Hashtable<std::string, std::pair<std::string const, unsigned int>, std::allocator<std::pair<std::string const, unsigned int> >, std::_Select1st<std::pair<std::string const, unsigned int> >, std::equal_to<std::string>, std::hash<std::string>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, false, false, true>::_M_deallocate_nodes(std::__detail::_Hash_node<std::pair<std::string const, unsigned int>, false>**, unsigned int)
+  0.67      2.80     0.03  9009116     0.00     0.00  std::remove_reference<std::list<aStarElement, std::allocator<aStarElement> >&>::type&& std::move<std::list<aStarElement, std::allocator<aStarElement> >&>(std::list<aStarElement, std::allocator<aStarElement> >&&&)
+  0.67      2.83     0.03  4521293     0.00     0.00  std::list<aStarElement, std::allocator<aStarElement> >::merge(std::list<aStarElement, std::allocator<aStarElement> >&)
+  0.67      2.85     0.03   710264     0.00     0.00  std::_List_base<aStarElement, std::allocator<aStarElement> >::_M_init()
+
+			Call graph
+
+
+granularity: each sample hit covers 4 byte(s) for 0.27% of 3.71 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     99.5    0.00    3.69                 main [1]
+                0.01    2.98       1/1           aStar::Suchalgorithmus(DictionaryC, char*) [2]
+                0.01    0.59  300116/300116      DictionaryC::read_line_singlewordExtract(std::string) [7]
+                0.00    0.07       1/1           DictionaryC::DictionaryC(DictionaryC const&) [41]
+                0.00    0.03       2/2           DictionaryC::~DictionaryC() [97]
+                0.00    0.00       1/1           WordinfoC::set_maxlen(unsigned int) [660]
+                0.00    0.00       1/1           aStar::set_max_SentenceTranslation(unsigned int) [659]
+                0.00    0.00       1/1           DictionaryC::DictionaryC() [658]
+-----------------------------------------------
+                0.01    2.98       1/1           main [1]
+[2]     80.6    0.01    2.98       1         aStar::Suchalgorithmus(DictionaryC, char*) [2]
+                0.01    2.83     269/269         aStar::search() [3]
+                0.00    0.04    4449/4449        std::vector<HypothesisNode, std::allocator<HypothesisNode> >::push_back(HypothesisNode const&) [68]
+                0.00    0.02   82114/82114       HypothesisNode::add_Translation(PartialTranslation*) [105]
+                0.00    0.01     269/269         std::vector<HypothesisNode, std::allocator<HypothesisNode> >::vector() [152]
+                0.00    0.01       1/3           Lexicon::Lexicon(Lexicon const&) [102]
+                0.00    0.01     269/269         std::vector<HypothesisNode, std::allocator<HypothesisNode> >::push_back(HypothesisNode&&) [220]
+                0.00    0.01     269/269         aStar::aStar(DictionaryC*, std::vector<HypothesisNode, std::allocator<HypothesisNode> >) [223]
+                0.00    0.01     269/538         std::vector<HypothesisNode, std::allocator<HypothesisNode> >::vector(std::vector<HypothesisNode, std::allocator<HypothesisNode> > const&) [160]
+                0.00    0.01       1/5           Lexicon::~Lexicon() [81]
+                0.01    0.00   82114/82114       PartialTranslation::PartialTranslation(double, int, HypothesisNode*) [253]
+                0.00    0.00  164228/164497      std::vector<HypothesisNode, std::allocator<HypothesisNode> >::back() [252]
+                0.00    0.00     538/807         std::vector<HypothesisNode, std::allocator<HypothesisNode> >::~vector() [228]
+                0.00    0.00    4718/25415       HypothesisNode::~HypothesisNode() [156]
+                0.00    0.00  164228/668187      std::_List_iterator<std::pair<double, unsigned int> >::operator->() const [181]
+                0.00    0.00     269/269         aStar::~aStar() [274]
+                0.00    0.00   86563/1455484     std::list<std::pair<double, unsigned int>, std::allocator<std::pair<double, unsigned int> > >::end() [90]
+                0.00    0.00    4449/604681      Lexicon::getWord(std::string) [19]
+                0.00    0.00   86563/309502      std::list<std::pair<double, unsigned int>, std::allocator<std::pair<double, unsigned int> > >::begin() [262]
+                0.00    0.00   86563/652100      std::_List_iterator<std::pair<double, unsigned int> >::operator!=(std::_List_iterator<std::pair<double, unsigned int> > const&) const [306]
+                0.00    0.00   82114/296811      HypothesisNode::getBestcost() [324]
+                0.00    0.00   82114/82114       std::_List_iterator<std::pair<double, unsigned int> >::operator==(std::_List_iterator<std::pair<double, unsigned int> > const&) const [426]
+                0.00    0.00   82114/424712      std::_List_iterator<std::pair<double, unsigned int> >::operator++(int) [312]
+                0.00    0.00    4718/4718        HypothesisNode::HypothesisNode() [497]
+                0.00    0.00    4449/93429       Word::wordId() const [412]
+                0.00    0.00    4449/304565      std::vector<WordinfoC, std::allocator<WordinfoC> >::operator[](unsigned int) [323]
+                0.00    0.00    4449/4449        std::_List_iterator<std::pair<double, unsigned int> >::_List_iterator() [504]
+                0.00    0.00    4449/4449        HypothesisNode::setBestcost(double) [503]
+                0.00    0.00       1/1           igzstream::igzstream(char const*, int) [663]
+                0.00    0.00       1/1           igzstream::~igzstream() [664]
