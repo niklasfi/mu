@@ -26,24 +26,30 @@ double bleu(SentencePool& sp, uint N = 4){
 		
 		for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
 			int seq = 0;
-			for(int l = 0; l < hyp.size(); l++){ //l index des wortes im Ü-Vorschlag
-				if(gramsize[l] < N){ //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
-					while(seq+k < ref.size() && seq + l < hyp.size() && ref[seq+k] == hyp[seq+l] && seq < N){
-						/*     (1)                     (2)                        (3)                (4)
-						 * (1) überprüfen, ob das n-gram noch in den Referenzsatz passt
-						 * (2) überprüfen, ob das n-gram noch in den Übersetzungsvorschlag passt
-						 * (3) überprüfen, ob das Wort im Rerfenz- mit dem Vorschlagssatz übereinstimmt
-						 * (4) abbrechen, wenn seq zu groß wird
-						 */
-						if(seq >= gramsize[l]){
-							matchcount[gramsize[l]]++;
-							gramsize[l]++;
-						}
-						seq++;
+			for(int l = 0; l < hyp.size() - seq; l++){ //l index des wortes im Ü-Vorschlag
+				if(seq + k >= ref.size()) break;
+				if(gramsize[l] >= N) continue; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
+				
+				assert(seq+k < ref.size());
+				assert(seq+l < hyp.size());
+				while(ref[seq+k] == hyp[seq+l]){
+					if(seq >= gramsize[l]){
+						matchcount[gramsize[l]]++;
+						gramsize[l]++;
 					}
+					seq++;
+					
+					if(seq + l >= hyp.size())
+						goto nextRef;
+					if(seq+k >= ref.size() || seq >= N)
+						goto nextHyp;
 				}
+				nextHyp: ;
 			}
+			nextRef: ;
 		}
+		nextSent:
+		
 		refsize += ref.size();
 		hypsize += hyp.size();
 		

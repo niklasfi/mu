@@ -9,7 +9,7 @@ using namespace std;
 
 
 int main(){
-/*
+
   vector<unsigned int>* vek=new vector<unsigned int> (6);
   vector<unsigned int>* vek2=new vector<unsigned int>(4);
   vector<unsigned int>* vek3=new vector<unsigned int> (3);
@@ -53,7 +53,7 @@ int main(){
 
   double b =exp((1./3.)*log(6./9.)+(1./3.)*log(3./7.)+(1./3.)*log(1./5.));
   assert(fabs(bleu(sen2,3)-b)<=1e-5);//Test mit Referenz kleiner als Hypothese
-*/
+
   vector<unsigned int>* vek5=new vector<unsigned int> (4);
   vector<unsigned int>* vek6=new vector<unsigned int> (5);  
 
