@@ -17,6 +17,12 @@ Word Lexicon::add(std::string str){
 	return w;
 }
 
+Word Lexicon::getWord_or_add(std::string str){
+	Word w = getWord(str);
+	if(w) return w;
+	return add(str);
+}
+
 Word Lexicon::getWord(std::string str){
 	return Word(map[str]); // wenn nichts gefunden wird, dann kommt 0 -> yeti
 }

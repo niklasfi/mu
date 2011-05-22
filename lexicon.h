@@ -26,6 +26,7 @@ class Lexicon{
 	Lexicon(const Lexicon& l);
 
 	Word add(std::string str);
+	Word getWord_or_add(std::string str);
 	Word getWord(std::string str);
 	std::string getString(const Word& w);
 	std::string getString(uint id);
