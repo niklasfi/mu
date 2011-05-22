@@ -52,6 +52,14 @@ int main () {
 	Levenshtein l5(r,g);
 	assert(l5.distance() == 2);
 
+	Lexicon elex;
+	elex.add("A");
+	elex.add("N");
+	elex.add("S");
+	elex.add("B");
+	elex.add("E");
+	Lexicon* elex_ptr=&elex;
+	
 	//Testsatz 6 - ANANAS/BANANE
 	ref.resize(6);
 	gss.resize(6);
@@ -59,6 +67,8 @@ int main () {
 	gss[0]=3; gss[1]=0; gss[2]=1; gss[3]=0; gss[4]=1; gss[5]=4;
 	Levenshtein l6(r,g);
 	assert(l6.distance() == 3);
+	
+	l6.print(elex_ptr);
 
 
 	return 0;
