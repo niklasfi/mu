@@ -1,6 +1,7 @@
 #include "lexicon.h"
 #include <vector>
 #include <string>
+#include <sstream>
 #include <iostream>
 
 class SentencePool {
@@ -11,5 +12,7 @@ class SentencePool {
 	std::vector< std::vector<uint>* > reference;
 	std::vector< std::vector<uint>* > guess;
 
+	SentencePool();
+	~SentencePool();
 	void addSentence(target, std::string);
 };
