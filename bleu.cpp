@@ -27,11 +27,11 @@ double bleu(SentencePool& sp, uint N = 4){
 		for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
 			int seq = 0;
 			for(int l = 0; l < hyp.size() - seq; l++){ //l index des wortes im Ü-Vorschlag
-				if(seq + k >= ref.size()) break;
-				if(gramsize[l] >= N) continue; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
+				if(seq + k >= ref.size()) goto nextRef;
+				if(gramsize[l] >= N) goto nextHyp; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
 				
-				assert(seq+k < ref.size());
-				assert(seq+l < hyp.size());
+				/*assert(seq+k < ref.size());
+				assert(seq+l < hyp.size());*/
 				while(ref[seq+k] == hyp[seq+l]){
 					if(seq >= gramsize[l]){
 						matchcount[gramsize[l]]++;
@@ -39,9 +39,9 @@ double bleu(SentencePool& sp, uint N = 4){
 					}
 					seq++;
 					
-					if(seq + l >= hyp.size())
+					if(seq + l >= hyp.size() || seq+k >= ref.size())
 						goto nextRef;
-					if(seq+k >= ref.size() || seq >= N)
+					if(seq >= N)
 						goto nextHyp;
 				}
 				nextHyp: ;
