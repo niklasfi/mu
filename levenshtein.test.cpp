@@ -53,11 +53,11 @@ int main () {
 	assert(l5.distance() == 2);
 
 	Lexicon elex;
-	elex.add("0");
-	elex.add("1");
-	elex.add("2");
-	elex.add("3");
-	elex.add("4");
+	elex.add("A");
+	elex.add("N");
+	elex.add("S");
+	elex.add("B");
+	elex.add("E");
 	Lexicon* elex_ptr=&elex;
 	
 	//Testsatz 6 - ANANAS/BANANE
