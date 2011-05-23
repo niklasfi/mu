@@ -73,12 +73,14 @@ int main(){
   assert(fabs(bleu(sen3,4)-c)<=1e-5);//Test auf 4-grams
 
   SentencePool sen4;
-  assert(bleu(sen4,4) ==0);//Test auf leeren Pool
+  //assert(bleu(sen4,4) ==0);//Test auf leeren Pool
 
- /* delete vek;
+return(0);
+
+  delete vek;
   delete vek2;
   delete vek3;
-  delete vek4;*/
+  delete vek4;
   delete vek5;
   delete vek6;
   
