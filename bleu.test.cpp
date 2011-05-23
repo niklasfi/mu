@@ -36,7 +36,7 @@ int main(){
   (*vek4)[1]=3;
   (*vek4)[2]=1;
 
-  SentencePool sen;
+  /*SentencePool sen;
   sen.reference.push_back(vek);
   sen.reference.push_back(vek3);
   sen.guess.push_back(vek2);
@@ -52,7 +52,7 @@ int main(){
   sen2.guess.push_back(vek3);
 
   double b =exp((1./3.)*log(6./9.)+(1./3.)*log(3./7.)+(1./3.)*log(1./5.));
-  assert(fabs(bleu(sen2,3)-b)<=1e-5);//Test mit Referenz kleiner als Hypothese
+  assert(fabs(bleu(sen2,3)-b)<=1e-5);//Test mit Referenz kleiner als Hypothese*/
 
   vector<unsigned int>* vek5=new vector<unsigned int> (4);
   vector<unsigned int>* vek6=new vector<unsigned int> (5);  
@@ -72,15 +72,15 @@ int main(){
 
   assert(fabs(bleu(sen3,4)-c)<=1e-5);//Test auf 4-grams
 
-  SentencePool sen4;
+/*  SentencePool sen4;
   assert(bleu(sen4,4) ==0);//Test auf leeren Pool
 
- /* delete vek;
+  delete vek;
   delete vek2;
   delete vek3;
-  delete vek4;*/
+  delete vek4;
   delete vek5;
-  delete vek6;
+  delete vek6;*/
   
 
 }
