@@ -70,11 +70,13 @@ int main(){
     cout << "Es stimmt was nicht mit WER!" << endl;
     ok=false;
   }
-  
+  (*vek2)=(*vek);
+  vector<unsigned int>* vek4=new vector<unsigned int>(6);  
+  (*vek4)=(*vek3);
   sen.reference[0]=(vek);
-  sen.reference[1]=(vek);
+  sen.reference[1]=(vek2);
   sen.guess[0]=(vek3);
-  sen.guess[1]=(vek3);
+  sen.guess[1]=(vek4);
   
   if (WER_global(sen) != 1){
     cout << "Es stimmt was nicht mit WER!" << endl;
