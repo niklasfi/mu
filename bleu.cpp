@@ -4,12 +4,9 @@
 
 typedef unsigned int uint;
 
-double bleu_bp(uint referenceSize, uint guessSize){
-	uint& c = guessSize;
-	uint& r = referenceSize;
-	
-	if(c >= r) return 1;
-	return exp(1-r/c);
+double bleu_bp(uint refs, uint hyps){
+	if(refs <= hyps) return 1.0;
+	return exp(1.0-(1.0*refs)/hyps);
 }
 double bleu(SentencePool& sp, uint N = 4){
 	uint* matchcount = new uint[N];
@@ -28,30 +25,37 @@ double bleu(SentencePool& sp, uint N = 4){
 		std::fill(gramsize, gramsize + hyp.size(), 0);
 		
 		for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
-			for(int l = 0; l < hyp.size(); l++){ //l index des wortes im Ü-Vorschlag
-				if(gramsize[l] < N){ //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
-					int seq = 0;
-					while(seq+k < ref.size() && seq + l < hyp.size() && ref[seq+k] == hyp[seq+l] && seq < N){
-						/*     (1)                     (2)                        (3)                (4)
-						 * (1) überprüfen, ob das n-gram noch in den Referenzsatz passt
-						 * (2) überprüfen, ob das n-gram noch in den Übersetzungsvorschlag passt
-						 * (3) überprüfen, ob das Wort im Rerfenz- mit dem Vorschlagssatz übereinstimmt
-						 * (4) abbrechen, wenn seq zu groß wird
-						 */
-						if(seq >= gramsize[l]){
-							matchcount[gramsize[l]]++;
-							gramsize[l]++;
-						}
-						seq++;
+			int rseq = 0;
+			for(int l = 0; l < hyp.size() - rseq; l++){ //l index des wortes im Ü-Vorschlag
+				int hseq = 0;
+				if(gramsize[l] >= N) goto nextHyp; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
+				if(rseq + k >= ref.size()) goto nextRef;
+				
+				/*assert(seq+k < ref.size());
+				assert(seq+l < hyp.size());*/
+				while(ref[hseq+k] == hyp[hseq+l]){
+					if(hseq >= gramsize[l]){
+						matchcount[gramsize[l]]++;
+						gramsize[l]++;
+						rseq = hseq + 1;
+						if(rseq + l >= hyp.size() || rseq+k >= ref.size())
+							goto nextRef;
 					}
+					hseq++;
+					if(hseq + l >= hyp.size() || hseq+k >= ref.size() || hseq >= N)
+						goto nextHyp;
 				}
+				nextHyp: ;
 			}
+			nextRef: ;
 		}
+		nextSent:
+		
 		refsize += ref.size();
 		hypsize += hyp.size();
 		
-		for(int i = 0; i < N && ref.size()-i > 0; i++)
-			gramcount[i] += ref.size() - i;
+		for(int i = 0; i < N && hyp.size()-i > 0; i++)
+			gramcount[i] += hyp.size() - i;
 	}
 	
 	//matchcount und gramcount jetzt korrekt
@@ -63,5 +67,6 @@ double bleu(SentencePool& sp, uint N = 4){
 
 	result /= N;
 
-	return result * bleu_bp(refsize,hypsize);
+	double d = exp(result) * bleu_bp(refsize,hypsize);
+	return d;
 }
