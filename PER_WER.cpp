@@ -3,6 +3,10 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <omp.h>
+
+
+
 using namespace std;
 
 double PER(vector<unsigned int>* r, vector <unsigned int>* g){
@@ -27,9 +31,18 @@ double PER(vector<unsigned int>* r, vector <unsigned int>* g){
 
 double PER_global(SentencePool& sen){
 	double ergebnis=0;
-	for(int i=0; i<sen.reference.size();i++)
-		ergebnis+=PER(sen.reference[i], sen.guess[i]);
-	return ergebnis;		
+
+	#pragma omp parallel
+	{
+		#pragma omp for
+		for(int i=0; i<sen.reference.size();i++){
+			double tmp=PER(sen.reference[i], sen.guess[i]);
+			#pragma omp critical
+			ergebnis+=tmp;
+			#pragma omp end critical
+		}
+	}
+	return ergebnis;
 
 }
 
@@ -42,8 +55,17 @@ double WER(vector<unsigned int>* r, vector <unsigned int>* g){
 }
 double WER_global(SentencePool& sen){
 	double ergebnis=0;
-	for(int i=0; i<sen.reference.size();i++)
-		ergebnis+=WER(sen.reference[i], sen.guess[i]);
-	return ergebnis;		
+
+	#pragma omp parallel
+	{
+		#pragma omp for
+		for(int i=0; i<sen.reference.size();i++){
+			double tmp=WER(sen.reference[i], sen.guess[i]);
+			#pragma omp critical
+			ergebnis+=tmp;
+			#pragma omp end critical
+		}
+	}
+	return ergebnis;
 
 }
