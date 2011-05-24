@@ -31,11 +31,11 @@ int main(){
   
   SentencePool sen;
   sen.reference.push_back(vek);
-  sen.reference.push_back(vek2);
-  sen.guess.push_back(vek);
+  sen.reference.push_back(vek);
+  sen.guess.push_back(vek3);
   sen.guess.push_back(vek3);
   
-  assert (fabs(PER_global(sen) - 1.5)<0.00001);
+  assert (fabs(PER_global(sen)-1.5)<0.00001);
   
   
   
