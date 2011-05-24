@@ -10,8 +10,7 @@ using namespace std;
 
 int main(){
   
-  bool ok=true;
-  
+    
   vector<unsigned int>* vek = new vector<unsigned int>;
   for (unsigned int i=1; i<11; i++){
      vek->push_back(i);
@@ -21,10 +20,7 @@ int main(){
   (*vek2)=(*vek);
 	
   
-  if (PER(vek,vek2) != 0){	
-    cout << "Es stimmt was mit dem PER nicht!" << endl;
-    ok=false;
-  }
+  assert (PER(vek,vek2) == 0);
   
   vector<unsigned int>* vek3=new vector<unsigned int>;
   for (unsigned int i=6; i<26; i++){
@@ -39,12 +35,8 @@ int main(){
   sen.guess.push_back(vek);
   sen.guess.push_back(vek3);
   
-  if (PER_global(sen) != 1.5){
-    cout << "Es stimmt was nicht mit PER!" << endl;
-    ok=false;
-  }
+  assert (fabs(PER_global(sen) - 1.5)<0.00001);
   
-  if(ok)	cout << "PER ist ok!" << endl;
   
   
   vek=new vector<unsigned int> (6);
@@ -64,12 +56,9 @@ int main(){
   (*vek3)[4]=1;
   (*vek3)[5]=5;
   
-  ok=true;
  
-  if (WER(vek,vek3)	!= 0.5){
-    cout << "Es stimmt was nicht mit WER!" << endl;
-    ok=false;
-  }
+  assert (fabs(WER(vek,vek3)- 0.5)<0.00001);
+  
   (*vek2)=(*vek);
   vector<unsigned int>* vek4=new vector<unsigned int>(6);  
   (*vek4)=(*vek3);
@@ -78,14 +67,7 @@ int main(){
   sen.guess[0]=(vek3);
   sen.guess[1]=(vek4);
   
-  if (WER_global(sen) != 1){
-    cout << "Es stimmt was nicht mit WER!" << endl;
-    ok=false;
-  }
+  assert (fabs(WER_global(sen) - 0.5)<0.000001);
   
-  if (ok)	cout << "WER ist ok!" << endl;
-
-  
-  return !ok;
 
 }
