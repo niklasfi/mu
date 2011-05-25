@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "sentencepool.h"
 #include <omp.h>
+#include <cmath>
 
 typedef unsigned int uint;
 
