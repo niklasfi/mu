@@ -38,6 +38,7 @@ void aStar::search() {
 	aStarElement elementI(vtemp, vect.back().getBestcost()); //erstesElement initialisiert
 	stack.push_front(elementI);
 
+
 	uint n =0;
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
@@ -47,7 +48,7 @@ void aStar::search() {
 			stack.pop_front();
 			n++;
 		} else {	//Führe einen A*-Schritt für das erste Element im Stack durch
-			
+
 
 			uint posfirst = getStarElementPosition(stack.front());
 			vector<PartialTranslation*> v(vect[posfirst-1].getVektor()); //alle möglichen Übersetzungen
@@ -58,8 +59,19 @@ void aStar::search() {
 				anew.cost = v[i]->getCost() + vect[posfirst-1].getBestcost() + bisherigerWeg;//Kosten aktualisiert
 				stack.push_back(anew);
 			}
-			stack.pop_front();//altes Element (ohne Aktualisierung) wird entfernt 
-			stack.sort(); 
+			stack.pop_front();//altes Element (ohne Aktualisierung) wird entfernt
+
+			aStarElement* first_ptr=&stack.front();
+			list<aStarElement>::iterator first_it=stack.begin();
+			for (list<aStarElement>::iterator it=stack.begin(); it !=stack.end(); it++){
+				if (*it < *first_ptr){
+						first_ptr=&*it;
+						first_it=it;
+
+				}
+			}
+			stack.push_front(*first_ptr);
+			stack.erase(first_it);
 
 		}
 	}
