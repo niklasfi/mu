@@ -8,7 +8,7 @@ ifndef NPARALLEL
 endif
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF} ${OMP}
 LDFLAGS = -L. -lz ${PROF} ${OMP}
-OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o
+OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o ptree.o
 
 TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe bleu.test.exe
 
@@ -34,7 +34,7 @@ tests: ${TESTS}
 	@echo -e "\n${GREEN}--> everything's good! <--${BLACK}"
 
 .PRECIOUS: %.test.o
-%.test.o: %.test %.h
+%.test.o: %.test.cpp %.h
 	${CXX} ${CPPFLAGS} -c -o $@ $<
 
 .PRECIOUS: %.o
