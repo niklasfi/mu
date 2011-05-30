@@ -36,4 +36,39 @@ int main(){
 	assert(p.traverse(std::vector<uint>{1,2}) -> c == 19);
 	assert(p.traverse(std::vector<uint>{1,2,3}) -> c == 21);
 
+	{ //überprüfen der Ausgabe der Phrase
+		std::vector<uint> ref = {3,2,1};
+		//da die Phrase rückwärts ausgegeben wird, muss hier 3,2,1 stehen
+		std::vector<uint> hyp = p.traverse(std::vector<uint>{1,2,3})->phrase();
+
+		assert(ref.size() == hyp.size());
+		for(uint i = 0; i < hyp.size(); i++){
+			//std::cout << i << ": " << ref[i] << ", " << hyp[i] << "\n";
+			assert(ref[i] == hyp[i]);
+		}
+	}
+
+	{ //überprüfen der Ausgabe der Phrase
+		std::vector<uint> ref = {2,1};
+		//da die Phrase rückwärts ausgegeben wird, muss hier 3,2,1 stehen
+		std::vector<uint> hyp = p.traverse(std::vector<uint>{1,2})->phrase();
+
+		assert(ref.size() == hyp.size());
+		for(uint i = 0; i < hyp.size(); i++){
+			//std::cout << i << ": " << ref[i] << ", " << hyp[i] << "\n";
+			assert(ref[i] == hyp[i]);
+		}
+	}
+
+	for(PTree<double>::iterator it = p.begin(); !it.end; it++){
+		std::vector<uint> ph = (*it).phrase();
+		for(std::vector<uint>::reverse_iterator i2 = ph.rbegin(); i2 != ph.rend(); i2++){
+			std::cout << *i2;
+		}
+		std::cout << "!\n";
+	}
+
+
+
+
 }
