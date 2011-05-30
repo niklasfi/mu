@@ -71,6 +71,12 @@ class PTree{
 	}
 
 	std::vector<uint> phrase(PTree* targetParent = 0){
+		/* Gibt den Pfad ausgehend von targetParent zum aktuellen Knoten aus.
+		 * Hierbei ist zu beachten, dass nur direkte Pfade nach oben genommen
+		 * werden. Wird für targetParent der defaultwert 0 gewählt, so ent-
+		 * spricht der Rückgabewert dem Pfad vom aktuellen Knoten zum Wurzel-
+		 * Knoten des Präfixbaumes */
+
 		if(this == targetParent) return std::vector<uint>();
 
 		std::vector<uint> v;
@@ -79,13 +85,13 @@ class PTree{
 			v.push_back(next->inbound);
 			next = next -> parent;
 		}
-		//TODO
-		/*for(uint i = 0; i<v.size()/2;i++){
+		
+		for(uint i = 0; i<v.size()/2;i++){
 			uint tmp;
 			tmp = v[i];
-			v[i] = v[v.size()-i];
-			v[v.size()-i] = tmp;
-		}*/
+			v[i] = v[v.size()-1-i];
+			v[v.size()-i-1] = tmp;
+		}
 		return v;
 	}
 
@@ -104,12 +110,13 @@ class PTree{
 		return next;
 	}
 
+	
 	class iterator{
-		public:
 		PTree* cur_nod;
 		typename std::map<uint,PTree*>::iterator cur_it;
 		std::deque<PTree*> toXplore;
-
+			
+		public:
 		iterator():cur_nod(0){}
 
 		iterator(const iterator& orig):
@@ -161,6 +168,8 @@ class PTree{
 		bool ended(){
 			return cur_nod->outbound.end() == cur_it;
 		}
+		
+		friend iterator PTree::begin();
 	};
 
 	iterator begin(){
@@ -172,11 +181,6 @@ class PTree{
 			it.toXplore.push_back(it2->second);
 
 		return it;
-	}
-
-	iterator end(){
-		iterator it;
-		it.end = true;
 	}
 };
 
