@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
-#include <queue>
+#include <deque>
 #include <iostream>
 #include <assert.h>
 
@@ -108,11 +108,9 @@ class PTree{
 		public:
 		PTree* cur_nod;
 		typename std::map<uint,PTree*>::iterator cur_it;
-		std::queue<PTree*> toXplore;
-		bool end;
-		bool lastStep;
+		std::deque<PTree*> toXplore;
 
-		iterator():cur_nod(0),end(false),lastStep(false){}
+		iterator():cur_nod(0){}
 
 		iterator(const iterator& orig):
 			cur_nod(orig.cur_nod),
@@ -131,44 +129,37 @@ class PTree{
 		}
 
 		iterator& operator++(int i){
-			std::cout << "size: " << toXplore.size() << "\n";
-
-			if (lastStep){
-				end=true;
-				return *this;
-			}
-
+			if(ended())
+				return *this; //wir sind fertig
+			
 			cur_it ++;
 
 			if(cur_it == cur_nod->outbound.end()){
-				//cur_nod = toXplore.pop();
-				//cur_it = cur_nod(it->outbund.begin());
-
 				//neuen Knoten zum explorieren suchen
 				PTree* nNode = 0;
-				std::cout << "empty: " << toXplore.empty() << "\n";
 				while((!nNode || nNode->outbound.empty()) && !toXplore.empty()){
 
 					nNode = toXplore.front();
-					toXplore.pop();
-					std::cout << "nNode: " << nNode->c << "\n";
-					std::cout << "empty: " << nNode->outbound.empty() << "\n";
-
-					if(toXplore.empty() && (!nNode || nNode->outbound.empty())){
-						lastStep=true;
-						cur_nod = nNode;
-						return *this;
-					}
+					toXplore.pop_front();
 				}
 				cur_nod = nNode;
-				std::cout << "cur_nod: " << cur_nod << "\n";
 				cur_it = cur_nod->outbound.begin();
+				
+				for(typename std::map<uint,PTree*>::iterator it = cur_nod->outbound.begin(); it != cur_nod->outbound.end(); it++){
+					toXplore.push_back(it->second); //alle Kindknoten zur Explorationsliste hinzufügen
+				}
 			}
 
-			for(typename std::map<uint,PTree*>::iterator it = cur_it->second->outbound.begin(); it != cur_it->second->outbound.end(); it++){
-				toXplore.push(it->second); //alle Kindknoten zur Explorationsliste hinzufügen
-			}
+			std::cout << "toXplore: ";
+			for(typename std::deque<PTree*>::iterator it = toXplore.begin(); it != toXplore.end(); it ++)
+				std::cout << (*it)-> inbound << " ";
+			std::cout << "\n";
+			
 			return *this;
+		}
+		
+		bool ended(){
+			return cur_nod->outbound.end() == cur_it;
 		}
 	};
 
@@ -178,7 +169,7 @@ class PTree{
 		it.cur_it = outbound.begin();
 
 		for(typename std::map<uint,PTree*>::iterator it2 =this->outbound.begin(); it2!=this->outbound.end(); it2++)
-			it.toXplore.push(it2->second);
+			it.toXplore.push_back(it2->second);
 
 		return it;
 	}
