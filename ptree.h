@@ -79,13 +79,13 @@ class PTree{
 			v.push_back(next->inbound);
 			next = next -> parent;
 		}
-		//TODO
-		/*for(uint i = 0; i<v.size()/2;i++){
+		
+		for(uint i = 0; i<v.size()/2;i++){
 			uint tmp;
 			tmp = v[i];
-			v[i] = v[v.size()-i];
-			v[v.size()-i] = tmp;
-		}*/
+			v[i] = v[v.size()-1-i];
+			v[v.size()-i-1] = tmp;
+		}
 		return v;
 	}
 

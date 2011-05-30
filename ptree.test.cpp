@@ -38,7 +38,7 @@ bool test1(){
 	assert(p.traverse(std::vector<uint>{1,2,3}) -> c == 21);
 
 	{ //überprüfen der Ausgabe der Phrase
-		std::vector<uint> ref = {3,2,1};
+		std::vector<uint> ref = {1,2,3};
 		//da die Phrase rückwärts ausgegeben wird, muss hier 3,2,1 stehen
 		std::vector<uint> hyp = p.traverse(std::vector<uint>{1,2,3})->phrase();
 
@@ -50,7 +50,7 @@ bool test1(){
 	}
 
 	{ //überprüfen der Ausgabe der Phrase
-		std::vector<uint> ref = {2,1};
+		std::vector<uint> ref = {1,2};
 		//da die Phrase rückwärts ausgegeben wird, muss hier 3,2,1 stehen
 		std::vector<uint> hyp = p.traverse(std::vector<uint>{1,2})->phrase();
 
