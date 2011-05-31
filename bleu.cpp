@@ -30,17 +30,25 @@ double bleu(SentencePool& sp, uint N = 4){
 
 			char* gramsize = new char[ hyp.size()];
 			std::fill(gramsize, gramsize + hyp.size(), 0);
+			/* gramsize speichert für ein wort in der hypothese, wie lang das Länste
+			 * n-gram bis jetzt war, in dem es verwendet wurde. Dies dient dazu mehr-
+			 * fachverwertungen zu verhindern */
 
 			for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
-				int rseq = 0;
+				int rseq = 0; //speichert für das aktuelle referenzwort, wie groß das beste n-gram ist.
 				for(int l = 0; l < hyp.size() - rseq; l++){ //l index des wortes im Ü-Vorschlag
-					int hseq = 0;
+					int hseq = 0; //speichert für das aktuelle hypothesenwort, wie groß das beste n-gram ist.
 					if(gramsize[l] >= N) goto nextHyp; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
 					if(rseq + k >= ref.size()) goto nextRef;
 
 					/*assert(seq+k < ref.size());
 					assert(seq+l < hyp.size());*/
 					while(ref[hseq+k] == hyp[hseq+l]){
+					/* hier ist die eigentliche Magick am werk. Wir veringern die Komplex-
+					 * ität, indem wir nicht für jede n-gram länge nochmal über jedes wort
+					 * gehen, sondern nur jede referenz- und hypothesenwort kombination
+					 * nur genau einmal bearbeiten müssen und dann gucken, ob wir noch ein
+					 * längeren n-gram finden */
 						if(hseq >= gramsize[l]){
 							#pragma omp critical
 							matchcount[gramsize[l]]++;
