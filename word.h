@@ -6,6 +6,11 @@ typedef unsigned int uint;
 #include "language.h"
 
 class Word{
+	/* Word ist eine transparent nach unsigned int konvertierbare Klasse. 
+	 * Sie dient im allgemeinen dazu in der ID eines Wortes zu Codieren, 
+	 * zu welcher Sprache es gehört. Alternativ aber auch immer unsigned
+	 * int verwendet werden, da diese Klasse die implizite Konvertierung
+	 * nach unsigned int zulässt */
 	uint storage;
 public:
 	Word(uint from = 0);
