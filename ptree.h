@@ -109,20 +109,26 @@ class PTree{
 		outbound[key] = next;
 		return next;
 	}
-
-	
 	class iterator{
+		/* Diese Klasse implementiert einen Iterator ähnlich denen, in der
+		 * STL. Das ziel des Iterators ist es jeden Knoten außer der Wurzel
+		 * jeweils genau einmal zu erreichen. Ein iterator wird zunächst mit
+		 * der begin Funktion von PTree erzeugt. Dann zeigt der Iterator auf
+		 * das linkeste Kind des PTrees. Mit operator++ kann jetzt der Baum
+		 * in Form einer Breitensuche traversiert werden. Wie üblich sollte
+		 * die Abfrage am Ende einer For-Schleife mit it != ptree.end()
+		 * geschehen */
 		PTree* cur_nod;
 		typename std::map<uint,PTree*>::iterator cur_it;
 		std::deque<PTree*> toXplore;
-			
+		
+		bool ended() const{
+			/* Diese eigenschaft ist wahr, wenn die iteration Komplett ist */
+			return !cur_nod || cur_nod->outbound.end() == cur_it;
+		}
+		
 		public:
 		iterator():cur_nod(0){}
-
-		iterator(const iterator& orig):
-			cur_nod(orig.cur_nod),
-			cur_it(orig.cur_it),
-			toXplore(orig.toXplore){}
 
 		iterator& operator=(const iterator& orig){
 			cur_nod = orig.cur_nod;
@@ -130,9 +136,26 @@ class PTree{
 			toXplore = orig.toXplore;
 			return *this;
 		}
+		
+		bool operator==(const iterator i2) const{
+			/* ein Billiger vergleichsoperator, der nur Überprüft, ob beide
+			 * iteratoren das Ende erreicht haben */
+			return i2.ended()==ended();
+		}
+		
+		bool operator!=(const iterator i2) const{
+			return i2.ended()!=ended();
+		}
 
 		PTree& operator*(){
+			/* Gibt den PTree zurück, auf den der Iterator zur Zeit zeigt. */
 			return *cur_it->second;
+		}
+		
+		PTree* operator->(){
+			/* Gibt einen Zeiger auf den Ptree zurück, auf den der Iterator
+			 * zur Zeit zeigt. */
+			return cur_it->second;
 		}
 
 		iterator& operator++(int i){
@@ -156,20 +179,12 @@ class PTree{
 					toXplore.push_back(it->second); //alle Kindknoten zur Explorationsliste hinzufügen
 				}
 			}
-
-			std::cout << "toXplore: ";
-			for(typename std::deque<PTree*>::iterator it = toXplore.begin(); it != toXplore.end(); it ++)
-				std::cout << (*it)-> inbound << " ";
-			std::cout << "\n";
 			
 			return *this;
 		}
 		
-		bool ended(){
-			return cur_nod->outbound.end() == cur_it;
-		}
-		
 		friend iterator PTree::begin();
+		friend iterator PTree::end();
 	};
 
 	iterator begin(){
@@ -179,7 +194,12 @@ class PTree{
 
 		for(typename std::map<uint,PTree*>::iterator it2 =this->outbound.begin(); it2!=this->outbound.end(); it2++)
 			it.toXplore.push_back(it2->second);
-
+		return it;
+	}
+	
+	iterator end(){
+		iterator it;
+		it.cur_nod = 0;
 		return it;
 	}
 };

@@ -65,11 +65,17 @@ bool test1(){
 
 bool test2(){
 	PTree<double> p;
-
-	p.traverse(std::vector<uint>{1,0},true);
-	p.traverse(std::vector<uint>{1,5,7},true);
-	p.traverse(std::vector<uint>{1,2,4,8},true);
-	p.traverse(std::vector<uint>{1,9},true);
+	
+	/* DOT graph des zu durchlaufenden Graphen:
+		digraph test{
+			r -> 1
+			1 -> 0
+			1 -> 2 -> 3;
+					 2 -> 4 -> 8;
+			1 -> 5 -> 7;
+			1 -> 9
+		}
+	*/
 	
 	PTree<double>* one = p.traverse(1,true,1);
 	one->traverse(0,true,0);
@@ -78,12 +84,18 @@ bool test2(){
 	one->traverse(2)->traverse(3,true,3);
 	one->traverse(9,true,9);
 
-	for(PTree<double>::iterator it = p.begin(); !it.ended(); it++){
-		std::vector<uint> ph = (*it).phrase();
+	std::vector<uint> ref = {1,0,2,5,9,3,4,7,8};
+	
+	uint i = 0;
+	for(PTree<double>::iterator it = p.begin(); it!=p.end(); it++){
+		assert(it->c == ref[i]);
+		
+		/*std::vector<uint> ph = it->phrase();
 		for(std::vector<uint>::iterator i2 = ph.begin(); i2 != ph.end(); i2++){
 			std::cout << *i2;
 		}
-		std::cout << "!\n";
+		std::cout << "!\n";*/
+		i++;
 	}
 	
 	return true;
