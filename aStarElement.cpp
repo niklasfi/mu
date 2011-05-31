@@ -8,6 +8,11 @@ void aStarElement::addWord(uint w){
 	trl.push_back(w);      //vorsicht, auch hier rückwärts denken!
 }
 
+void aStarElement::addWords2(std::vector<uint> w){
+     for (int i=0; i<w.size(); i++)
+	  addWord(w[i]);
+}
+
 bool aStarElement::operator<(const aStarElement& a) const{
 	return cost<a.cost;
 }
