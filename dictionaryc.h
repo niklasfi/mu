@@ -37,5 +37,5 @@ class DictionaryC{
 	void add_translation(std::string f, std::string e, double rel_freq); //tut das, was add_word eigentlich tun sollte
 	void add_word(std::string f, std::string e, double rel_freq); //evtl ist translation hier eher angebracht, deshalb sollte darüber nachgedacht werden diese Funktion umzubenennen
 	
-	void printall();
+	void printall();*/
 };
