@@ -100,7 +100,7 @@ void aStar2::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, 
 		
 		while ( ist >> token){
 		    aktPos++;
-		    Word word_id_french=flex.getWord(token); // das word zum Wort (mit 2 Bits Sprache)
+		    Word word_id_french=flex->getWord(token); // das word zum Wort (mit 2 Bits Sprache)
 		    unsigned int id_french= word_id_french.wordId(); //die id ohne sprachbits
 		    
 		    sentence_id.push_back(id_french);
@@ -114,7 +114,7 @@ void aStar2::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, 
 			 
 			 for (int j=posPhraseStart; j<aktPos; j++)	fphrase.push_back(sentence_id[j]); //fphrase wird initialisiert
 			      
-			 PTree<double>* blauBaum=schwarz.traverse(fphrase)->c;
+			 PTree<double>* blauBaum=&schwarz->traverse(fphrase)->c;
 			      
 			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){//inbound wird initialisiert
 			      double relfreq=it->c;

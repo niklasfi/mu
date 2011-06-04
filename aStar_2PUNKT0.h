@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <cctype>
+#include <sstream>
 
 #include "HypothesisNode_2PUNKT0.h"
 #include "PartialTranslation_2PUNKT0.h"
@@ -32,7 +33,8 @@ class aStar2 {
 	     
 	
 	static PTree<PTree < double> >* schwarz;
-	static Lexicon* elex,flex;
+	static Lexicon* elex;
+	static Lexicon* flex;
 	//Constructor
 	aStar2(vector<HypothesisNode2> vect);
 
