@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <list>
 #include <string>
@@ -5,8 +7,8 @@
 #include <cctype>
 #include <sstream>
 
-#include "HypothesisNode_2PUNKT0.h"
-#include "PartialTranslation_2PUNKT0.h"
+#include "HypothesisNode.h"
+#include "PartialTranslation.h"
 #include "aStarElement.h"
 #include "lexicon.h"
 #include "ptree.h"
@@ -14,9 +16,9 @@
 #include "global.h"
 
 
-class aStar2 {
+class aStar {
 	
-	vector<HypothesisNode2> vect;
+	vector<HypothesisNode> vect;
  	list<aStarElement> stack;
 	
 	static int prune;
@@ -36,7 +38,7 @@ class aStar2 {
 	static Lexicon* elex;
 	static Lexicon* flex;
 	//Constructor
-	aStar2(vector<HypothesisNode2> vect);
+	aStar(vector<HypothesisNode> vect);
 
 	static void set_max_SentenceTranslation(uint size);
 

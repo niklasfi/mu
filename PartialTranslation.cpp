@@ -1,24 +1,24 @@
-#include "PartialTranslation_2PUNKT0.h"
+#include "PartialTranslation.h"
 
 //Constructor
 
-PartialTranslation2::PartialTranslation2(){
+PartialTranslation::PartialTranslation(){
                                          cost=(1./0.);
 }
 
-PartialTranslation2::PartialTranslation2(double kosten){
+PartialTranslation::PartialTranslation(double kosten){
                                               cost= kosten;
 }
 
 
-PartialTranslation2::PartialTranslation2(double kosten, vector<unsigned int> uebersetzung, HypothesisNode2* ursprung){
+PartialTranslation::PartialTranslation(double kosten, vector<unsigned int> uebersetzung, HypothesisNode* ursprung){
      this->cost=kosten;
      this->origin=ursprung;
      this->translation=uebersetzung;
 }
 
 //Copy-Constructor
-PartialTranslation2::PartialTranslation2(const PartialTranslation2& original){
+PartialTranslation::PartialTranslation(const PartialTranslation& original){
      this->cost=original.cost;
      this->origin=original.origin;
      this->translation=original.translation;
@@ -26,28 +26,28 @@ PartialTranslation2::PartialTranslation2(const PartialTranslation2& original){
 }           
 
 //getter und setter            
-double PartialTranslation2::getCost(){
+double PartialTranslation::getCost(){
        return cost;
 }
-void PartialTranslation2::setCost(double kosten){
+void PartialTranslation::setCost(double kosten){
      cost=kosten;
 }
- vector<unsigned int>  PartialTranslation2::getTranslation(){
+ vector<unsigned int>  PartialTranslation::getTranslation(){
     return translation;
 }
-void PartialTranslation2::setTranslation ( vector<unsigned int> uebersetzung){
+void PartialTranslation::setTranslation ( vector<unsigned int> uebersetzung){
      translation=uebersetzung;
 }
-HypothesisNode2* PartialTranslation2::getNode(){
+HypothesisNode* PartialTranslation::getNode(){
                 return origin;
 }
-void PartialTranslation2::setOrigin(HypothesisNode2* Ursprung){
+void PartialTranslation::setOrigin(HypothesisNode* Ursprung){
      origin=Ursprung;
 }
 
 
 
-PartialTranslation2 PartialTranslation2::operator=(PartialTranslation2& original){
+PartialTranslation PartialTranslation::operator=(PartialTranslation& original){
      this->cost=original.cost;
      this->origin=original.origin;
      this->translation=original.translation;

@@ -1,14 +1,18 @@
-#include "aStar_2PUNKT0.h"
+#include "aStar.h"
 
-uint aStar2::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
+uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
+Lexicon* aStar::elex=0;
+Lexicon* aStar::flex=0;
+PTree< PTree <double> >* aStar::schwarz=0;
+int aStar::prune=2;
 
 //Constructor
-aStar2::aStar2(vector<HypothesisNode2> vect):vect(vect){}
+aStar::aStar(vector<HypothesisNode> vect):vect(vect){}
 
 
-void aStar2::set_max_SentenceTranslation(uint size){
-	//if(aStar2::max_SentenceTranslation != 0) throw max_SentenceTranslationAlreadySetException();
-	aStar2::max_SentenceTranslation = size;
+void aStar::set_max_SentenceTranslation(uint size){
+	//if(aStar::max_SentenceTranslation != 0) throw max_SentenceTranslationAlreadySetException();
+	aStar::max_SentenceTranslation = size;
 }
 
 //Vergleichsfunktion zum Sortieren
@@ -16,20 +20,20 @@ bool compare1 (aStarElement e1, aStarElement e2) {
 	return e1.cost < e2.cost;
 }
 
-uint aStar2::getStarElementPosition(const aStarElement& a){
+uint aStar::getStarElementPosition(const aStarElement& a){
 	return vect.size()-1 - a.trl.size();  //Länge des Satzes - Länge der Teiübersetung
 }
 
-void aStar2::print(){ //gibt die oberste Kombination in stack aus
+void aStar::print(){ //gibt die oberste Kombination in stack aus
 	vector<uint> trl = stack.front().trl;
 	for(vector<uint>::reverse_iterator it = trl.rbegin(); it!=trl.rend(); it++){
-		std::cout << elex->getString(*it) << " ";    //ID->Wort
+		std::cout << aStar::elex->getString(*it) << " ";    //ID->Wort
 	}
 	std::cout << "\n";
 }
 
 //Eigentliche A*-Suche
-void aStar2::search() {
+void aStar::search() {
 
 	int length = vect.size();
 
@@ -51,7 +55,7 @@ void aStar2::search() {
 
 
 			uint posfirst = getStarElementPosition(stack.front());
-			vector<PartialTranslation2*> v=(vect[posfirst-1].getVektor()); //alle möglichen Übersetzungen
+			vector<PartialTranslation*> v=(vect[posfirst-1].getVektor()); //alle möglichen Übersetzungen
 			uint bisherigerWeg = stack.front().cost - vect[posfirst].getBestcost();
 			
 			for(uint i = 0; i<v.size(); i++){//bestem Element werden nun alle Möglichkeiten zugefügt
@@ -79,10 +83,10 @@ void aStar2::search() {
 }
 
 
-void aStar2::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex){
-	aStar2::schwarz=blacktree;
-	aStar2::elex=eLex;
-	aStar2::flex=fLex;
+void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex){
+	aStar::schwarz=blacktree;
+	aStar::elex=eLex;
+	aStar::flex=fLex;
 	
 	igzstream in(eingabe);
 
@@ -93,8 +97,8 @@ void aStar2::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, 
 		istringstream ist(line);   //Einlesen des Satzes
 		vector<uint> sentence_id;	//Hier wird der Satz in einem Vektor gespeichert (als ID's)
 		
-		vector<HypothesisNode2> Knoten;
-		Knoten.push_back(HypothesisNode2());
+		vector<HypothesisNode> Knoten;
+		Knoten.push_back(HypothesisNode());
 		Knoten[0].setBestcost(0);
 		unsigned int aktPos=0; //gibt an, wieviele Wörter schon eingelesen wurden
 		
@@ -105,7 +109,7 @@ void aStar2::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, 
 		    
 		    sentence_id.push_back(id_french);
 		    
-		    HypothesisNode2 knoten_next=HypothesisNode2();
+		    HypothesisNode knoten_next=HypothesisNode();
 		    
 		    for (int laengePhrase=1; laengePhrase<=prune; laengePhrase++){ //iteriert über die länge der Phrase
 			 vector<uint> fphrase;
@@ -127,7 +131,7 @@ void aStar2::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, 
 			      if (knoten_next.getBestcost()> (Knoten[posPhraseStart].getBestcost()+relfreq))
 				   knoten_next.setBestcost((Knoten[posPhraseStart].getBestcost()+relfreq)); //Kosten des Hy.Nodes aktualisiert
 			      
-			      PartialTranslation2* Kante= new PartialTranslation2(relfreq,ephrase,&Knoten[posPhraseStart]);
+			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&Knoten[posPhraseStart]);
 			      knoten_next.add_Translation(Kante);
 			}
 			Knoten.push_back(knoten_next);
@@ -135,7 +139,7 @@ void aStar2::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, 
 		}
 
 		//std::cout << "\n";
-		aStar2 astar(Knoten);
+		aStar astar(Knoten);
 		astar.search();
 	}
 

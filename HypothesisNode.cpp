@@ -1,32 +1,32 @@
 
-#include "HypothesisNode_2PUNKT0.h"
+#include "HypothesisNode.h"
 
-class PartialTranslation2;
+class PartialTranslation;
 
 //Constructor
 
-HypothesisNode2::HypothesisNode2(){
+HypothesisNode::HypothesisNode(){
                 bestcost= (1./0.);
 }
 
 //getter, setter
-double HypothesisNode2::getBestcost(){
+double HypothesisNode::getBestcost(){
        return bestcost;
 }
-void HypothesisNode2::setBestcost( double cost){
+void HypothesisNode::setBestcost( double cost){
      bestcost=cost;
 }
-vector<PartialTranslation2*>& HypothesisNode2::getVektor(){
+vector<PartialTranslation*>& HypothesisNode::getVektor(){
                              return inbound;
 }
 
 
 
-void HypothesisNode2::add_Translation(PartialTranslation2* Uebersetzung){
+void HypothesisNode::add_Translation(PartialTranslation* Uebersetzung){
    inbound.push_back(Uebersetzung);  //hinten angefügt
 }
 
-void HypothesisNode2::remove_Translation(unsigned int pos){
+void HypothesisNode::remove_Translation(unsigned int pos){
      inbound.erase(inbound.begin()+pos);  //beliebige Position wird gelöscht
 }
 

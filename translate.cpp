@@ -1,13 +1,14 @@
 #include <vector>
 #include <map>
 #include <iostream>
-#include <ifstream>
+#include <sstream>
 #include <string>
 
 #include "lexicon.h"
 #include "gzstream/gzstream.h"
 #include "global.h"
 #include "ptree.h"
+#include "aStar.h"
 
 using namespace std;
 
@@ -25,10 +26,10 @@ int main (int argc, char* argv[]){
      igzstream in(argv[1]);
      string line,token;
      
-     stringstream ist;
+     
      
      while(getline(in,line)){ 
-	  ist(line);
+	  stringstream ist(line);
 	  
 	  double relfreq;
 	  vector<uint> ephrase, fphrase;
@@ -42,8 +43,10 @@ int main (int argc, char* argv[]){
 	      ephrase.push_back(elex.getWord_or_add(token));
 	  }
 	  
-	  schwarz.traverse(fphrase,true)->contents.traverse(ephrase,true)->contents = relfreq;
+	  schwarz.traverse(fphrase,true)->c.traverse(ephrase,true)->c = relfreq;
      }
+     
+     aStar::Suchalgorithmus(argv[2],&schwarz,&elex,&flex);
      
      
      
