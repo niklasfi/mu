@@ -9,7 +9,7 @@ typedef unsigned int uint;
 
 template <class T>
 class PTree{
-	std::map<uint,PTree*> outbound;
+	public:std::map<uint,PTree*> outbound;
 	/* Eine Map für die ausgehenden Kanten. Diese ist besonders sinnvoll,
 	 * da lookups (outbound[ ]) und insertion besonders schnell gehen.
 	 * Spart einem von Hand auf einem Array einen AVL-Baum zu implemen-
@@ -37,7 +37,7 @@ class PTree{
 
 	PTree(const T& t = T(),PTree* parent = 0, uint inbound = 0):
 		parent(parent),inbound(inbound),c(t){}
-	PTree(PTree* parent, uint indbound):
+	PTree(PTree* parent, uint inbound):
 		parent(parent),inbound(inbound),c(T()){}
 	~PTree(){
 		/* Destruktor: da wir eine map<uint, Ptree*> haben müssen wir alle
@@ -190,7 +190,7 @@ class PTree{
 	iterator begin(){
 		iterator it;
 		it.cur_nod = this;
-		it.cur_it = outbound.begin();
+		it.cur_it = this->outbound.begin();
 
 		for(typename std::map<uint,PTree*>::iterator it2 =this->outbound.begin(); it2!=this->outbound.end(); it2++)
 			it.toXplore.push_back(it2->second);

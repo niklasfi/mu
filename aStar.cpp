@@ -65,6 +65,7 @@ void aStar::search() {
 				stack.push_back(anew);
 			}
 			stack.pop_front();//altes Element (ohne Aktualisierung) wird entfernt
+			for (list<aStarElement>::iterator it=stack.begin(); it !=stack.end(); it++)	cout << "1. Schleife " << it->cost << endl;
 
 			aStarElement* first_ptr=&stack.front();
 			list<aStarElement>::iterator first_it=stack.begin();
@@ -76,6 +77,8 @@ void aStar::search() {
 				}
 			}
 			stack.push_front(*first_ptr);
+			for (list<aStarElement>::iterator it=stack.begin(); it !=stack.end(); it++)	cout <<"2. Schleife " <<  it->cost << endl;
+			cout << "jetzt wird erased:" << endl;
 			stack.erase(first_it);
 
 		}
@@ -114,19 +117,24 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 		    for (int laengePhrase=1; laengePhrase<=prune; laengePhrase++){ //iteriert über die länge der Phrase
 			 vector<uint> fphrase;
 			 
+			 
 			 int posPhraseStart=aktPos-laengePhrase;
+			 if (posPhraseStart<0)	posPhraseStart=0; //wenn wir an pos i sind machen Phrasen die länger als i sind keinen Sinn
 			 
 			 for (int j=posPhraseStart; j<aktPos; j++)	fphrase.push_back(sentence_id[j]); //fphrase wird initialisiert
-			      
-			 PTree<double>* blauBaum=&schwarz->traverse(fphrase)->c;
-			      
+			 
+
+			 PTree<PTree <double> >* schwarzRest=schwarz->traverse(fphrase);
+			 if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen    
+			 PTree <double>* blauBaum=&schwarzRest->c;
+			 cout << "size " << blauBaum->outbound.size() << endl;
 			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){//inbound wird initialisiert
 			      double relfreq=it->c;
-			      if (relfreq ==0)	break; //wir befinden uns mitten in einer Phrase
+			      if (relfreq ==0)	continue; //wir befinden uns mitten in einer Phrase
 				   
 			      vector<uint> ephrase=it->phrase();
 				
-			      if (knoten_next.getBestcost()+prune < Knoten[posPhraseStart].getBestcost()+relfreq)	break; //Pruning, schlechte Translations werden ignoriert
+			      if (knoten_next.getBestcost()+prune < Knoten[posPhraseStart].getBestcost()+relfreq)	continue; //Pruning, schlechte Translations werden ignoriert
 			     
 			      if (knoten_next.getBestcost()> (Knoten[posPhraseStart].getBestcost()+relfreq))
 				   knoten_next.setBestcost((Knoten[posPhraseStart].getBestcost()+relfreq)); //Kosten des Hy.Nodes aktualisiert
