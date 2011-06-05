@@ -48,4 +48,4 @@ clean:
 .PHONY: ctests
 ctests:
 	rm -f ${TESTS}
-	make tests
+	${MAKE} tests
