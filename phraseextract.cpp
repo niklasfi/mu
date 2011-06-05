@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
 	/*==========Nun sind alle erlaubten Phrasen aller Satzpaare - also der gesamten Testdaten - im Präfixbaum gespeichert==========*/
 	/*==========Im Anschluss muss also der Präfixbaum in eine Phrasentabelle ausgegeben werden==========*/
 
-	for (PTree<std::pair<int, PTree<int> > >::iterator itor1 = pTree.begin(); itor1 != pTree.end; itor1++) {	//Durchlaufe den Baum
+	for (PTree<std::pair<int, PTree<int> > >::iterator itor1 = pTree.begin(); itor1 != pTree.end(); itor1++) {	//Durchlaufe den Baum
 
 		int source_count = itor1 -> c.first;		//Zähler für Quellphrase auslesen
 		std::vector<uint> source_id = itor1 -> phrase();//Quellphrase (in IDs) auslesen
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
 		for (int k = 0; k < source_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
 			source_phrase += flex.getString(source_id[k]) + " ";
 		
-		for(PTree<int>::iterator itor2 = itor1 -> c.second.begin(); itor2 != itor1 -> c.second.end; itor2++) {	//Durchlaufe den "Unter-Baum"
+		for(PTree<int>::iterator itor2 = itor1 -> c.second.begin(); itor2 != itor1 -> c.second.end(); itor2++) {	//Durchlaufe den "Unter-Baum"
 
 			int target_count = itor2 -> c;			//Zähler für Zielphrase auslesen
 			std::vector<uint> target_id = itor2 -> phrase();//Zielphrase (in IDs) auslesen
