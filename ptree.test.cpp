@@ -110,8 +110,9 @@ bool test3(){
      PTree<PTree<double>>* schwarz_ptr=schwarz.traverse(8,true,8);
      schwarz_ptr->traverse(1,true,1);
      PTree<double>* blau_ptr= new PTree<double>;
-     blau_ptr->traverse(5,true,5)->c=0.25;
+     blau_ptr->traverse(5,true,5);
      PTree<double>* blau_ptr2= blau_ptr->traverse(10,true,10);
+		 blau_ptr2->c=0.25;
      schwarz_ptr->c=*blau_ptr;
      
      std::vector<uint> v1; //Weg zum Blauen Baum
@@ -134,8 +135,24 @@ bool test3(){
      return true;
 }
 
+
+bool test4(){
+	//wie test 3, nur in funktional...
+	
+	PTree<PTree<double>> schwarz;
+	
+	PTree<double>* blau = &schwarz.traverse(std::vector<uint>{8,1},true)->c;
+	
+	blau->traverse(std::vector<uint>{5,10},true)->c = .25;
+	
+	assert( fabs( schwarz.traverse(std::vector<uint>{8,1})->c.traverse(std::vector<uint>{5,10})->c - 0.25) < 0.0000001); 
+	
+	return true;
+}
+
 int main(){
 	assert(test1());
 	assert(test2());
+	assert(test4());
 	assert(test3());
 }
