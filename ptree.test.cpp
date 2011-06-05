@@ -2,6 +2,7 @@
 #include <iostream>
 #include <assert.h>
 #include <vector>
+#include <cmath>
 
 bool test1(){
 		PTree<double> p;
@@ -101,7 +102,40 @@ bool test2(){
 	return true;
 }
 
+bool test3(){
+     /* Ich versuche mal einen ganz kleinen Baum, so wie wir in brauchen ..., also er hat 2 Knoten im schwarzen Baum 8->1
+      * und im blauen sollen auch zwei Knoten sein 5->10, eingehängt soll der blaue Baum im 2. Knoten sein. Im blauen Knoten mit der 10
+      * soll die double 0.25 gespeichert sein*/
+     PTree<PTree<double>> schwarz;
+     PTree<PTree<double>>* schwarz_ptr=schwarz.traverse(8,true,8);
+     schwarz_ptr->traverse(1,true,1);
+     PTree<double>* blau_ptr= new PTree<double>;
+     blau_ptr->traverse(5,true,5)->c=0.25;
+     PTree<double>* blau_ptr2= blau_ptr->traverse(10,true,10);
+     schwarz_ptr->c=*blau_ptr;
+     
+     std::vector<uint> v1; //Weg zum Blauen Baum
+     v1.push_back(8); v1.push_back(1);
+     
+     std::vector<uint> v2;
+     v2.push_back(5); //Weg im blauen Baum zum Knoten mit relfreq
+     
+     /*im debugging sagt er hier: p schwarz.traverse(v1,false)->c.traverse(v2,false) 
+      * $5 = (PTree<double> *) 0x0 
+      * allerdings stimmen auch die Adressen von schwarz.traverse(v1,false)->c und von blau_ptr nicht überein
+      */
+    
+     
+     assert( fabs( schwarz.traverse(v1)->c.traverse(v2)->c - 0.25) < 0.0000001); 
+
+     //phrase müsste also 10,5 sein
+     assert(blau_ptr2->phrase()[0] == 10);
+     assert(blau_ptr2->phrase()[1] == 5);
+     return true;
+}
+
 int main(){
 	assert(test1());
 	assert(test2());
+	assert(test3());
 }
