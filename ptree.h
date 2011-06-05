@@ -37,17 +37,39 @@ class PTree{
 
 	PTree(const T& t = T(),PTree* parent = 0, uint inbound = 0):
 		parent(parent),inbound(inbound),c(t){}
+	PTree(const PTree& t):
+		parent(t.parent),inbound(t.inbound),c(t.c){}
 	PTree(PTree* parent, uint inbound):
 		parent(parent),inbound(inbound),c(T()){}
 	~PTree(){
 		/* Destruktor: da wir eine map<uint, Ptree*> haben müssen wir alle
 		 * Objekte, die von outbound referenziert werden löschen */
-		for(typename std::map<uint,PTree*>::iterator it = outbound.begin(); it != outbound.end(); it ++)
+		for(typename std::map<uint,PTree*>::iterator it = outbound.begin(); it != outbound.end(); it ++){
+			it->second->parent = 0;
 			delete it->second;
+		}
 		if(parent)
 			parent->outbound.erase(inbound);
 	}
-
+	
+	PTree& operator=(const PTree& t){
+		for(typename std::map<uint,PTree*>::iterator it = outbound.begin(); it != outbound.end(); it ++){
+			it->second->parent = 0;
+			delete it->second;
+		}
+		parent = t.parent;
+		
+		std::cout << "parent.size()" << t.outbound.size() << "\n";
+		
+		for(typename std::map<uint,PTree*>::const_iterator it = t.outbound.begin(); it != t.outbound.end(); it ++){
+			outbound[it->first]= new PTree(*it->second);
+		}
+		
+		std::cout << "this.size()" << outbound.size() << "\n";
+		
+		c = t.c;
+	}
+	
 	PTree* traverse(std::vector<uint> query, bool insert = false){
 		/* Diese Funktion traversiert den Baum endlang des durch query vor-
 		 * gegebenen Pfades, ausgehend von *this. Rückgabe wert ist der
