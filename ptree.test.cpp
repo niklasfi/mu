@@ -98,6 +98,7 @@ bool test2(){
 		std::cout << "!\n";*/
 		i++;
 	}
+	p.dot();
 	
 	return true;
 }

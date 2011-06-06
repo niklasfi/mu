@@ -175,7 +175,7 @@ class PTree{
 			 * zur Zeit zeigt. */
 			return cur_it->second;
 		}
-
+		
 		iterator& operator++(int i){
 			if(ended())
 				return *this; //wir sind fertig
@@ -219,6 +219,28 @@ class PTree{
 		iterator it;
 		it.cur_nod = 0;
 		return it;
+	}
+	
+	void dot(){
+		std::cout << "digraph g{\n";
+		for(iterator it = this->begin(); it != end(); it++){
+			std::cout << "\t";
+			if(it->parent->parent == 0) std::cout << "root";
+			else{
+				std::vector<uint> ph = it->parent->phrase();
+				for(uint i = 0; i < ph.size(); i++)
+					std::cout << ph[i];
+			}
+			
+			std::cout << " -> ";
+			
+			std::vector<uint> ph = it->phrase();
+			for(uint i = 0; i < ph.size(); i++)
+				std::cout << ph[i];
+			
+			std::cout << " [label=\"" << it->inbound << "\"]\n";
+		}
+		std::cout << "}\n";
 	}
 };
 
