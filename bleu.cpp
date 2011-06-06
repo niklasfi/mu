@@ -5,7 +5,7 @@
 
 typedef unsigned int uint;
 
-double bleu_bp(uint refs, uint hyps){
+double bleu_bp(uint refs, uint hyps){ //Brevity Penalty
 	if(refs <= hyps) return 1.0;
 	return exp(1.0-(1.0*refs)/hyps);
 }
@@ -15,8 +15,10 @@ double bleu(SentencePool& sp, uint N = 4){
 	uint* matchcount = new uint[N]; //zählt die Matches wobei der Index für die Länge des n+1-grams steht (0 -> unigram)
 	std::fill(matchcount, matchcount + N, 0);//alles auf 0 setzen
 
+
 	uint* gramcount = new uint[N]; //zählt die Anzahl der möglichen n-grams
 	std::fill(gramcount, gramcount + N, 0);
+
 
 	uint refsize = 0;
 	uint hypsize = 0;
