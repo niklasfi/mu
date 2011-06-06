@@ -23,15 +23,15 @@ all: singlewordextract.exe bewertung.exe translate.exe
 
 %.test.exe: %.test.o ${OBJECTS}
 	@${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
-	@echo -ne "${YELLOW}$@${BLACK}"
-	@./$@ && echo -e " ${GREEN}ok${BLACK}"
+	@echo -n "${YELLOW}$@${BLACK}"
+	@./$@ && echo " ${GREEN}ok${BLACK}"
 
 %.exe: %.o ${OBJECTS}
 	${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
 
 .PHONY: tests
 tests: ${TESTS}
-	@echo -e "\n${GREEN}--> everything's good! <--${BLACK}"
+	@echo "\n${GREEN}--> everything's good! <--${BLACK}"
 
 .PRECIOUS: %.test.o
 %.test.o: %.test.cpp %.h
