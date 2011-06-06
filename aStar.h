@@ -1,6 +1,6 @@
 #include <vector>
 #include <list>
-#include <string>
+#include <queue>
 #include <iostream>
 #include <cctype>
 
@@ -15,7 +15,7 @@
 class aStar {
 	DictionaryC* dc;
 	vector<HypothesisNode> vect;
- 	list<aStarElement> stack;
+ 	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
 
 	static uint max_SentenceTranslation;
 

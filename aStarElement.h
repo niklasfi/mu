@@ -18,4 +18,5 @@ class aStarElement {
 	void addWords2(vector<uint> w); //erweitert Teilübersetzung um die Wörter aus dem Vektor w
 
 	bool operator<(const aStarElement& a) const;
+	bool operator>(const aStarElement& a) const;
 };
