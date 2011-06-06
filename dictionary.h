@@ -11,6 +11,9 @@
 typedef unsigned int uint;
 
 class Dictionary{
+	/* Dictionary ist eine Sammlung von zur Übersetzung benötigten Daten.
+	 * Diese Variante (die ohne C) ermöglicht das schnelle Einlesen von
+	 * alignment und traingingsdaten */
 	public:
 
 	std::vector<Wordinfo> fwa; //frenchWordArray

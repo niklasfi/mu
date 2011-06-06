@@ -2,8 +2,9 @@
 #include <iostream>
 #include <assert.h>
 #include <vector>
-int main(){
-	PTree<double> p;
+
+bool test1(){
+		PTree<double> p;
 
 	// so hier jetzt ein Beispiel für die Benutzung von ptree:
 
@@ -36,4 +37,71 @@ int main(){
 	assert(p.traverse(std::vector<uint>{1,2}) -> c == 19);
 	assert(p.traverse(std::vector<uint>{1,2,3}) -> c == 21);
 
+	{ //überprüfen der Ausgabe der Phrase
+		std::vector<uint> ref = {1,2,3};
+		//da die Phrase rückwärts ausgegeben wird, muss hier 3,2,1 stehen
+		std::vector<uint> hyp = p.traverse(std::vector<uint>{1,2,3})->phrase();
+
+		assert(ref.size() == hyp.size());
+		for(uint i = 0; i < hyp.size(); i++){
+			//std::cout << i << ": " << ref[i] << ", " << hyp[i] << "\n";
+			assert(ref[i] == hyp[i]);
+		}
+	}
+
+	{ //überprüfen der Ausgabe der Phrase
+		std::vector<uint> ref = {1,2};
+		//da die Phrase rückwärts ausgegeben wird, muss hier 3,2,1 stehen
+		std::vector<uint> hyp = p.traverse(std::vector<uint>{1,2})->phrase();
+
+		assert(ref.size() == hyp.size());
+		for(uint i = 0; i < hyp.size(); i++){
+			//std::cout << i << ": " << ref[i] << ", " << hyp[i] << "\n";
+			assert(ref[i] == hyp[i]);
+		}
+	}
+	return true;
+}
+
+bool test2(){
+	PTree<double> p;
+	
+	/* DOT graph des zu durchlaufenden Graphen:
+		digraph test{
+			r -> 1
+			1 -> 0
+			1 -> 2 -> 3;
+					 2 -> 4 -> 8;
+			1 -> 5 -> 7;
+			1 -> 9
+		}
+	*/
+	
+	PTree<double>* one = p.traverse(1,true,1);
+	one->traverse(0,true,0);
+	one->traverse(5,true,5)->traverse(7,true,7);
+	one->traverse(2,true,2)->traverse(4,true,4)->traverse(8,true,8);
+	one->traverse(2)->traverse(3,true,3);
+	one->traverse(9,true,9);
+
+	std::vector<uint> ref = {1,0,2,5,9,3,4,7,8};
+	
+	uint i = 0;
+	for(PTree<double>::iterator it = p.begin(); it!=p.end(); it++){
+		assert(it->c == ref[i]);
+		
+		/*std::vector<uint> ph = it->phrase();
+		for(std::vector<uint>::iterator i2 = ph.begin(); i2 != ph.end(); i2++){
+			std::cout << *i2;
+		}
+		std::cout << "!\n";*/
+		i++;
+	}
+	
+	return true;
+}
+
+int main(){
+	assert(test1());
+	assert(test2());
 }
