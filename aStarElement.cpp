@@ -14,5 +14,9 @@ void aStarElement::addWords2(std::vector<uint> w){
 }
 
 bool aStarElement::operator<(const aStarElement& a) const{
-	return cost<a.cost;
+	return cost<a.cost; 
+}
+
+bool aStarElement::operator>(const aStarElement& a) const{
+	return cost>a.cost;
 }
