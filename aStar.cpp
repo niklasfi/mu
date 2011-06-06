@@ -25,7 +25,7 @@ uint aStar::getStarElementPosition(const aStarElement& a){
 }
 
 void aStar::print(){ //gibt die oberste Kombination in stack aus
-	vector<uint> trl = stack.front().trl;
+	vector<uint> trl = stack.top().trl;
 	for(vector<uint>::reverse_iterator it = trl.rbegin(); it!=trl.rend(); it++){
 		std::cout << aStar::elex->getString(*it) << " ";    //ID->Wort
 	}
@@ -40,46 +40,31 @@ void aStar::search() {
 	vector<uint> vtemp;
 
 	aStarElement elementI(vtemp, vect.back().getBestcost()); //erstesElement initialisiert
-	stack.push_front(elementI);
+	stack.push(elementI);
 
 
 	uint n =0;
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
 
-		if(getStarElementPosition(stack.front()) == 0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
+		if(getStarElementPosition(stack.top()) == 0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
 			print();
-			stack.pop_front();
+			stack.pop();
 			n++;
 		} else {	//Führe einen A*-Schritt für das erste Element im Stack durch
 
 
-			uint posfirst = getStarElementPosition(stack.front());
+			uint posfirst = getStarElementPosition(stack.top());
 			vector<PartialTranslation*> v=(vect[posfirst-1].getVektor()); //alle möglichen Übersetzungen
-			uint bisherigerWeg = stack.front().cost - vect[posfirst].getBestcost();
+			uint bisherigerWeg = stack.top().cost - vect[posfirst].getBestcost();
 			
 			for(uint i = 0; i<v.size(); i++){//bestem Element werden nun alle Möglichkeiten zugefügt
-				aStarElement anew(stack.front());
+				aStarElement anew(stack.top());
 				anew.addWords2(v[i]->getTranslation());
 				anew.cost = v[i]->getCost() + v[i]->getNode()->getBestcost() + bisherigerWeg;//Kosten aktualisiert
-				stack.push_back(anew);
+				stack.push(anew);
 			}
-			stack.pop_front();//altes Element (ohne Aktualisierung) wird entfernt
-			for (list<aStarElement>::iterator it=stack.begin(); it !=stack.end(); it++)	cout << "1. Schleife " << it->cost << endl;
-
-			aStarElement* first_ptr=&stack.front();
-			list<aStarElement>::iterator first_it=stack.begin();
-			for (list<aStarElement>::iterator it=stack.begin(); it !=stack.end(); it++){
-				if (*it < *first_ptr){
-						first_ptr=&*it;
-						first_it=it;
-
-				}
-			}
-			stack.push_front(*first_ptr);
-			for (list<aStarElement>::iterator it=stack.begin(); it !=stack.end(); it++)	cout <<"2. Schleife " <<  it->cost << endl;
-			cout << "jetzt wird erased:" << endl;
-			stack.erase(first_it);
+			stack.pop();//altes Element (ohne Aktualisierung) wird entfernt
 
 		}
 	}
@@ -127,6 +112,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			 PTree<PTree <double> >* schwarzRest=schwarz->traverse(fphrase);
 			 if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen    
 			 PTree <double>* blauBaum=&schwarzRest->c;
+			 
 			 cout << "size " << blauBaum->outbound.size() << endl;
 			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){//inbound wird initialisiert
 			      double relfreq=it->c;
@@ -141,9 +127,10 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			      
 			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&Knoten[posPhraseStart]);
 			      knoten_next.add_Translation(Kante);
-			}
+				}
+			
 			Knoten.push_back(knoten_next);
-		    }
+			}
 		}
 
 		//std::cout << "\n";

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <list>
+#include <queue>
 #include <string>
 #include <iostream>
 #include <cctype>
@@ -19,7 +19,7 @@
 class aStar {
 	
 	vector<HypothesisNode> vect;
- 	list<aStarElement> stack;
+ 	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
 	
 	static int prune;
 	
@@ -48,4 +48,3 @@ class aStar {
 	
 	static void Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 };
-
