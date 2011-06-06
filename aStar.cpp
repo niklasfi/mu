@@ -58,15 +58,31 @@ void aStar::search() {
 			vector<PartialTranslation*> v=(vect[posfirst-1].getVektor()); //alle möglichen Übersetzungen
 			uint bisherigerWeg = stack.top().cost - vect[posfirst].getBestcost();
 			
+			aStarElement toXplore=stack.top(); //zu erweiternder Teilsatz wird gespeichert
+			stack.pop();//altes Element wird entfernt
+			
+			priority_queue <aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
+			cout << "stack vor EXploring fängt an: "<< endl;
+			/*while (!stack2.empty()){
+				cout << stack2.top().cost << endl;
+				stack2.pop();
+			}*/
 			for(uint i = 0; i<v.size(); i++){//bestem Element werden nun alle Möglichkeiten zugefügt
-				aStarElement anew(stack.top());
+				aStarElement anew(toXplore);
 				anew.addWords2(v[i]->getTranslation());
 				anew.cost = v[i]->getCost() + v[i]->getNode()->getBestcost() + bisherigerWeg;//Kosten aktualisiert
 				stack.push(anew);
 			}
-			stack.pop();//altes Element (ohne Aktualisierung) wird entfernt
-
+			cout << "stack nach exploring fängt an: "<< endl;
+			/*while (!stack2.empty()){
+				cout << stack2.top().cost << endl;
+				stack2.pop();
+			}*/
+			
 		}
+		
+		
+		
 	}
 }
 
@@ -112,12 +128,14 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			 PTree<PTree <double> >* schwarzRest=schwarz->traverse(fphrase);
 			 if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen    
 			 PTree <double>* blauBaum=&schwarzRest->c;
+			
+			 int count =0;
 			 
-			 cout << "size " << blauBaum->outbound.size() << endl;
-			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){//inbound wird initialisiert
-			      double relfreq=it->c;
-			      if (relfreq ==0)	continue; //wir befinden uns mitten in einer Phrase
-				   
+			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end() && count <10; it++){//inbound wird initialisiert
+			      count++;
+						double relfreq=it->c;
+			      if (relfreq ==0 || relfreq==(1./0.) )	continue; //wir befinden uns mitten in einer Phrase oder haben unendlich viele kosten
+				
 			      vector<uint> ephrase=it->phrase();
 				
 			      if (knoten_next.getBestcost()+prune < Knoten[posPhraseStart].getBestcost()+relfreq)	continue; //Pruning, schlechte Translations werden ignoriert
@@ -132,8 +150,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			Knoten.push_back(knoten_next);
 			}
 		}
-
-		//std::cout << "\n";
+		
 		aStar astar(Knoten);
 		astar.search();
 	}
