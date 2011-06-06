@@ -59,13 +59,9 @@ class PTree{
 		}
 		parent = t.parent;
 		
-		std::cout << "parent.size()" << t.outbound.size() << "\n";
-		
 		for(typename std::map<uint,PTree*>::const_iterator it = t.outbound.begin(); it != t.outbound.end(); it ++){
 			outbound[it->first]= new PTree(*it->second);
 		}
-		
-		std::cout << "this.size()" << outbound.size() << "\n";
 		
 		c = t.c;
 	}

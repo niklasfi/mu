@@ -170,16 +170,18 @@ bool test5(){
 	* allerdings stimmen auch die Adressen von schwarz.traverse(v1,false)->c und von blau_ptr nicht überein
 	*/
 
-	PTree<double>* blau = &schwarz.traverse(v1)->c;
+	PTree<double>* blau = &schwarz.traverse(8)->c;
 	PTree<double>* five = blau->traverse(5,false);
 	
 	
 
-	assert( fabs( schwarz.traverse(v1)->c.traverse(v2)->c - 0.25) < 0.0000001); 
+	assert( fabs( schwarz.traverse(8)->c.traverse(v2)->c - 0.25) < 0.0000001); 
 
-	//phrase müsste also 10,5 sein
+	//phrase müsste also 10 sein
 	assert(blau_ptr2->phrase()[0] == 10);
-	assert(blau_ptr2->phrase()[1] == 5);
+	
+	delete blau_ptr;
+	
 	return true;
 }
 
@@ -187,6 +189,6 @@ int main(){
 	assert(test1());
 	assert(test2());
 	assert(test4());
-	//assert(test5());
+	assert(test5());
 	//assert(test3());
 }
