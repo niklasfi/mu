@@ -30,6 +30,7 @@ int main (int argc, char* argv[]){
      
 		while(getline(in,line)){ 
 			stringstream ist(line);
+			
 
 			double relfreq;
 			vector<uint> ephrase, fphrase;
@@ -53,10 +54,8 @@ int main (int argc, char* argv[]){
 			//cout << "content im blaubaum " << schwarz.traverse(fphrase)->c.traverse(ephrase)->c << "\n";
 		}
 		
-     
+     aStar::set_max_SentenceTranslation(2);
      aStar::Suchalgorithmus(argv[2],&schwarz,&elex,&flex);
      
-     
-     
-     
+     cerr << "Zuende" << endl;
 }
