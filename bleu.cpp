@@ -5,7 +5,7 @@
 
 typedef unsigned int uint;
 
-double bleu_bp(uint refs, uint hyps){
+double bleu_bp(uint refs, uint hyps){ //Brave Penalty
 	if(refs <= hyps) return 1.0;
 	return exp(1.0-(1.0*refs)/hyps);
 }
@@ -14,7 +14,7 @@ double bleu(SentencePool& sp, uint N = 4){
 	std::fill(matchcount, matchcount + N, 0);//alles auf 0 setzen
 
 	uint* gramcount = new uint[N];
-	std::fill(gramcount, gramcount + N, 0);
+	std::fill(gramcount, gramcount + N, 0); //alles auf 0 setzen
 
 	uint refsize = 0;
 	uint hypsize = 0;
