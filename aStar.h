@@ -49,4 +49,6 @@ class aStar {
 	void print();   //Ausgabefunktion
 
 	static void Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
+	static void Suchalgorithmus2(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
+     
 };
