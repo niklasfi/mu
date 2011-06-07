@@ -46,43 +46,28 @@ void aStar::search() {
 	uint n =0;
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
-
+		
 		if(getStarElementPosition(stack.top()) == 0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
 			print();
 			stack.pop();
 			n++;
 		} else {	//Führe einen A*-Schritt für das erste Element im Stack durch
 
-
 			uint posfirst = getStarElementPosition(stack.top());
 			vector<PartialTranslation*> v=(vect[posfirst-1].getVektor()); //alle möglichen Übersetzungen
-			uint bisherigerWeg = stack.top().cost - vect[posfirst].getBestcost();
+			double bisherigerWeg = stack.top().cost - vect[posfirst].getBestcost();
 			
-			aStarElement toXplore=stack.top(); //zu erweiternder Teilsatz wird gespeichert
+			aStarElement toExplore=stack.top(); //zu erweiternder Teilsatz wird gespeichert
 			stack.pop();//altes Element wird entfernt
 			
-			priority_queue <aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
-			cout << "stack vor EXploring fängt an: "<< endl;
-			/*while (!stack2.empty()){
-				cout << stack2.top().cost << endl;
-				stack2.pop();
-			}*/
-			for(uint i = 0; i<v.size(); i++){//bestem Element werden nun alle Möglichkeiten zugefügt
-				aStarElement anew(toXplore);
-				anew.addWords2(v[i]->getTranslation());
-				anew.cost = v[i]->getCost() + v[i]->getNode()->getBestcost() + bisherigerWeg;//Kosten aktualisiert
-				stack.push(anew);
+			for(uint i = 0; i<v.size(); i++){ //bestem Element werden nun alle Möglichkeiten zugefügt
+				aStarElement* anew = new aStarElement(toExplore);
+				anew->addWords2(v[i]->getTranslation());
+				double remainingTranslationCost = vect[posfirst - v[i]->getTranslation().size()].getBestcost();
+				anew->cost = v[i]->getCost() + remainingTranslationCost + bisherigerWeg; //Kosten aktualisieren
+				stack.push(*anew);
 			}
-			cout << "stack nach exploring fängt an: "<< endl;
-			/*while (!stack2.empty()){
-				cout << stack2.top().cost << endl;
-				stack2.pop();
-			}*/
-			
-		}
-		
-		
-		
+		}		
 	}
 }
 
@@ -118,9 +103,9 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 		    for (int laengePhrase=1; laengePhrase<=prune; laengePhrase++){ //iteriert über die länge der Phrase
 			 vector<uint> fphrase;
 			 
-			 
+ 			 
 			 int posPhraseStart=aktPos-laengePhrase;
-			 if (posPhraseStart<0)	posPhraseStart=0; //wenn wir an pos i sind machen Phrasen die länger als i sind keinen Sinn
+			 if (posPhraseStart<0)	continue; //wenn wir an pos i sind machen Phrasen die länger als i sind keinen Sinn
 			 
 			 for (int j=posPhraseStart; j<aktPos; j++)	fphrase.push_back(sentence_id[j]); //fphrase wird initialisiert
 			 
@@ -128,29 +113,28 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			 PTree<PTree <double> >* schwarzRest=schwarz->traverse(fphrase);
 			 if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen    
 			 PTree <double>* blauBaum=&schwarzRest->c;
-			
-			 int count =0;
 			 
-			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end() && count <10; it++){//inbound wird initialisiert
-			      count++;
-						double relfreq=it->c;
-			      if (relfreq ==0 || relfreq==(1./0.) )	continue; //wir befinden uns mitten in einer Phrase oder haben unendlich viele kosten
+			 int counter = 0;
+			
+			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){//inbound wird initialisiert
+					double relfreq=it->c;
+			      if (relfreq==(1./0.) )	continue; //wir befinden uns mitten in einer Phrase oder haben unendlich viele kosten
+			      if (counter++ > 10) continue;
 				
 			      vector<uint> ephrase=it->phrase();
-				
 			      if (knoten_next.getBestcost()+prune < Knoten[posPhraseStart].getBestcost()+relfreq)	continue; //Pruning, schlechte Translations werden ignoriert
 			     
 			      if (knoten_next.getBestcost()> (Knoten[posPhraseStart].getBestcost()+relfreq))
 				   knoten_next.setBestcost((Knoten[posPhraseStart].getBestcost()+relfreq)); //Kosten des Hy.Nodes aktualisiert
 			      
-			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&Knoten[posPhraseStart]);
-			      knoten_next.add_Translation(Kante);
+			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next);
+			      Knoten[posPhraseStart].add_Translation(Kante);
 				}
 			
 			Knoten.push_back(knoten_next);
 			}
 		}
-		
+
 		aStar astar(Knoten);
 		astar.search();
 	}

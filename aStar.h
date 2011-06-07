@@ -29,7 +29,7 @@ class aStar {
 
 	bool compare1(aStarElement e1, aStarElement e2);	//Vergleichsfunktion zum Sortieren des Stack
 
-	uint getStarElementPosition(const aStarElement& a);  //git an bei welchem Knoten die Teilübersetzung ist
+	uint getStarElementPosition(const aStarElement& a);  //gibt an bei welchem Knoten die Teilübersetzung ist
 
 	public:
 	     
