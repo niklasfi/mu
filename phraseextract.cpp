@@ -41,6 +41,13 @@ int main(int argc, char* argv[]) {
 			f_vec.push_back(pair_tmp);
 		}
 
+		/* for(int k = 0; k<=f_vec.size(); k++) {
+			std::cout << f_vec[k].first << "      ";
+			for(int l=0; l<=f_vec[k].second.size(); l++)
+				std::cout << f_vec[k].second[l] << " ";
+			std::cout << "   " << "\n";
+		} */
+
 		//Füge alle englischen Wörter in ein Lexicon ein und schreibe ihre IDs in einen Vektor
 		while (e_ist >> token) {
 			uint id = elex.getWord_or_add(token);
@@ -68,14 +75,22 @@ int main(int argc, char* argv[]) {
 		
 		for(int j1 = 0; j1 < f_vec.size(); j1++)
 			for(int j2 = j1; j2 < std::min(j1+3, (int) f_vec.size()); j2++) {	//Länge der Quellphrase maximal 3
-				int i1 = f_vec[j1].second.front();
-				int i2 = f_vec[j1].second.back();
-				for(int k = j1+1; k <= j2; k++) {
-					i1 = std::min(i1, f_vec[k].second.front());	//Minimales Alignment innerhalb der Phrase finden => i1
-					i2 = std::max(i2, f_vec[k].second.back());	//Maximales Alignment innerhalb der Phrase finden => i2
-				}
+//				int i1 = f_vec[j1].second.front();
+//				int i2 = f_vec[j1].second.back();
+				int i1, i2;
+				bool set_i = false;						//hält mit, ob i1 und i2 gesetzt wurden, oder nicht.
+				for(int k = j1; k <= j2; k++) 
+					if(f_vec[k].second.size() && set_i) {
+						i1 = std::min(i1, f_vec[k].second.front());	//Minimales Alignment innerhalb der Phrase finden => i1
+						i2 = std::max(i2, f_vec[k].second.back());	//Maximales Alignment innerhalb der Phrase finden => i2
+					} else if(f_vec[k].second.size() && !(set_i)) {
+						i1 = f_vec[k].second.front();
+						i2 = f_vec[k].second.back();
+						set_i = true;
+					}
 
-				if(j1 == j2) {	//Einzelwortphrasen auf Quellseite werden IMMER extrahiert
+				if (set_i) 					//leere Phrasen werden nicht geprüft sondern direkt verworfen
+				if(j1 == j2) {					//Einzelwortphrasen auf Quellseite werden IMMER extrahiert
 					
 					std::vector<uint> f_vec_tmp, e_vec_tmp;
 					for (int k = j1; k <= j2; k++)
@@ -89,13 +104,21 @@ int main(int argc, char* argv[]) {
 
 				} else if (i2-i1 < 4) {	//Länge der Zielphrase maximal 4
 
-					int j1_test = e_vec[i1].second.front();
-					int j2_test = e_vec[i1].second.back();
-					for (int k = i1+1; k <= i2; k++) {
-						j1 = std::min(j1, e_vec[k].second.front());
-						j2 = std::max(j2, e_vec[k].second.back());
-					}
-
+//					int j1_test = e_vec[i1].second.front();
+//					int j2_test = e_vec[i1].second.back();
+					int j1_test, j2_test;
+					bool set_j_test = false;			//hält mit, ob j1_test und j2_test gesetzt wurden, oder nicht
+					for (int k = i1; k <= i2; k++)
+						if (e_vec[k].second.size() && set_j_test) {
+							j1_test = std::min(j1_test, e_vec[k].second.front());
+							j2_test = std::max(j2_test, e_vec[k].second.back());
+						} else if (e_vec[k].second.size() && !(set_j_test)) {
+							j1_test = e_vec[k].second.front();
+							j2_test = e_vec[k].second.back();
+							set_j_test = true;
+						}
+					
+					if (set_j_test)					//leere Phrasen werden nicht geprüft sondern sofort verworfen
 					if ((j1_test >= j1) && (j2_test <= j2)) {	//Phrasen, die den Test bestehen, werden extrahiert
 						
 						std::vector<uint> f_vec_tmp, e_vec_tmp;
@@ -119,22 +142,24 @@ int main(int argc, char* argv[]) {
 	for (PTree<std::pair<int, PTree<int> > >::iterator itor1 = pTree.begin(); itor1 != pTree.end(); itor1++) {	//Durchlaufe den Baum
 
 		int source_count = (&*itor1) -> c.first;		//Zähler für Quellphrase auslesen
-		std::vector<uint> source_id = (&*itor1) -> phrase();//Quellphrase (in IDs) auslesen
-		std::string source_phrase = "";
-		for (int k = 0; k < source_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
-			source_phrase += flex.getString(source_id[k]) + " ";
-		
-		for(PTree<int>::iterator itor2 = (&*itor1) -> c.second.begin(); itor2 != (&*itor1) -> c.second.end(); itor2++) {	//Durchlaufe den "Unter-Baum"
+		if (source_count) {
+			std::vector<uint> source_id = (&*itor1) -> phrase();//Quellphrase (in IDs) auslesen
+			std::string source_phrase = "";
+			for (int k = 0; k < source_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
+				source_phrase += flex.getString(source_id[k]) + " ";
+			
+			for(PTree<int>::iterator itor2 = (&*itor1) -> c.second.begin(); itor2 != (&*itor1) -> c.second.end(); itor2++) {	//Durchlaufe den "Unter-Baum"
 
-			int target_count = (&*itor2) -> c;			//Zähler für Zielphrase auslesen
-			if(target_count != 0) {
-				std::vector<uint> target_id = (&*itor2) -> phrase();//Zielphrase (in IDs) auslesen
-				std::string target_phrase = "";
-				for (int k = 0; k < target_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
-					target_phrase += elex.getString(target_id[k]) + " ";
+				int target_count = (&*itor2) -> c;			//Zähler für Zielphrase auslesen
+				if(target_count != 0) {
+					std::vector<uint> target_id = (&*itor2) -> phrase();//Zielphrase (in IDs) auslesen
+					std::string target_phrase = "";
+					for (int k = 0; k < target_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
+						target_phrase += elex.getString(target_id[k]) + " ";
 
-				double relFreq = log(source_count) - log(target_count);	//Bestimmen der relativen Wahrscheinlichkeit (negativer Logarithmus)
-				std::cout << relFreq << " XXX" << " # " << source_phrase << " # " << target_phrase << " # " << source_count << "\n";	//Ausgabe
+					double relFreq = log(source_count) - log(target_count);	//Bestimmen der relativen Wahrscheinlichkeit (negativer Logarithmus)
+					std::cout << relFreq << " XXX" << " # " << source_phrase << " # " << target_phrase << " # " << source_count << "\n";	//Ausgabe
+				}
 			}
 		}
 	}
