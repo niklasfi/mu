@@ -14,16 +14,17 @@
 #include "ptree.h"
 #include "gzstream/gzstream.h"
 #include "global.h"
+#include "cmath"
 
 
 class aStar {
-	
+
 	vector<HypothesisNode> vect;
  	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
-	
+
 	static int prune;
-	
-	
+
+
 	static uint max_SentenceTranslation;
 
 
@@ -32,8 +33,8 @@ class aStar {
 	uint getStarElementPosition(const aStarElement& a);  //gibt an bei welchem Knoten die Teilübersetzung ist
 
 	public:
-	     
-	
+
+
 	static PTree<PTree < double> >* schwarz;
 	static Lexicon* elex;
 	static Lexicon* flex;
@@ -45,6 +46,6 @@ class aStar {
 	void search();	//A*-Suche
 
 	void print();   //Ausgabefunktion
-	
+
 	static void Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 };
