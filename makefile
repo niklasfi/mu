@@ -6,6 +6,11 @@ endif
 ifndef NPARALLEL
 	OMP=-fopenmp
 endif
+
+ifdef EECHO
+	E=-e
+endif
+
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF} ${OMP}
 LDFLAGS = -L. -lz ${PROF} ${OMP}
 OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o ptree.o 
@@ -23,15 +28,15 @@ all: singlewordextract.exe bewertung.exe translate.exe
 
 %.test.exe: %.test.o ${OBJECTS}
 	@${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
-	@echo -n "${YELLOW}$@${BLACK}"
-	@./$@ && echo " ${GREEN}ok${BLACK}"
+	@echo $E -n "${YELLOW}$@${BLACK}"
+	@./$@ && echo $E " ${GREEN}ok${BLACK}"
 
 %.exe: %.o ${OBJECTS}
 	${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
 
 .PHONY: tests
 tests: ${TESTS}
-	@echo "\n${GREEN}--> everything's good! <--${BLACK}"
+	@echo $E "\n${GREEN}--> everything's good! <--${BLACK}"
 
 .PRECIOUS: %.test.o
 %.test.o: %.test.cpp %.h
