@@ -82,6 +82,15 @@ int main(int argc, char* argv[]) {
 						f_vec_tmp.push_back(f_vec[k].first);	//Quellphrase in Vektor zusammenstellen
 					for (int k = i1; k <= i2; k++)
 						e_vec_tmp.push_back(e_vec[k].first);	//Zielphrase in Vektor zusammenstellen
+
+					std::pair<int,PTree<int> >* scontent = &pTree.traverse(f_vec_tmp,true,std::pair<int,PTree<int>>(0,PTree<int>()))->c;
+					scontent->first++;
+					scontent->second.traverse(e_vec_tmp,true,0)->c++;
+
+					/*
+					
+					das da oben sollte eine kurze Version von dem hier sein:
+
 					PTree<std::pair<int, PTree<int> > >* tree_tmp1 = new PTree<std::pair<int, PTree<int> > >();
 					PTree<int>* tree_tmp2 = new PTree<int>();
 					tree_tmp1 = pTree.traverse(f_vec_tmp);			//Quellphrase in Baum einfügen
@@ -90,6 +99,7 @@ int main(int argc, char* argv[]) {
 					tree_tmp2 -> c++;						//Zähler für Zielphrase um eins erhöhen
 					delete tree_tmp1;
 					delete tree_tmp2;
+					*/
 
 				} else if (i2-i1 < 4) {	//Länge der Zielphrase maximal 4
 
