@@ -15,27 +15,27 @@ using namespace std;
 int main (int argc, char* argv[]){
      Lexicon elex;
      Lexicon flex;
-     
+
      PTree<PTree<double>> schwarz;
-     
+
 		if(argc!=3){
 			cout<<"usage: template.exe <phrasentabelle> <quelltext>\n";
 			exit(1);
 		}
-     
+
      igzstream in(argv[1]);
      string line,token;
-     
-     
-     
-		while(getline(in,line)){ 
+
+
+
+		while(getline(in,line)){
 			stringstream ist(line);
-			
+
 
 			double relfreq;
 			vector<uint> ephrase, fphrase;
 
-			ist >> relfreq >> token >>token; // token für "#" ACHTUNG das zweite Einlesen ist nur für die alten Trainingsdaten,da gibts relfreq zweimal
+			ist >> relfreq  >> token  >>token; // token für "#" ACHTUNG das zweite Einlesen ist nur für die alten Trainingsdaten,da gibts relfreq zweimal
 
 			while(ist>>token && token != "#"){
 				fphrase.push_back(flex.getWord_or_add(token));
@@ -44,18 +44,18 @@ int main (int argc, char* argv[]){
 				ephrase.push_back(elex.getWord_or_add(token));
 			}
 
-			/* PTree<double>* blau=new PTree<double>(); //wir alloquieren speicher für den blauBaum 
-			blau->traverse(ephrase,true)->c = relfreq; 
+			/* PTree<double>* blau=new PTree<double>(); //wir alloquieren speicher für den blauBaum
+			blau->traverse(ephrase,true)->c = relfreq;
 			schwarz.traverse(fphrase,true)->c=*blau; //und befüllen ihn mit informationen
 
 			//cout << "content im blaubaum "<< blau.traverse(ephrase)->c << endl;*/
 			schwarz.traverse(fphrase,true)->c.traverse(ephrase,true)->c = relfreq;
-			
+
 			//cout << "content im blaubaum " << schwarz.traverse(fphrase)->c.traverse(ephrase)->c << "\n";
 		}
-		
-     aStar::set_max_SentenceTranslation(2);
+
+     aStar::set_max_SentenceTranslation(1);
      aStar::Suchalgorithmus(argv[2],&schwarz,&elex,&flex);
-     
+
      cerr << "Zuende" << endl;
 }

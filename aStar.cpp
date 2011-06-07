@@ -7,7 +7,7 @@ PTree< PTree <double> >* aStar::schwarz=0;
 int aStar::prune=2;
 
 //Constructor
-aStar::aStar(vector<HypothesisNode> vect):vect(vect){}
+aStar::aStar(vector<HypothesisNode>& vect):vect(vect){}
 
 
 void aStar::set_max_SentenceTranslation(uint size){
@@ -46,11 +46,12 @@ void aStar::search() {
 	uint n =0;
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
-		cout << "stack.top().pos " << stack.top().pos << " cost: " << stack.top().pos->getBestcost() << endl;
+		//cout << "stack.top().pos " << stack.top().pos << " cost: " << stack.top().pos->getOutbound().size() << endl;
 		if(stack.top().pos->getOutbound().size() ==0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
 			print();
 			stack.pop();
 			n++;
+			cout << "NNN" << n<< endl;
 		} else {	//Führe einen A*-Schritt für das erste Element im Stack durch
 
 			aStarElement toExplore=stack.top(); //zu erweiternder Teilsatz wird gespeichert
@@ -59,20 +60,31 @@ void aStar::search() {
 			vector<PartialTranslation*> v=toExplore.pos->getOutbound(); //alle möglichen Übersetzungen
 			double bisherigerWeg = stack.top().cost - toExplore.pos->getBestcost();
 
-			cout << "v.size " << v.size();
-
-			for(uint i = 0; i<v.size(); i++){ //bestem Element werden nun alle Möglichkeiten zugefügt
+				for(uint i = 0; i<v.size(); i++){ //bestem Element werden nun alle Möglichkeiten zugefügt
 				aStarElement* anew = new aStarElement(toExplore);
+
 				if (v[i]->getTranslation().size() == 0)	cout << "??" << endl;
 				anew->addWords2(v[i]->getTranslation());
-				double remainingTranslationCost = v[i]->getDestination()->getBestcost();
+
+				double remainingTranslationCost = vect[v[i]->getDestination_pos()].getBestcost();
 				anew->cost = v[i]->getCost() + remainingTranslationCost + bisherigerWeg; //Kosten aktualisieren
-				if (anew->cost<0.000001)	cout << "anewcost " << anew->cost << " = " << remainingTranslationCost << " + " << bisherigerWeg << endl;
-				anew->pos=v[i]->getDestination();
+				//cout << endl << "anewcost " << anew->cost << " = " << v[i]->getCost() << " + " << remainingTranslationCost << " + " << bisherigerWeg << endl;
+
+				anew->pos=&vect[v[i]->getDestination_pos()];
+
 				stack.push(*anew);
-				cout<< "anew ist da? " << anew->cost;
+				if (v[i]->getDestination_pos()  == 21)	{
+					cout  << "v[i]->getDestination() " << v[i]->getDestination_pos() << endl;
+					cout << &(*toExplore.pos)<< " " << &anew->pos << endl;
+					cout << vect.size() << endl;
+				}
+				//cout<< "anew->pos " << anew->pos << " anew->pos.getBestcost() "<< anew->pos->getBestcost() << endl;
+				/*cout << "Die HypothesisNode ist : " << endl;
+				for (int i=0; i< vect.size(); i++)	cout << &vect[i] << ", ";
+				cout << endl;*/
 			}
-			/*cout << "Der stack nach der for-schleife" << endl;
+			/*if (stack.size()>20)	exit(1);
+			cout << "Der stack nach der for-schleife" << endl;
 			priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
 			while (!stack2.empty()){
 				cout << stack2.top().cost << ", ";
@@ -105,7 +117,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 
 		while ( ist >> token){
 		    aktPos++;
-		    Word word_id_french=flex->getWord(token); // das word zum Wort (mit 2 Bits Sprache)
+		    Word word_id_french=flex->getWord_or_add(token); // das word zum Wort (mit 2 Bits Sprache)
 		    unsigned int id_french= word_id_french.wordId(); //die id ohne sprachbits
 
 		    sentence_id.push_back(id_french);
@@ -143,17 +155,37 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 							cout << "wir haben eine leere Phrase!!!"<< endl;
 							exit(1);
 						}
-			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,&Knoten[posPhraseStart]);
+			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
 			      Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
 			      knoten_next.add_PartialTranslation_to_Outbound(Kante);
+			      if (aktPos == 21){
+							cout << "hallo" << endl;
+						}
 				}
-			if (knoten_next.getOutbound().empty())	cout << "hier ist was leer" << endl;
 
 			Knoten.push_back(knoten_next);
+			}
+
+			//wir sollen abfangen, dass ein Knoten kein Outbound haben kann, dann soll er mit sich selbst übersetzen
+			for (int i=1; i< Knoten.size(); i++){
+				if (Knoten[i].getOutbound().size() == 0){
+					cout << "if drin" << endl;
+					//zuerst in das englische Lexicon einfügen
+					string word_string = flex->getString(sentence_id[i-1]);
+					unsigned int id_english=elex->getWord_or_add(word_string);
+
+					//dann die Kante anlegen, dabei sollen die Kosten niedrig sein, da sie sowieso genutzt werden muss, kann sie auch direkt exploriert werden
+					PartialTranslation* Kante= new PartialTranslation(0,vector<unsigned int>{id_english},&Knoten[i],i-1);
+					Knoten[i].add_PartialTranslation_to_Outbound(Kante);
+					Knoten[i-1].add_PartialTranslation_to_Inbound(Kante);
+				}
 			}
 		}
 
 		aStar astar(Knoten);
+		cout << "Die Knotenoutbound größe sind "<<endl;
+		for (int i=0; i<Knoten.size(); i++)	cout << Knoten[i].getOutbound().size() << ", ";
+		cout << endl;
 		astar.search();
 	}
 

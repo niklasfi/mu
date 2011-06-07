@@ -24,10 +24,10 @@ bool test1(){
 	std::vector<HypothesisNode> h(4);
 
 	PartialTranslation
-		t1(3,std::vector<uint>{w[1]},&h[1],&h[0]),
-		t2(4,std::vector<uint>{w[2]},&h[2],&h[1]),
-		t3(2,std::vector<uint>{w[3]},&h[2],&h[0]),
-		t4(1,std::vector<uint>{w[4],w[5]},&h[3],&h[2]);
+		t1(3,std::vector<uint>{w[1]},&h[1],0),
+		t2(4,std::vector<uint>{w[2]},&h[2],1),
+		t3(2,std::vector<uint>{w[3]},&h[2],0),
+		t4(1,std::vector<uint>{w[4],w[5]},&h[3],2);
 
 	h[0].add_PartialTranslation_to_Inbound(&t1);
 	h[0].setBestcost(0);

@@ -11,11 +11,11 @@ PartialTranslation::PartialTranslation(double kosten){
 }
 
 
-PartialTranslation::PartialTranslation(double kosten, vector<unsigned int> uebersetzung, HypothesisNode* ursprung, HypothesisNode* destination){
+PartialTranslation::PartialTranslation(double kosten, vector<unsigned int> uebersetzung, HypothesisNode* ursprung, unsigned int destination_pos) {
      this->cost=kosten;
      this->origin=ursprung;
      this->translation=uebersetzung;
-     this->destination=destination;
+     this->destination_pos=destination_pos;
 }
 
 //Copy-Constructor
@@ -46,8 +46,8 @@ void PartialTranslation::setOrigin(HypothesisNode* Ursprung){
      origin=Ursprung;
 }
 
-HypothesisNode* PartialTranslation::getDestination(){
-	return destination;
+unsigned int PartialTranslation::getDestination_pos(){
+	return destination_pos;
 }
 
 

@@ -15,6 +15,7 @@
 #include "gzstream/gzstream.h"
 #include "global.h"
 #include "cmath"
+#include <string>
 
 
 class aStar {
@@ -39,7 +40,7 @@ class aStar {
 	static Lexicon* elex;
 	static Lexicon* flex;
 	//Constructor
-	aStar(vector<HypothesisNode> vect);
+	aStar(vector<HypothesisNode>& vect);
 
 	static void set_max_SentenceTranslation(uint size);
 

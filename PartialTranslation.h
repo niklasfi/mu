@@ -14,12 +14,12 @@ class PartialTranslation{
              double cost; //relFreq
              vector<unsigned int> translation; //ID des Wortes(siehe lex)
              HypothesisNode* origin;
-             HypothesisNode* destination;
+             unsigned int destination_pos;
 
       public://Constructor
              PartialTranslation();
              PartialTranslation(double kosten);
-             PartialTranslation(double kosten, vector<unsigned int> uebersetzung, HypothesisNode* ursprung, HypothesisNode* destination);
+             PartialTranslation(double kosten, vector<unsigned int> uebersetzung, HypothesisNode* ursprung, unsigned int destination);
              PartialTranslation(const PartialTranslation& original);
 			 //getter und setter
              double getCost();
@@ -28,7 +28,7 @@ class PartialTranslation{
              void setTranslation (vector<unsigned int> uebersetzung);
              HypothesisNode* getNode();
              void setOrigin(HypothesisNode* Ursprung);
-             HypothesisNode* getDestination();
+             unsigned int getDestination_pos();
 
              PartialTranslation operator=(PartialTranslation& original);
 };
