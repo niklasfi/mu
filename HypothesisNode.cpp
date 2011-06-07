@@ -16,14 +16,22 @@ double HypothesisNode::getBestcost(){
 void HypothesisNode::setBestcost( double cost){
      bestcost=cost;
 }
-vector<PartialTranslation*>& HypothesisNode::getVektor(){
+vector<PartialTranslation*>& HypothesisNode::getInbound(){
                              return inbound;
+}
+
+vector<PartialTranslation*>& HypothesisNode::getOutbound(){
+	return outbound;
 }
 
 
 
-void HypothesisNode::add_Translation(PartialTranslation* Uebersetzung){
+void HypothesisNode::add_PartialTranslation_to_Inbound(PartialTranslation* Uebersetzung){
    inbound.push_back(Uebersetzung);  //hinten angefügt
+}
+
+void HypothesisNode::add_PartialTranslation_to_Outbound(PartialTranslation* Uebersetzung){
+   outbound.push_back(Uebersetzung);  //hinten angefügt
 }
 
 void HypothesisNode::remove_Translation(unsigned int pos){
