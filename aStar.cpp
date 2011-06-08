@@ -68,7 +68,6 @@ void aStar::print(){ //gibt die oberste Kombination in stack aus
 		std::cout << aStar::elex->getString(*it) << " ";    //ID->Wort
 	}
 	std::cout << "\n";
-	//cout << elex->getString(8);
 }
 
 //Eigentliche A*-Suche
@@ -96,7 +95,6 @@ void aStar::search() {
 
 			vector<PartialTranslation*> v=toExplore.pos->getOutbound(); //alle möglichen Übersetzungen
 			double bisherigerWeg = toExplore.cost - toExplore.pos->getBestcost();
-			//cout << "bisheriger Weg " << bisherigerWeg << " = " <<toExplore.cost <<" - "<< toExplore.pos->getBestcost()<<endl;
 
 				for(uint i = 0; i<v.size(); i++){ //bestem Element werden nun alle Möglichkeiten zugefügt
 				aStarElement* anew = new aStarElement(toExplore);
@@ -106,14 +104,12 @@ void aStar::search() {
 
 				double remainingTranslationCost = vect[v[i]->getDestination_pos()].getBestcost();
 				anew->cost = v[i]->getCost() + remainingTranslationCost + bisherigerWeg; //Kosten aktualisieren
-				//cout << anew->cost << " = " << v[i]->getCost()<< " + " << remainingTranslationCost <<" + "<< bisherigerWeg<<endl;
 
 				anew->pos=&vect[v[i]->getDestination_pos()];
 
 				stack.push(*anew);
 			}
 			priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
-			//printstack(stack2);
 		}
 	}
 }
@@ -157,11 +153,9 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 		    for (int i=posPhraseStart; i<aktPos; i++){
 			 fphrase.push_back(sentence_id[i]);
 		    }
-		    	//cout << "fphrase: " << posPhraseStart << " " << aktPos << endl; 
 			PTree<PTree <double> >* schwarzRest=schwarz->traverse(fphrase);
 			if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen
 			PTree <double>* blauBaum=&schwarzRest->c;
-			//blauBaum->dot();
 			
 
 		    
@@ -170,13 +164,9 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
 			      //if (counter++==10)	continue;
 			      vector<unsigned int> ephrase=it->phrase();
-			      //cout << "ephrase : " << endl;
-				
-				//for (int i=0; i<ephrase.size(); i++)	cout << ephrase[i] << ", ";
-			      double relfreq = it->c;
-				//cout << "ephrsae.size() " << ephrase.size() << endl;
-				//cout << "relfreq " << relfreq << endl;
 			      
+			      double relfreq = it->c;
+				
 			      if (relfreq == 1./0. )	continue;
 			      
 			      double cost_till_aktPos=Knoten[posPhraseStart].getBestcost();
@@ -188,8 +178,6 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
 			      Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
 			      knoten_next.add_PartialTranslation_to_Outbound(Kante);   
-				//cout << endl;
-				//dotGraph(Knoten);
 			 }
 		    }
 		
