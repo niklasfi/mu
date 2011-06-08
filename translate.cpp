@@ -15,13 +15,27 @@ using namespace std;
 int main (int argc, char* argv[]){
      Lexicon elex;
      Lexicon flex;
+	 bool phrasePenalty, wordPenalty, singleCountBit, stRatio; //stRatio =Source-Target-Ratio 
 
      PTree<PTree<double>> schwarz;
 
-		if(argc!=3){
-			cout<<"usage: template.exe <phrasentabelle> <quelltext>\n";
-			exit(1);
+		if(argc<3){
+		cout<<"usage: template.exe <phrasentabelle> <quelltext>\n";
+		exit(1);
+	}
+
+	for(int i=3; i<argc;i++){
+		switch ((int)argv[i]){
+			//case "p":
+			case 1 : phrasePenalty=1; break;
+			//case "w": 
+			case 2 : wordPenalty = 1; break;
+			//case "s": 
+			case 3 : singleCountBit = 1; break;
+			//case "r": 
+			case 4 : stRatio = 1; break;
 		}
+	}
 
      igzstream in(argv[1]);
      string line,token;
@@ -43,6 +57,14 @@ int main (int argc, char* argv[]){
 			while(ist>>token){
 				ephrase.push_back(elex.getWord_or_add(token));
 			}
+			if(phrasePenalty) relfreq+=1;
+			if(wordPenalty) relfreq+= ephrase.size();
+			if(singleCountBit){
+				int singleCount;
+				ist>>token>>singleCount;
+				if(singleCount>1) relfreq+=1;
+			}
+			if(stRatio) relfreq+=(((double)fphrase.size())/((double)ephrase.size()));
 
 			schwarz.traverse(fphrase,true)->c.traverse(ephrase,true)->c = relfreq;
 
