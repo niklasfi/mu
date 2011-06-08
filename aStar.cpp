@@ -108,6 +108,7 @@ void aStar::search() {
 				anew->pos=&vect[v[i]->getDestination_pos()];
 
 				stack.push(*anew);
+				delete anew;
 			}
 			priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
 		}
