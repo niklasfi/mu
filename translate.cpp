@@ -66,7 +66,7 @@ int main (int argc, char* argv[]){
 			}
 			if(stRatio) relfreq+=(((double)fphrase.size())/((double)ephrase.size()));
 
-			schwarz.traverse(fphrase,true)->c.traverse(ephrase,true)->c = relfreq;
+			schwarz.traverse(fphrase,true,(1./0.))->c.traverse(ephrase,true,(1./0.))->c = relfreq;
 
 		}
 
