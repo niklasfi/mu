@@ -46,7 +46,6 @@ void aStar::search() {
 	uint n =0;
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
-		//cout << "stack.top().pos " << stack.top().pos << " cost: " << stack.top().pos->getOutbound().size() << endl;
 		if(stack.top().pos->getOutbound().size() ==0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
 			print();
 			stack.pop();
@@ -67,37 +66,19 @@ void aStar::search() {
 
 				double remainingTranslationCost = vect[v[i]->getDestination_pos()].getBestcost();
 				anew->cost = v[i]->getCost() + remainingTranslationCost + bisherigerWeg; //Kosten aktualisieren
-				//cout << endl << "anewcost " << anew->cost << " = " << v[i]->getCost() << " + " << remainingTranslationCost << " + " << bisherigerWeg << endl;
+
 
 				anew->pos=&vect[v[i]->getDestination_pos()];
 
 				stack.push(*anew);
-				//cout  << "v[i]->getDestination() " << v[i]->getDestination_pos() << endl;
-				/*if (v[i]->getDestination_pos()  == 21)	{
-					cout  << "v[i]->getDestination() " << v[i]->getDestination_pos() << endl;
-					cout << &(toExplore)<< " " << &(*anew) << endl;
-					cout << vect.size() << endl;
-				}*/
-				//cout<< "anew->pos " << anew->pos << " anew->pos.getBestcost() "<< anew->pos->getBestcost() << endl;
-				/*cout << "Die HypothesisNode ist : " << endl;
-				for (int i=0; i< vect.size(); i++)	cout << &vect[i] << ", ";
-				cout << endl;*/
 			}
-			//if (stack.size()>20)	exit(1);
-			/*cout << "Der stack nach der for-schleife" << endl;
-			priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
-			while (!stack2.empty()){
-				cout << stack2.top().cost << ", ";
-				stack2.pop();
-			}
-			cout << endl;*/
 		}
 	}
 }
 
 
 
-void aStar::Suchalgorithmus2(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex){
+void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex){
      igzstream in(eingabe);
      aStar::flex=fLex;
      elex=eLex;
@@ -164,7 +145,6 @@ void aStar::Suchalgorithmus2(char* eingabe, PTree<PTree < double> >* blacktree, 
 		
 	       }
 		if (knoten_next.getOutbound().size() == 0){
-			//cout << "if drin" << endl;
 			//zuerst in das englische Lexicon einfügen
 			string word_string = flex->getString(sentence_id[aktPos-1]);
 			unsigned int id_english=elex->getWord_or_add(word_string);

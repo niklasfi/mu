@@ -44,14 +44,8 @@ int main (int argc, char* argv[]){
 				ephrase.push_back(elex.getWord_or_add(token));
 			}
 
-			/* PTree<double>* blau=new PTree<double>(); //wir alloquieren speicher für den blauBaum
-			blau->traverse(ephrase,true)->c = relfreq;
-			schwarz.traverse(fphrase,true)->c=*blau; //und befüllen ihn mit informationen
-
-			//cout << "content im blaubaum "<< blau.traverse(ephrase)->c << endl;*/
 			schwarz.traverse(fphrase,true)->c.traverse(ephrase,true)->c = relfreq;
 
-			//cout << "content im blaubaum " << schwarz.traverse(fphrase)->c.traverse(ephrase)->c << "\n";
 		}
 
      aStar::set_max_SentenceTranslation(1);
