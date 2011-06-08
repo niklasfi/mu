@@ -21,6 +21,9 @@ bool compare1 (aStarElement e1, aStarElement e2) {
 }
 
 uint aStar::getStarElementPosition(const aStarElement& a){
+	std::cout<<"Wert"<<vect.size()-1 - a.trl.size()<<endl;
+	int c=0;
+	std::cin>>c;
 	return vect.size()-1 - a.trl.size();  //Länge des Satzes - Länge der Teiübersetung
 }
 
