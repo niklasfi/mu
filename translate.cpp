@@ -15,13 +15,27 @@ using namespace std;
 int main (int argc, char* argv[]){
      Lexicon elex;
      Lexicon flex;
+	bool phrasePenalty, wordPenalty, singleCountBit, stRatio; //stRatio =Source-Target-Ratio 
      
      PTree<PTree<double>> schwarz;
      
-		if(argc!=3){
+		if(argc<3){
 			cout<<"usage: template.exe <phrasentabelle> <quelltext>\n";
 			exit(1);
 		}
+
+	for(int i=3; i<argc;i++){
+		switch ((int)argv[i]){
+			//case "p":
+			case 1 : phrasePenalty=1; break;
+			//case "w": 
+			case 2 : wordPenalty = 1; break;
+			//case "s": 
+			case 3 : singleCountBit = 1; break;
+			//case "r": 
+			case 4 : stRatio = 1; break;
+		}
+	}
      
      igzstream in(argv[1]);
      string line,token;
@@ -39,21 +53,25 @@ int main (int argc, char* argv[]){
 			while(ist>>token && token != "#"){
 				fphrase.push_back(flex.getWord_or_add(token));
 			}
-			while(ist>>token){
+			while(ist>>token && token != "#"){
 				ephrase.push_back(elex.getWord_or_add(token));
 			}
 
-			/* PTree<double>* blau=new PTree<double>(); //wir alloquieren speicher für den blauBaum 
-			blau->traverse(ephrase,true)->c = relfreq; 
-			schwarz.traverse(fphrase,true)->c=*blau; //und befüllen ihn mit informationen
+			if(phrasePenalty) relfreq+=1;
+			if(wordPenalty) relfreq+= ephrase.size();
+			if(singleCountBit){
+				int singleCount;
+				ist>>token>>singleCount;
+				if(singleCount>1) relfreq+=1;
+			}
+			if(stRatio) relfreq+=(((double)fphrase.size())/((double)ephrase.size()));
 
-			//cout << "content im blaubaum "<< blau.traverse(ephrase)->c << endl;*/
 			schwarz.traverse(fphrase,true)->c.traverse(ephrase,true)->c = relfreq;
 			
-			//cout << "content im blaubaum " << schwarz.traverse(fphrase)->c.traverse(ephrase)->c << "\n";
+			
 		}
 		
-     
+     aStar::set_max_SentenceTranslation(5);
      aStar::Suchalgorithmus(argv[2],&schwarz,&elex,&flex);
      
      
