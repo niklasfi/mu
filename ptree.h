@@ -9,7 +9,7 @@ typedef unsigned int uint;
 
 template <class T>
 class PTree{
-	public:std::map<uint,PTree*> outbound;
+	std::map<uint,PTree*> outbound;
 	/* Eine Map für die ausgehenden Kanten. Diese ist besonders sinnvoll,
 	 * da lookups (outbound[ ]) und insertion besonders schnell gehen.
 	 * Spart einem von Hand auf einem Array einen AVL-Baum zu implemen-
@@ -37,35 +37,17 @@ class PTree{
 
 	PTree(const T& t = T(),PTree* parent = 0, uint inbound = 0):
 		parent(parent),inbound(inbound),c(t){}
-	PTree(const PTree& t):
-		parent(t.parent),inbound(t.inbound),c(t.c){}
-	PTree(PTree* parent, uint inbound):
+	PTree(PTree* parent, uint indbound):
 		parent(parent),inbound(inbound),c(T()){}
 	~PTree(){
 		/* Destruktor: da wir eine map<uint, Ptree*> haben müssen wir alle
 		 * Objekte, die von outbound referenziert werden löschen */
-		for(typename std::map<uint,PTree*>::iterator it = outbound.begin(); it != outbound.end(); it ++){
-			it->second->parent = 0;
+		for(typename std::map<uint,PTree*>::iterator it = outbound.begin(); it != outbound.end(); it ++)
 			delete it->second;
-		}
 		if(parent)
 			parent->outbound.erase(inbound);
 	}
-	
-	PTree& operator=(const PTree& t){
-		for(typename std::map<uint,PTree*>::iterator it = outbound.begin(); it != outbound.end(); it ++){
-			it->second->parent = 0;
-			delete it->second;
-		}
-		parent = t.parent;
-		
-		for(typename std::map<uint,PTree*>::const_iterator it = t.outbound.begin(); it != t.outbound.end(); it ++){
-			outbound[it->first]= new PTree(*it->second);
-		}
-		
-		c = t.c;
-	}
-	
+
 	PTree* traverse(std::vector<uint> query, bool insert = false){
 		/* Diese Funktion traversiert den Baum endlang des durch query vor-
 		 * gegebenen Pfades, ausgehend von *this. Rückgabe wert ist der
@@ -175,7 +157,7 @@ class PTree{
 			 * zur Zeit zeigt. */
 			return cur_it->second;
 		}
-		
+
 		iterator& operator++(int i){
 			if(ended())
 				return *this; //wir sind fertig
@@ -208,7 +190,7 @@ class PTree{
 	iterator begin(){
 		iterator it;
 		it.cur_nod = this;
-		it.cur_it = this->outbound.begin();
+		it.cur_it = outbound.begin();
 
 		for(typename std::map<uint,PTree*>::iterator it2 =this->outbound.begin(); it2!=this->outbound.end(); it2++)
 			it.toXplore.push_back(it2->second);
@@ -219,28 +201,6 @@ class PTree{
 		iterator it;
 		it.cur_nod = 0;
 		return it;
-	}
-	
-	void dot(){
-		std::cout << "digraph g{\n";
-		for(iterator it = this->begin(); it != end(); it++){
-			std::cout << "\t";
-			if(it->parent->parent == 0) std::cout << "root";
-			else{
-				std::vector<uint> ph = it->parent->phrase();
-				for(uint i = 0; i < ph.size(); i++)
-					std::cout << ph[i];
-			}
-			
-			std::cout << " -> ";
-			
-			std::vector<uint> ph = it->phrase();
-			for(uint i = 0; i < ph.size(); i++)
-				std::cout << ph[i];
-			
-			std::cout << " [label=\"" << it->inbound << "\"]\n";
-		}
-		std::cout << "}\n";
 	}
 };
 
