@@ -84,9 +84,9 @@ int main(int argc, char* argv[]) {
 						e_vec_tmp.push_back(e_vec[k].first);	//Zielphrase in Vektor zusammenstellen
 					PTree<std::pair<int, PTree<int> > >* tree_tmp1 = new PTree<std::pair<int, PTree<int> > >();
 					PTree<int>* tree_tmp2 = new PTree<int>();
-					tree_tmp1 = pTree.traverse(f_vec_tmp);			//Quellphrase in Baum einfügen
+					tree_tmp1 = pTree.traverse(f_vec_tmp,true);			//Quellphrase in Baum einfügen
 					tree_tmp1 -> c.first++;					//Zähler für Quellphrase um eins erhöhen
-					tree_tmp2 = tree_tmp1 -> c.second.traverse(e_vec_tmp);	//Zielphrase in "Unter-Baum" einfügen
+					tree_tmp2 = tree_tmp1 -> c.second.traverse(e_vec_tmp,true);	//Zielphrase in "Unter-Baum" einfügen
 					tree_tmp2 -> c++;						//Zähler für Zielphrase um eins erhöhen
 					delete tree_tmp1;
 					delete tree_tmp2;
