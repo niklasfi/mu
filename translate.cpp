@@ -19,12 +19,12 @@ int main (int argc, char* argv[]){
 
      PTree<PTree<double>> schwarz;
 
-		if(argc<3){
-		cout<<"usage: template.exe <phrasentabelle> <quelltext> [pwsr]\n";
+		if(argc<4){
+		cout<<"usage: template.exe <pruning-länge> <phrasentabelle> <quelltext> [pwsr]\n";
 		exit(1);
 	}
 
-	for(int i=3; i<argc;i++){
+	for(int i=4; i<argc;i++){
 		std::string in = argv[i];
 		if     (in == "p") phrasePenalty=1;
 		else if(in == "w") wordPenalty = 1;
@@ -35,8 +35,17 @@ int main (int argc, char* argv[]){
 			exit (1);
 		}
 	}
-
-     igzstream in(argv[1]);
+	
+	unsigned int prune;
+	{
+		std::istringstream ist(argv[1]);
+		ist >> prune;
+		if(ist.bad()  || !ist.eof()){
+			std::cout << "konnte Argument 1 nicht verarbeiten. (keine nichtnegative Ganzzahl)\n";
+			exit(1);
+		}
+	}
+     igzstream in(argv[2]);
      string line,token;
 
 
@@ -69,6 +78,6 @@ int main (int argc, char* argv[]){
 
 		}
 
-     aStar::set_max_SentenceTranslation(1);
-     aStar::Suchalgorithmus(argv[2],&schwarz,&elex,&flex);
+     aStar::set_max_SentenceTranslation(prune);
+     aStar::Suchalgorithmus(argv[3],&schwarz,&elex,&flex);
 }

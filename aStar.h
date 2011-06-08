@@ -22,6 +22,7 @@ class aStar {
 
 	vector<HypothesisNode> vect;
  	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
+ 	
 
 	static int prune;
 
@@ -34,7 +35,8 @@ class aStar {
 	uint getStarElementPosition(const aStarElement& a);  //gibt an bei welchem Knoten die Teilübersetzung ist
 
 	public:
-
+	
+	unsigned int lineNumber;
 
 	static PTree<PTree < double> >* schwarz;
 	static Lexicon* elex;
@@ -44,9 +46,9 @@ class aStar {
 
 	static void set_max_SentenceTranslation(uint size);
 
-	void search();	//A*-Suche
+	std::vector<std::vector<unsigned int> > search();	//A*-Suche
 
-	void print();   //Ausgabefunktion
+	void print(std::vector< std::vector <unsigned int> > v);   //Ausgabefunktion
 
 	static void Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 	static void Suchalgorithmus2(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);

@@ -62,16 +62,19 @@ uint aStar::getStarElementPosition(const aStarElement& a){
 	return vect.size()-1 - a.trl.size();  //Länge des Satzes - Länge der Teiübersetung
 }
 
-void aStar::print(){ //gibt die oberste Kombination in stack aus
-	vector<uint> trl = stack.top().trl;
-	for(vector<uint>::reverse_iterator it = trl.rbegin(); it!=trl.rend(); it++){
-		std::cout << aStar::elex->getString(*it) << " ";    //ID->Wort
+void aStar::print(std::vector< std::vector <unsigned int> > v){
+	for(vector< vector < uint > >::iterator i = v.begin(); i != v.end(); i++){
+		std::cout << lineNumber << " # ";
+		for(vector<uint>::reverse_iterator it = i->rbegin(); it!=i->rend(); it++){
+			std::cout << aStar::elex->getString(*it) << " ";    //ID->Wort
+		}
+		std::cout << "\n";
 	}
-	std::cout << "\n";
 }
 
 //Eigentliche A*-Suche
-void aStar::search() {
+std::vector<std::vector<uint> > aStar::search() {
+	std::vector< std::vector <uint> > output;
 
 	int length = vect.size();
 
@@ -85,7 +88,7 @@ void aStar::search() {
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
 		if(stack.top().pos->getOutbound().size() ==0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
-			print();
+			output.push_back(stack.top().trl);
 			stack.pop();
 			n++;
 		} else {	//Führe einen A*-Schritt für das erste Element im Stack durch
@@ -113,6 +116,8 @@ void aStar::search() {
 			priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
 		}
 	}
+	
+	return output;
 }
 
 
@@ -126,6 +131,8 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 
      string token,line;
 
+	  unsigned int lineNumber = 0;
+	
      while(getline(in,line)){
 	  istringstream ist(line); //Einlesen des Satzes
 	  
@@ -137,6 +144,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 	  
 	  int aktPos=0; //merkt sich, wieviele Wörter schon eingelesen wurden
 	  
+
 	  while ( ist >> token){
 	       Word word_id_french=flex->getWord_or_add(token); // das word zum Wort (mit 2 Bits Sprache)
 	       unsigned int id_french= word_id_french.wordId(); //die id ohne sprachbits
@@ -200,14 +208,17 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 	  
 	  
 	  aStar astar(Knoten);
-	  astar.search();
+	  astar.lineNumber = lineNumber;
+	  astar.print(astar.search());
 	  
 	  for(unsigned int i = 0; i < Knoten.size(); i++){
 		 HypothesisNode& hnode = Knoten[i];
 		 for(unsigned int j = 0; j < hnode.getOutbound().size(); j++)
 		 	delete hnode.getOutbound()[j];
 	  }
-     }
-
+	  
+	  lineNumber ++;
+	  }
+	
 }
 
