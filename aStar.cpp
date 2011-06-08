@@ -1,5 +1,43 @@
 #include "aStar.h"
 
+
+void dotGraph(vector<HypothesisNode> &Knoten){
+		std::cout << "dotgraph g{\n";
+		for(int i=0; i<Knoten.size(); i++){
+			std::cout << "\t";
+			
+			for (int j=0; j<Knoten[i].getOutbound().size(); j++){
+				   
+			      if(i == 0) std::cout << "root";
+			      else{
+					cout << Knoten[i].getBestcost();
+			      }
+			      
+			      std::cout << " -> ";
+			      unsigned int position=Knoten[i].getOutbound()[j]->getDestination_pos();
+			      cout << Knoten[position].getBestcost();
+			      
+			      std::cout << " [label=\"";
+				for (int k=0; k< Knoten[i].getOutbound()[j]->getTranslation().size(); k++)
+					cout << Knoten[i].getOutbound()[j]->getTranslation()[k] << " ";
+				cout << Knoten[i].getOutbound()[j]->getCost() << " ";
+					
+				cout << "\"]\n";
+			}
+		}
+		std::cout << "}\n";
+
+}
+void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement>> stack){
+	cout << "stack :" << endl;	
+	while (!stack.empty() ){
+		aStarElement first=stack.top();
+		for (int i=0; i<first.trl.size(); i++)	cout << first.trl[i] << ", ";
+		cout << first.cost<<endl;
+		stack.pop();
+	}
+}
+
 uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
 Lexicon* aStar::elex=0;
 Lexicon* aStar::flex=0;
@@ -30,6 +68,7 @@ void aStar::print(){ //gibt die oberste Kombination in stack aus
 		std::cout << aStar::elex->getString(*it) << " ";    //ID->Wort
 	}
 	std::cout << "\n";
+	//cout << elex->getString(8);
 }
 
 //Eigentliche A*-Suche
@@ -56,7 +95,8 @@ void aStar::search() {
 			stack.pop();//altes Element wird entfernt
 
 			vector<PartialTranslation*> v=toExplore.pos->getOutbound(); //alle möglichen Übersetzungen
-			double bisherigerWeg = stack.top().cost - toExplore.pos->getBestcost();
+			double bisherigerWeg = toExplore.cost - toExplore.pos->getBestcost();
+			//cout << "bisheriger Weg " << bisherigerWeg << " = " <<toExplore.cost <<" - "<< toExplore.pos->getBestcost()<<endl;
 
 				for(uint i = 0; i<v.size(); i++){ //bestem Element werden nun alle Möglichkeiten zugefügt
 				aStarElement* anew = new aStarElement(toExplore);
@@ -66,12 +106,14 @@ void aStar::search() {
 
 				double remainingTranslationCost = vect[v[i]->getDestination_pos()].getBestcost();
 				anew->cost = v[i]->getCost() + remainingTranslationCost + bisherigerWeg; //Kosten aktualisieren
-
+				//cout << anew->cost << " = " << v[i]->getCost()<< " + " << remainingTranslationCost <<" + "<< bisherigerWeg<<endl;
 
 				anew->pos=&vect[v[i]->getDestination_pos()];
 
 				stack.push(*anew);
 			}
+			priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
+			//printstack(stack2);
 		}
 	}
 }
@@ -115,19 +157,25 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 		    for (int i=posPhraseStart; i<aktPos; i++){
 			 fphrase.push_back(sentence_id[i]);
 		    }
-		    
+		    	//cout << "fphrase: " << posPhraseStart << " " << aktPos << endl; 
 			PTree<PTree <double> >* schwarzRest=schwarz->traverse(fphrase);
 			if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen
 			PTree <double>* blauBaum=&schwarzRest->c;
+			//blauBaum->dot();
+			
 
 		    
 		    if (blauBaum){
 			 int counter=0; //nur fürs Programmieren, damit alle Fehler ausgemerzt werden 
 			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
 			      //if (counter++==10)	continue;
-			      vector<unsigned int> ephrase=(*it).phrase();
-			      
+			      vector<unsigned int> ephrase=it->phrase();
+			      //cout << "ephrase : " << endl;
+				
+				//for (int i=0; i<ephrase.size(); i++)	cout << ephrase[i] << ", ";
 			      double relfreq = it->c;
+				//cout << "ephrsae.size() " << ephrase.size() << endl;
+				//cout << "relfreq " << relfreq << endl;
 			      
 			      if (relfreq == 1./0. )	continue;
 			      
@@ -140,6 +188,8 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
 			      Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
 			      knoten_next.add_PartialTranslation_to_Outbound(Kante);   
+				//cout << endl;
+				//dotGraph(Knoten);
 			 }
 		    }
 		
@@ -158,25 +208,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 	       Knoten.push_back(knoten_next); //letzter Knoten (node_next) hat keine eingehenden Kanten
 	         
 	  }
-	  /*std::cout << "digraph g{\n";
-		for(int i=0; i<Knoten.size(); i++){
-			std::cout << "\t";
-			
-			for (int j=0; j<Knoten[i].getOutbound().size(); j++){
-				   
-			      if(i == 0) std::cout << "root";
-			      else{
-					cout << Knoten[i].getBestcost();
-			      }
-			      
-			      std::cout << " -> ";
-			      unsigned int position=Knoten[i].getOutbound()[j]->getDestination_pos();
-			      cout << Knoten[position].getBestcost();
-			      
-			      std::cout << " [label=\"" << Knoten[i].getOutbound()[j]->getTranslation()[0] << "\"]\n";
-			}
-		}
-		std::cout << "}\n";*/
+	  
 	  
 	  aStar astar(Knoten);
 	  astar.search();
