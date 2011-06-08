@@ -39,16 +39,17 @@ int main (int argc, char* argv[]){
      
      igzstream in(argv[1]);
      string line,token;
-     
-     
-     
-		while(getline(in,line)){ 
+
+
+
+		while(getline(in,line)){
 			stringstream ist(line);
+
 
 			double relfreq;
 			vector<uint> ephrase, fphrase;
 
-			ist >> relfreq >> token >>token; // token für "#" ACHTUNG das zweite Einlesen ist nur für die alten Trainingsdaten,da gibts relfreq zweimal
+			ist >> relfreq  >> token  >>token; // token für "#" ACHTUNG das zweite Einlesen ist nur für die alten Trainingsdaten,da gibts relfreq zweimal
 
 			while(ist>>token && token != "#"){
 				fphrase.push_back(flex.getWord_or_add(token));
@@ -71,10 +72,9 @@ int main (int argc, char* argv[]){
 			
 		}
 		
-     aStar::set_max_SentenceTranslation(5);
+
+     aStar::set_max_SentenceTranslation(1);
      aStar::Suchalgorithmus(argv[2],&schwarz,&elex,&flex);
-     
-     
-     
-     
+
+     cerr << "Zuende" << endl;
 }
