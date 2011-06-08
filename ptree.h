@@ -45,8 +45,10 @@ class PTree{
 		/* Destruktor: da wir eine map<uint, Ptree*> haben müssen wir alle
 		 * Objekte, die von outbound referenziert werden löschen */
 		for(typename std::map<uint,PTree*>::iterator it = outbound.begin(); it != outbound.end(); it ++){
-			it->second->parent = 0;
-			delete it->second;
+			if(it->second){
+				it->second->parent = 0;
+				delete it->second;
+			}
 		}
 		if(parent)
 			parent->outbound.erase(inbound);

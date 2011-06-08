@@ -200,6 +200,12 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 	  
 	  aStar astar(Knoten);
 	  astar.search();
+	  
+	  for(unsigned int i = 0; i < Knoten.size(); i++){
+		 HypothesisNode& hnode = Knoten[i];
+		 for(unsigned int j = 0; j < hnode.getOutbound().size(); j++)
+		 	delete hnode.getOutbound()[j];
+	  }
      }
 
 }
