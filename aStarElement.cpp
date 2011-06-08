@@ -13,6 +13,9 @@ void aStarElement::addWords2(std::vector<uint> w){
 	  addWord(w[w.size()-1-i]); //die Phrase muss umgekehrt eingefügt werden!
 }
 
+bool aStarElement::operator>(const aStarElement& a) const{
+	return cost>a.cost;
+}
 bool aStarElement::operator<(const aStarElement& a) const{
 	return cost<a.cost;
 }

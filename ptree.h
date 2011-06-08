@@ -15,7 +15,7 @@ class PTree{
 	 * Spart einem von Hand auf einem Array einen AVL-Baum zu implemen-
 	 * tieren */
 
-	PTree* insertion_traversal(std::vector<uint> query, uint start = 0){
+	PTree* insertion_traversal(std::vector<uint> query, uint start = 0, const T& value = T()){
 		/* Diese Funktion legt alle in Query hinter start liegenden Knoten
 		 * und Kanten mit Inhalt T() an. Sie wird nur dann aufgerufen, wenn
 		 * query[0] nicht im aktuellen Knoten gefunden wurde */
@@ -23,7 +23,7 @@ class PTree{
 		PTree* last;
 		for(uint i = start; i < query.size(); i++){
 			last = next;
-			next = new PTree(T(),last,query[i]);
+			next = new PTree(value,last,query[i]);
 			last->outbound[query[i]] = next;
 		}
 		return next;
@@ -48,7 +48,7 @@ class PTree{
 			parent->outbound.erase(inbound);
 	}
 
-	PTree* traverse(std::vector<uint> query, bool insert = false){
+	PTree* traverse(std::vector<uint> query, bool insert = false, const T& value = T()){
 		/* Diese Funktion traversiert den Baum endlang des durch query vor-
 		 * gegebenen Pfades, ausgehend von *this. Rückgabe wert ist der
 		 * letzte Knoten auf dem Pfad.
@@ -63,7 +63,7 @@ class PTree{
 			next = next->outbound[query[i]];
 			if(!next){
 				if (!insert) return 0;
-				else return last->insertion_traversal(query,i);
+				else return last->insertion_traversal(query,i,value);
 			}
 		}
 
