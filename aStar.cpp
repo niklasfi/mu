@@ -2,7 +2,7 @@
 
 
 void dotGraph(vector<HypothesisNode> &Knoten){
-		std::cout << "dotgraph g{\n";
+		std::cout << "digraph g{\n";
 		for(int i=0; i<Knoten.size(); i++){
 			std::cout << "\t";
 			
