@@ -24,7 +24,7 @@ class aStar {
  	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
  	
 
-	static int prune;
+	static double prune;
 
 
 	static uint max_SentenceTranslation;

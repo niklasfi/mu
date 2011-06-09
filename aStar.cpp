@@ -42,7 +42,7 @@ uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
 Lexicon* aStar::elex=0;
 Lexicon* aStar::flex=0;
 PTree< PTree <double> >* aStar::schwarz=0;
-int aStar::prune=2;
+double aStar::prune=2;
 
 //Constructor
 aStar::aStar(vector<HypothesisNode>& vect):vect(vect){}
