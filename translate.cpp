@@ -68,9 +68,9 @@ int main (int argc, char* argv[]){
 			if(phrasePenalty) relfreq+=1;
 			if(wordPenalty) relfreq+= ephrase.size();
 			if(singleCountBit){
-				int singleCount;
-				ist>>token>>singleCount;
-				if(singleCount>1) relfreq+=1;
+				int singleCountF, singleCountE;
+				ist>>token>>singleCountF >> token >> singleCountE;
+				if(singleCountF>1) relfreq+=1;
 			}
 			if(stRatio) relfreq+=(((double)fphrase.size())/((double)ephrase.size()));
 
