@@ -16,12 +16,13 @@
 int main(int argc, char* argv[]) {
 	
 	if (argc != 4) {
-		std::cout << "Aufruf mit Parametern: <französiche Trainigsdaten> <englische Trainingsdaten> <Alignment der Trainingsdaten>";
+		std::cout << "Aufruf mit Parametern: <französiche Trainigsdaten> <englische Trainingsdaten> <Alignment der Trainingsdaten>\n";
 		return 0;
 	}
 	Lexicon flex(french);
 	Lexicon elex(english);
 	PTree<std::pair<int, PTree<int> > > pTree;
+	std::map< std::vector< uint >, uint> eSinglecount;
 	
 	igzstream f_in(argv[1]), e_in(argv[2]), a_in(argv[3]);
 	std::string f_line, e_line, a_line;
@@ -117,6 +118,9 @@ int main(int argc, char* argv[]) {
 							f_vec_tmp.push_back(f_vec[k].first);
 						for (int k = i1; k <= i2; k++)
 							e_vec_tmp.push_back(e_vec[k].first);
+						
+						
+
 						PTree<std::pair<int, PTree<int> > >* tree_tmp1 = new PTree<std::pair<int, PTree<int> > >();
 						PTree<int>* tree_tmp2 = new PTree<int>();
 						tree_tmp1 = pTree.traverse(f_vec_tmp);			//Quellphrase in Baum einfügen
