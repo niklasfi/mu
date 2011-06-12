@@ -96,3 +96,5 @@ double bleu(SentencePool& sp, uint N = 4){
 	double d = exp(result) * bleu_bp(refsize,hypsize);
 	return d;
 }
+
+double membleu( std::vector< std::pair < std::vector<uint>, std::vector <SentenceInfo> > > nBestList, std::vector<uint> picks);
