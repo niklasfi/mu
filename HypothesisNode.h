@@ -1,4 +1,4 @@
-
+#include "cost.h"
 #include <iostream>
 #ifndef HypothesisNode_H
 #define HypothesisNode_H
@@ -14,14 +14,14 @@ class HypothesisNode{
 
       private:
 
-             double bestcost; //minimalen Kosten bis zu diesem Knoten
+             Cost bestcost; //minimalen Kosten bis zu diesem Knoten
              vector<PartialTranslation*> inbound; //alle möglichen uebersetzung um zu diesem Knoten zu kommen
              vector<PartialTranslation*> outbound;
 
       public:
              HypothesisNode(); //Constructor
-             double getBestcost();
-             void setBestcost(double cost);
+             Cost getBestcost();
+             void setBestcost(Cost cost);
              vector<PartialTranslation*>& getInbound();
 
              void remove_Translation(unsigned int pos); //es fängt von 0 an zu zählen, beliebiges Element kann gelöscht werden

@@ -6,18 +6,18 @@ class PartialTranslation;
 //Constructor
 
 HypothesisNode::HypothesisNode(){
-                bestcost= (1./0.);
+	bestcost= Cost();
 }
 
 //getter, setter
-double HypothesisNode::getBestcost(){
+Cost HypothesisNode::getBestcost(){
        return bestcost;
 }
-void HypothesisNode::setBestcost( double cost){
+void HypothesisNode::setBestcost(Cost cost){
      bestcost=cost;
 }
 vector<PartialTranslation*>& HypothesisNode::getInbound(){
-                             return inbound;
+	return inbound;
 }
 
 vector<PartialTranslation*>& HypothesisNode::getOutbound(){
