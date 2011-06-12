@@ -2,18 +2,19 @@
 #include <iostream>
 #include "global.h"
 #include "HypothesisNode.h"
+#include "cost.h"
 
 using namespace std;
 
 class aStarElement {
 	public:
-	double cost;	//Teilkosten
+	Cost cost;	//Teilkosten
 	vector<unsigned int> trl; //Teilübersetzung in IDs rückwärts aufgeschrieben
 	HypothesisNode* pos; //gibt an bis zu welchem Knoten die Übersetzung gekommen ist
 
 	//Constructor
 	aStarElement(const aStarElement& origin);
-	aStarElement(vector<unsigned int>&  t, double c, HypothesisNode* pos);
+	aStarElement(vector<unsigned int>&  t, Cost c, HypothesisNode* pos);
 
 
 	void addWord(uint w); //erweitert Teilübersetzung um Wort w
