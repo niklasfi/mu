@@ -16,6 +16,7 @@
 #include "global.h"
 #include "cmath"
 #include <string>
+#include "cost.h"
 
 
 class aStar {
@@ -38,7 +39,7 @@ class aStar {
 	
 	unsigned int lineNumber;
 
-	static PTree<PTree < double> >* schwarz;
+	static PTree<PTree < Cost> >* schwarz;
 	static Lexicon* elex;
 	static Lexicon* flex;
 	//Constructor

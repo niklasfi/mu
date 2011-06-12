@@ -10,17 +10,17 @@ void dotGraph(vector<HypothesisNode> &Knoten){
 				   
 			      if(i == 0) std::cout << "root";
 			      else{
-					cout << Knoten[i].getBestcost();
+					cout << Knoten[i].getBestcost().cost();
 			      }
 			      
 			      std::cout << " -> ";
 			      unsigned int position=Knoten[i].getOutbound()[j]->getDestination_pos();
-			      cout << Knoten[position].getBestcost();
+			      cout << Knoten[position].getBestcost().cost();
 			      
 			      std::cout << " [label=\"";
 				for (int k=0; k< Knoten[i].getOutbound()[j]->getTranslation().size(); k++)
 					cout << Knoten[i].getOutbound()[j]->getTranslation()[k] << " ";
-				cout << Knoten[i].getOutbound()[j]->getCost() << " ";
+				cout << Knoten[i].getOutbound()[j]->getCost().cost() << " ";
 					
 				cout << "\"]\n";
 			}
@@ -33,7 +33,7 @@ void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aSta
 	while (!stack.empty() ){
 		aStarElement first=stack.top();
 		for (int i=0; i<first.trl.size(); i++)	cout << first.trl[i] << ", ";
-		cout << first.cost<<endl;
+		cout << first.cost.cost()<<endl;
 		stack.pop();
 	}
 }
@@ -41,7 +41,7 @@ void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aSta
 uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
 Lexicon* aStar::elex=0;
 Lexicon* aStar::flex=0;
-PTree< PTree <double> >* aStar::schwarz=0;
+PTree< PTree <Cost> >* aStar::schwarz=0;
 double aStar::prune=2;
 
 //Constructor
@@ -53,14 +53,6 @@ void aStar::set_max_SentenceTranslation(uint size){
 	aStar::max_SentenceTranslation = size;
 }
 
-//Vergleichsfunktion zum Sortieren
-bool compare1 (aStarElement e1, aStarElement e2) {
-	return e1.cost < e2.cost;
-}
-
-uint aStar::getStarElementPosition(const aStarElement& a){
-	return vect.size()-1 - a.trl.size();  //Länge des Satzes - Länge der Teiübersetung
-}
 
 void aStar::print(std::vector< std::vector <unsigned int> > v){
 	for(vector< vector < uint > >::iterator i = v.begin(); i != v.end(); i++){
@@ -97,7 +89,7 @@ std::vector<std::vector<uint> > aStar::search() {
 			stack.pop();//altes Element wird entfernt
 
 			vector<PartialTranslation*> v=toExplore.pos->getOutbound(); //alle möglichen Übersetzungen
-			double bisherigerWeg = toExplore.cost - toExplore.pos->getBestcost();
+			Cost bisherigerWeg = toExplore.cost - toExplore.pos->getBestcost();
 
 				for(uint i = 0; i<v.size(); i++){ //bestem Element werden nun alle Möglichkeiten zugefügt
 				aStarElement* anew = new aStarElement(toExplore);
@@ -105,7 +97,7 @@ std::vector<std::vector<uint> > aStar::search() {
 				if (v[i]->getTranslation().size() == 0)	cout << "??" << endl;
 				anew->addWords2(v[i]->getTranslation());
 
-				double remainingTranslationCost = vect[v[i]->getDestination_pos()].getBestcost();
+				Cost remainingTranslationCost = vect[v[i]->getDestination_pos()].getBestcost();
 				anew->cost = v[i]->getCost() + remainingTranslationCost + bisherigerWeg; //Kosten aktualisieren
 
 				anew->pos=&vect[v[i]->getDestination_pos()];
@@ -122,7 +114,7 @@ std::vector<std::vector<uint> > aStar::search() {
 
 
 
-void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex){
+void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
      igzstream in(eingabe);
      aStar::flex=fLex;
      elex=eLex;
@@ -140,7 +132,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 
 	  vector<HypothesisNode> Knoten;
 	  Knoten.push_back(HypothesisNode());//initialisiert den ersten Knoten
-	  Knoten[0].setBestcost(0);
+	  Knoten[0].setBestcost(Cost(0));
 	  
 	  int aktPos=0; //merkt sich, wieviele Wörter schon eingelesen wurden
 	  
@@ -162,27 +154,27 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 		    for (int i=posPhraseStart; i<aktPos; i++){
 			 fphrase.push_back(sentence_id[i]);
 		    }
-			PTree<PTree <double> >* schwarzRest=schwarz->traverse(fphrase);
+			PTree<PTree <cost> >* schwarzRest=schwarz->traverse(fphrase);
 			if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen
-			PTree <double>* blauBaum=&schwarzRest->c;
+			PTree <cost>* blauBaum=&schwarzRest->c;
 			
 
 		    
 		    if (blauBaum){
 			 int counter=0; //nur fürs Programmieren, damit alle Fehler ausgemerzt werden 
-			 for (PTree<double>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
+			 for (PTree<cost>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
 			      //if (counter++==10)	continue;
 			      vector<unsigned int> ephrase=it->phrase();
 			      
-			      double relfreq = it->c;
+			      cost relfreq = it->c;
 				
-			      if (relfreq == 1./0. )	continue;
+			      if (relfreq.cost() == 1./0. )	continue;
 			      
-			      double cost_till_aktPos=Knoten[posPhraseStart].getBestcost();
+			      double cost_till_aktPos=Knoten[posPhraseStart].getBestcost().cost();
 			      
-			      if (cost_till_aktPos+prune > knoten_next.getBestcost())	continue; //pruning ergibt, das ist eine schlecht Übersetzung
+			      if (cost_till_aktPos+prune > knoten_next.getBestcost().cost())	continue; //pruning ergibt, das ist eine schlecht Übersetzung
 			      
-			      if(cost_till_aktPos+relfreq < knoten_next.getBestcost())	knoten_next.setBestcost(cost_till_aktPos+relfreq);
+			      if(cost_till_aktPos+relfreq < knoten_next.getBestcost().cost())	knoten_next.setBestcost(cost_till_aktPos+relfreq);
 			      
 			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
 			      Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
@@ -197,7 +189,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, L
 			unsigned int id_english=elex->getWord_or_add(word_string);
 
 			//dann die Kante anlegen, dabei sollen die Kosten niedrig sein, da sie sowieso genutzt werden muss, kann sie auch direkt exploriert werden
-			PartialTranslation* Kante= new PartialTranslation(0,vector<unsigned int>{id_english},&Knoten[aktPos],aktPos-1);
+			PartialTranslation* Kante= new PartialTranslation(Cost(0),vector<unsigned int>{id_english},&Knoten[aktPos],aktPos-1);
 			knoten_next.setBestcost(Knoten.back().getBestcost());
 			knoten_next.add_PartialTranslation_to_Outbound(Kante);
 			Knoten.back().add_PartialTranslation_to_Inbound(Kante);
