@@ -4,6 +4,9 @@
 #include <vector>
 
 class Cost{
+	private:
+	static std::vector<int> lookup; // falls das modell gesetzt ist, dann wird hier die stelle im vektor des Modells angegeben sonst -1 
+	
 	public:
 	
 	enum Model{ 
@@ -19,28 +22,40 @@ class Cost{
 	};
 	static const unsigned int modelCount = 9; //gibt an, wie viele Modelle verfügt werden können
 	
-	//Konstruktor
+	static std::vector<double> scale; //speichert die skalierungsfaktoren für die einzelnen Modelle
+	
+	//============Attribute=========================
+	std::vector<double> modelCosts; //speichert die werte der einzelnen Modelle
+	
+	//=============Konstruktor======================
 	Cost(double val = 1.0/0.0){
 		modelCosts = std::vector< double > (scale.size(),val);
 	}
 	
-	static void select(std::vector<Model>); //select the models you want to use
 
-	static std::vector<double> scale; //speichert die skalierungsfaktoren für die einzelnen Modelle
-	//setter
+
+
+	
+	//============getter & setter=====================
+		
+	static void select(std::vector<Model>); //select the models you want to use
 	static void setScale(Model, double);
 	static void setScale(std::vector< std::pair<Model,double> >);
-
-	std::vector<double> modelCosts; //speichert die werte der einzelnen Modelle
-	double cost() const; //same as totalize
-	double cost(Model); //get (or set, as this is an lvalue) cost for model - geht kaputt, wenn das Model nicht gesetzt ist
+	
 	std::vector<double> cost(std::vector<Model>); //get vector of costs for multiple models
+
 	Cost& cost(Model, double); //alternative way of setting the costs for a model
 	Cost& cost(std::vector<std::pair<Model,double>>); //set multiple costs
+	
+	//=============die Funktionen=========================
+	double cost() const; //same as totalize
+	double cost(Model); //get (or set, as this is an lvalue) cost for model - geht kaputt, wenn das Model nicht gesetzt ist
+
+
 
 	double totalize() const; //calculates total costs given the current scaling
 	
-	double calc(
+	double calc(//sets the penalties for all Models
 		double rel_freq_f,
 		double rel_freq_e,
 		const std::vector<unsigned int>& f_phrase,
@@ -50,8 +65,9 @@ class Cost{
 		double source_to_target,
 		double target_to_source,
 		double unigram
-	); //sets the penalties for all Models
+	);
 	
+	//================berechnet die einzelnen Modelle========================
 	Cost& calc_source_to_target_phrase(double rel_freq_f){
 		return cost(source_to_target_phrase,rel_freq_f);
 	}
@@ -80,16 +96,17 @@ class Cost{
 		return cost(unigram_language_model, unigram);
 	}
 	
+	//================Operatorenüberladung==================
+	Cost& operator=(const Cost& c);
+	
 	Cost& operator+=(const Cost& c);
 	Cost operator+ (const Cost& c);
 	
 	Cost& operator-=(const Cost& c);
-	cost& operator- (const Cost& c);
+	Cost operator- (const Cost& c);
 	
 	bool operator==(const Cost& c);
 	bool operator!=(const Cost& c);
 
-	private:
-	
-	static std::vector<int> lookup; // falls das modell gesetzt ist, dann wird hier die stelle im vektor des Modells angegeben sonst -1 
+
 };
