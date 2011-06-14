@@ -114,7 +114,7 @@ std::vector<std::vector<uint> > aStar::search() {
 
 
 
-void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
+void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
      igzstream in(eingabe);
      aStar::flex=fLex;
      elex=eLex;
@@ -154,19 +154,19 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < cost> >* blacktree, Lex
 		    for (int i=posPhraseStart; i<aktPos; i++){
 			 fphrase.push_back(sentence_id[i]);
 		    }
-			PTree<PTree <cost> >* schwarzRest=schwarz->traverse(fphrase);
+			PTree<PTree <Cost> >* schwarzRest=schwarz->traverse(fphrase);
 			if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen
-			PTree <cost>* blauBaum=&schwarzRest->c;
+			PTree <Cost>* blauBaum=&schwarzRest->c;
 			
 
 		    
 		    if (blauBaum){
 			 int counter=0; //nur fürs Programmieren, damit alle Fehler ausgemerzt werden 
-			 for (PTree<cost>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
+			 for (PTree<Cost>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
 			      //if (counter++==10)	continue;
 			      vector<unsigned int> ephrase=it->phrase();
 			      
-			      cost relfreq = it->c;
+			      Cost relfreq = it->c;
 				
 			      if (relfreq.cost() == 1./0. )	continue;
 			      
@@ -174,7 +174,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree < cost> >* blacktree, Lex
 			      
 			      if (cost_till_aktPos+prune > knoten_next.getBestcost().cost())	continue; //pruning ergibt, das ist eine schlecht Übersetzung
 			      
-			      if(cost_till_aktPos+relfreq < knoten_next.getBestcost().cost())	knoten_next.setBestcost(cost_till_aktPos+relfreq);
+			      if(cost_till_aktPos+relfreq.cost() < knoten_next.getBestcost().cost())	knoten_next.setBestcost(cost_till_aktPos+relfreq.cost());
 			      
 			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
 			      Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);

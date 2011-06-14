@@ -51,7 +51,7 @@ class aStar {
 
 	void print(std::vector< std::vector <unsigned int> > v);   //Ausgabefunktion
 
-	static void Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
-	static void Suchalgorithmus2(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
+	static void Suchalgorithmus(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
+	static void Suchalgorithmus2(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
      
 };
