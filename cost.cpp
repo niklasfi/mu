@@ -60,7 +60,8 @@ Cost& Cost::cost(std::vector<std::pair<Model,double>> mp){
 double Cost::totalize() const {
 	double total = 0;
 	for(uint i = 0; i < lookup.size(); i++)
-		total += cost(Model(i)); //falls model nicht existiert rechnet er + 0
+		if (lookup[i] != -1)
+			total += modelCosts[lookup[i]]; //falls model nicht existiert rechnet er + 0
 	return total;
 }
 
@@ -85,4 +86,35 @@ double Cost::calc(
 	calc_single_count_bit(f_singlecount, e_singlecount).
 	calc_source_to_target_ratio(f_phrase, e_phrase).
 	calc_unigram_language_model(unigram).totalize();
+}
+
+Cost& Cost::operator=(const Cost& c){
+	modelCosts=c.modelCosts;
+	return *this;
+}
+
+Cost& Cost::operator+=(const Cost& c){
+	for (uint i=0; i< lookup.size(); i++)
+		if (lookup[i] != -1)
+			modelCosts[lookup[i]]+=c.modelCosts[lookup[i]];
+	return *this;
+}
+
+Cost Cost::operator+(const Cost& c){
+	Cost z=*this;
+	z+=c;
+	return z;
+}
+
+Cost& Cost::operator-=(const Cost& c){
+	for (uint i=0; i<lookup.size(); i++)
+		if (lookup[i] != -1)
+			modelCosts[lookup[i]]-=c.modelCosts[lookup[i]];
+	return *this;
+}
+
+Cost Cost::operator-(const Cost& c){
+	Cost z=*this;
+	z-=c;
+	return z;
 }
