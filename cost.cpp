@@ -1,13 +1,26 @@
 #include <cost.h>
 #include <assert.h>
 
-std::vector<double> Cost::scale;
-std::vector<int> Cost::lookup;
+std::vector<double> Cost::scale=std::vector<double>(modelCount,1);
+std::vector<int> Cost::lookup(modelCount);
+unsigned int Cost:: usedModelCount=0;
 
 typedef unsigned int uint;
 
+void Cost::add_model(Model m){
+	if (usedModelCount == 0)
+		for (int i=0; i<modelCount; i++)
+			lookup[i]=-1;
+	if(lookup[m] == -1)
+		lookup[m]=usedModelCount++;
+}
+
 void Cost::select(std::vector<Model> ms){
-	if(!lookup.empty()) assert(false); //man darf sich nur einmal entscheiden, welche Modelle man will!
+	if(!lookup.empty()) {
+		for (uint i=0; i< lookup.size(); i++) //ich habe das mal für den test rausgenommen
+			lookup[i]=-1;
+	//assert(false); //man darf sich nur einmal entscheiden, welche Modelle man will!
+	}
 	
 	lookup.resize(modelCount,-1);
 	
@@ -46,8 +59,10 @@ std::vector<double> Cost::cost(std::vector<Model> ms){
 }
 
 Cost& Cost::cost(Model m, double v){
-	if(lookup[m]!=-1)
+	if(lookup[m]!=-1){
 		modelCosts[lookup[m]]=v;
+		//std::cout << "model " << m << "cost " << v << std::endl;
+	}
 	return *this;
 }
 

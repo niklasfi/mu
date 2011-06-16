@@ -2,10 +2,12 @@
 
 #include <utility>
 #include <vector>
+#include <iostream>
 
 class Cost{
 	private:
 	static std::vector<int> lookup; // falls das modell gesetzt ist, dann wird hier die stelle im vektor des Modells angegeben sonst -1 
+	static unsigned int usedModelCount;
 	
 	public:
 	
@@ -29,7 +31,7 @@ class Cost{
 	
 	//=============Konstruktor======================
 	Cost(double val = 1.0/0.0){
-		modelCosts = std::vector< double > (scale.size(),val);
+		modelCosts = std::vector< double > (usedModelCount,val);
 	}
 	
 
@@ -37,7 +39,8 @@ class Cost{
 
 	
 	//============getter & setter=====================
-		
+	
+	static void add_model(Model m);
 	static void select(std::vector<Model>); //select the models you want to use
 	static void setScale(Model, double);
 	static void setScale(std::vector< std::pair<Model,double> >);
@@ -90,7 +93,8 @@ class Cost{
 		return cost(single_count_bit, f_singlecount > 1 && e_singlecount > 1 ? 1 : 0);
 	}
 	Cost& calc_source_to_target_ratio(const std::vector<unsigned int>& f_phrase, const std::vector<unsigned int>& e_phrase){
-		return cost(source_to_target_ratio,(1.0*f_phrase.size())/e_phrase.size());
+		double quotient=((1.0*f_phrase.size())/e_phrase.size());
+		return cost(source_to_target_ratio,(quotient));
 	}
 	Cost& calc_unigram_language_model(double unigram){
 		return cost(unigram_language_model, unigram);
