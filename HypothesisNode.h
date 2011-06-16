@@ -8,8 +8,6 @@ class PartialTranslation;  //Vordeklaration
 using namespace std;
 
 
-
-
 class HypothesisNode{
 
       private:
@@ -21,7 +19,7 @@ class HypothesisNode{
       public:
              HypothesisNode(); //Constructor
              Cost getBestcost();
-             void setBestcost(Cost cost);
+             void setBestcost(const Cost& cost);
              vector<PartialTranslation*>& getInbound();
 
              void remove_Translation(unsigned int pos); //es fängt von 0 an zu zählen, beliebiges Element kann gelöscht werden

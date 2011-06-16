@@ -13,7 +13,7 @@ HypothesisNode::HypothesisNode(){
 Cost HypothesisNode::getBestcost(){
        return bestcost;
 }
-void HypothesisNode::setBestcost(Cost cost){
+void HypothesisNode::setBestcost(const Cost& cost){
      bestcost=cost;
 }
 vector<PartialTranslation*>& HypothesisNode::getInbound(){
