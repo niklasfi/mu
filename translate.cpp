@@ -56,21 +56,21 @@ int main (int argc, char* argv[]){
 	
 	for(int i=4; i<argc;i++){
 		std::string in = argv[i];
-		if     (in == "1") models_selected.push_back(Cost::source_to_target_phrase);
-		else if(in == "2") models_selected.push_back(Cost::target_to_source_phrase);
-		else if(in == "3") models_selected.push_back(Cost::source_to_target_unigram);
-		else if(in == "4") models_selected.push_back(Cost::target_to_source_unigram);
-		else if(in == "5") models_selected.push_back(Cost::phrase_penalty);
-		else if(in == "6") models_selected.push_back(Cost::word_penalty );
-		else if(in == "7") models_selected.push_back(Cost::single_count_bit);
-		else if(in == "8") models_selected.push_back(Cost::source_to_target_ratio );
-		else if(in == "9") models_selected.push_back(Cost::unigram_language_model);
+		if     (in == "1") Cost::add_model(Cost::source_to_target_phrase);
+		else if(in == "2") Cost::add_model(Cost::target_to_source_phrase);
+		else if(in == "3") Cost::add_model(Cost::source_to_target_unigram);
+		else if(in == "4") Cost::add_model(Cost::target_to_source_unigram);
+		else if(in == "5") Cost::add_model(Cost::phrase_penalty);
+		else if(in == "6") Cost::add_model(Cost::word_penalty );
+		else if(in == "7") Cost::add_model(Cost::single_count_bit);
+		else if(in == "8") Cost::add_model(Cost::source_to_target_ratio );
+		else if(in == "9") Cost::add_model(Cost::unigram_language_model);
 		else{
 			cout << "invalid argument!\n";
 			exit (1);
 		}
 	}
-	Cost::select(models_selected);
+	//Cost::select(models_selected);
 	unsigned int prune;
 	{
 		std::istringstream ist(argv[1]);
@@ -110,7 +110,7 @@ int main (int argc, char* argv[]){
 			
 			pair< unsigned int, double>* pruning_infos=&pruningTree.traverse(fphrase,true,pruningStart)->c;
 			
-			if (kosten_insgesamt > pruning_infos->first+prune || pruning_infos->second >25)	continue; //pruning ergibt, wir wollen es nicht in den Ptree mitaufnehmen
+			if (kosten_insgesamt > pruning_infos->second+prune || pruning_infos->first >25)	continue; //pruning ergibt, wir wollen es nicht in den Ptree mitaufnehmen
 				
 			//if (kosten_insgesamt< pruning_infos->second)	pruning_infos->second=kosten_insgesamt;  _jetzt irrelevant, da ich von einer geordneten eingabe ausgehe
 			pruning_infos->first++;
@@ -120,7 +120,7 @@ int main (int argc, char* argv[]){
 			schwarz.traverse(fphrase,true)->c.traverse(ephrase,true,Cost(1./0.))->c = kosten;
 
 		}
-		cerr << " schwarz erstellt" << endl;
+		//cerr << " schwarz erstellt" << endl;
 
      aStar::set_max_SentenceTranslation(prune);
      aStar::Suchalgorithmus(argv[3],&schwarz,&elex,&flex);
