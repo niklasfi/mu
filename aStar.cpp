@@ -132,7 +132,9 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexi
 
 	  vector<HypothesisNode> Knoten;
 	  Knoten.push_back(HypothesisNode());//initialisiert den ersten Knoten
-	  Knoten[0].setBestcost(Cost(0));
+	  Cost startkosten(0);
+	  Knoten[0].setBestcost(startkosten);
+	  cout << "start kosten " << Knoten[0].getBestcost().cost() << endl;
 	  
 	  int aktPos=0; //merkt sich, wieviele Wörter schon eingelesen wurden
 	  
@@ -174,7 +176,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexi
 			      
 			      if (cost_till_aktPos+prune > knoten_next.getBestcost().cost())	continue; //pruning ergibt, das ist eine schlecht Übersetzung
 			      
-			      if(cost_till_aktPos+relfreq.cost() < knoten_next.getBestcost().cost())	knoten_next.setBestcost(cost_till_aktPos+relfreq.cost());
+			      if(cost_till_aktPos+relfreq.cost() < knoten_next.getBestcost().cost())	knoten_next.setBestcost(Knoten[posPhraseStart].getBestcost()+relfreq.cost());
 			      
 			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
 			      Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
@@ -195,10 +197,10 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexi
 			Knoten.back().add_PartialTranslation_to_Inbound(Kante);
 		}
 	       Knoten.push_back(knoten_next); //letzter Knoten (node_next) hat keine eingehenden Kanten
-	         
+	       
 	  }
 	  
-	  
+	  //dotGraph(Knoten);
 	  aStar astar(Knoten);
 	  astar.lineNumber = lineNumber;
 	  astar.print(astar.search());
