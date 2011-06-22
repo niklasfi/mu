@@ -3,6 +3,7 @@
 #include "lexicon.h"
 #include "word.h"
 #include "ptree.h"
+#include "wordinfo.h"
 
 #include "gzstream/gzstream.h"
 
@@ -12,17 +13,23 @@
 #include <vector>
 #include <algorithm>
 #include <cmath> 
+#include <unordered_map>
 
 int main(int argc, char* argv[]) {
 	
 	if (argc != 4) {
-		std::cout << "Aufruf mit Parametern: <französiche Trainigsdaten> <englische Trainingsdaten> <Alignment der Trainingsdaten>\n";
+		std::cout << "Aufruf mit Parametern: <französiche Trainigsdaten> <englische Trainingsdaten> <Alignment der Trainingsdaten>\n"
+			<< "Folgende Ausgabe: relfreq_f relfreq_e # quellphrase # zielphrase # singlecf singlece # source_to_target target_to_source # unigram-sprachmodell\n";
 		return 0;
 	}
 	Lexicon flex(french);
 	Lexicon elex(english);
 	PTree<std::pair<int, PTree<int> > > pTree;
 	PTree<unsigned int> eSinglecount;
+
+	uint eCount = 0;				//Gesamtzahl der englischen Wörter
+
+	std::unordered_map<uint,Wordinfo> ef_pair, fe_pair;	//Einzelwortbasierte Übersetzungshäufigkeit von e nach f (und umgekehrt)
 	
 	igzstream f_in(argv[1]), e_in(argv[2]), a_in(argv[3]);
 	std::string f_line, e_line, a_line;
@@ -48,6 +55,7 @@ int main(int argc, char* argv[]) {
 			std::pair<uint, std::vector<int> > pair_tmp;
 			pair_tmp.first = id;
 			e_vec.push_back(pair_tmp);
+			eCount++;
 		}
 		
 		getline(a_in, a_line);	//"SEND:" abfangen
@@ -61,6 +69,12 @@ int main(int argc, char* argv[]) {
 				a_ist >> s >> f_ind >> e_ind;
 				f_vec[f_ind].second.push_back(e_ind);	//Speichere einzelnes Alignment in f_vec
 				e_vec[e_ind].second.push_back(f_ind);	//Speichere einzelnes Alignment in e_vec
+
+				uint& f_id = f_vec[f_ind].first, e_id = e_vec[e_ind].first;
+				fe_pair[f_id].pairs[e_id]++;		//Paircount für f nach e erhöhen
+				fe_pair[f_id].singlecount++;		//Singlecount für f nach e erhöhen
+				ef_pair[e_id].pairs[f_id]++;		//Paircount für e nach f erhöhen
+				ef_pair[e_id].singlecount++;		//Singlecount für e nach f erhöhen
 			}
 		} while(true);
 
@@ -148,11 +162,33 @@ int main(int argc, char* argv[]) {
 					for (int k = 0; k < target_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
 						target_phrase += elex.getString(target_id[k]) + " ";
 
+					double source_to_target = 1;
+					for (int k = 0; k < target_id.size(); k++) {
+						double  sum_stt = 0;
+						for (int l = 0; l < source_id.size(); l++) {
+							sum_stt += (double) fe_pair[source_id[l]].pairs[target_id[k]] / (double) fe_pair[source_id[l]].singlecount;
+						}
+						source_to_target *= sum_stt / source_id.size();
+					}
+					source_to_target = -log(source_to_target);
+
+					double target_to_source = 1;
+					for (int k = 0; k < source_id.size(); k++) {
+						double sum_tts = 0;
+						for (int l = 0; l < target_id.size(); l++) {
+							sum_tts += (double) ef_pair[target_id[l]].pairs[source_id[k]] /  (double) ef_pair[target_id[l]].singlecount;
+						}
+						target_to_source *= sum_tts / target_id.size();
+					}
+					target_to_source = -log(target_to_source);
+
 					uint singlecount_e = eSinglecount.traverse(target_id)->c;
 					double relFreqF = log(singlecount_f) - log(paircount);	//Bestimmen der relativen Wahrscheinlichkeit (negativer Logarithmus)
 					double relFreqE = log(singlecount_e) - log(paircount);
 					
-					std::cout << relFreqF << " " << relFreqE << " # " << source_phrase << "# " << target_phrase << "# " << singlecount_f << " "<< singlecount_e <<"\n";	//Ausgabe
+					double unigram = log(eCount) - log(singlecount_e);
+					
+					std::cout << relFreqF << " " << relFreqE << " # " << source_phrase << "# " << target_phrase << "# " << singlecount_f << " "<< singlecount_e << " # " << source_to_target << " " << target_to_source << " # " << unigram << "\n";	//Ausgabe
 				}
 			}
 		}
