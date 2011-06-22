@@ -1,7 +1,8 @@
 #include "aStar.h"
 
 
-void dotGraph(vector<HypothesisNode> &Knoten){
+void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
+		int knotenid=0;
 		std::cout << "digraph g{\n";
 		for(int i=0; i<Knoten.size(); i++){
 			std::cout << "\t";
@@ -17,10 +18,10 @@ void dotGraph(vector<HypothesisNode> &Knoten){
 			      unsigned int position=Knoten[i].getOutbound()[j]->getDestination_pos();
 			      cout << Knoten[position].getBestcost().cost();
 			      
-			      std::cout << " [label=\"";
+			      std::cout << " [label=\"  ";
 				for (int k=0; k< Knoten[i].getOutbound()[j]->getTranslation().size(); k++)
-					cout << Knoten[i].getOutbound()[j]->getTranslation()[k] << " ";
-				cout << Knoten[i].getOutbound()[j]->getCost().cost() << " ";
+					cout << elex->getString(Knoten[i].getOutbound()[j]->getTranslation()[k]) << "	";
+				cout << "Kosten: "<< Knoten[i].getOutbound()[j]->getCost().cost() << " ";
 					
 				cout << "\"]\n";
 			}
@@ -134,7 +135,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexi
 	  Knoten.push_back(HypothesisNode());//initialisiert den ersten Knoten
 	  Cost startkosten(0);
 	  Knoten[0].setBestcost(startkosten);
-	  cout << "start kosten " << Knoten[0].getBestcost().cost() << endl;
+	  //cout << "start kosten " << Knoten[0].getBestcost().cost() << endl;
 	  
 	  int aktPos=0; //merkt sich, wieviele Wörter schon eingelesen wurden
 	  
@@ -200,7 +201,7 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexi
 	       
 	  }
 	  
-	  //dotGraph(Knoten);
+	  //dotGraph(Knoten, elex);
 	  aStar astar(Knoten);
 	  astar.lineNumber = lineNumber;
 	  astar.print(astar.search());
