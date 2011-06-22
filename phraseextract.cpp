@@ -16,16 +16,13 @@
 int main(int argc, char* argv[]) {
 	
 	if (argc != 4) {
-		std::cout << "Aufruf mit Parametern: <französiche Trainigsdaten> <englische Trainingsdaten> <Alignment der Trainingsdaten>\n"
-			<< "Folgende Ausgabe: relfreq_f relfreq_e # quellphrase # zielphrase # singlecf singlece # source_to_target target_to_source #  unigram-sprachmodell\n";
+		std::cout << "Aufruf mit Parametern: <französiche Trainigsdaten> <englische Trainingsdaten> <Alignment der Trainingsdaten>\n";
 		return 0;
 	}
 	Lexicon flex(french);
 	Lexicon elex(english);
 	PTree<std::pair<int, PTree<int> > > pTree;
 	PTree<unsigned int> eSinglecount;
-	
-	uint eCount = 0;
 	
 	igzstream f_in(argv[1]), e_in(argv[2]), a_in(argv[3]);
 	std::string f_line, e_line, a_line;
@@ -51,7 +48,6 @@ int main(int argc, char* argv[]) {
 			std::pair<uint, std::vector<int> > pair_tmp;
 			pair_tmp.first = id;
 			e_vec.push_back(pair_tmp);
-			eCount++;
 		}
 		
 		getline(a_in, a_line);	//"SEND:" abfangen
@@ -147,29 +143,8 @@ int main(int argc, char* argv[]) {
 
 				int paircount = (&*itor2) -> c;			//Zähler für Zielphrase auslesen
 				if(paircount != 0) {
-					std::vector<uint> target_id = (itor2) -> phrase();//Zielphrase (in IDs) auslesen
+					std::vector<uint> target_id = (&*itor2) -> phrase();//Zielphrase (in IDs) auslesen
 					std::string target_phrase = "";
-					double source_to_target = 1, target_to_source = 1; //einzelwortbasierte Übersetzungskosten
-					
-					for (uint k = 0; k < source_id.size(); k++){
-						double sum_tts = 0, sum_stt = 0; //tts = target_to_source;
-						for(uint l = 0; l < target_id.size(); l++){
-							PTree<int>* pair = pTree.traverse(source_id[k])->c.second.traverse(target_id[l]);
-							
-							//std::cout << "singlecount " << eSinglecount.traverse(target_id[l])->c << std::endl;
-							uint singlecount_e = eSinglecount.traverse(target_id[l])->c; 
-							double summand=1.0*(pair?pair->c:0)/eSinglecount.traverse(target_id[l])->c;
-							sum_tts+=summand;
-							sum_stt+=1.0*(pair?pair->c:0)/pTree.traverse(source_id[k])->c.first;
-						}
-						
-						target_to_source *= sum_tts/target_id.size();
-						source_to_target *= sum_stt/source_id.size();
-					}
-					
-					source_to_target = -log(source_to_target);
-					target_to_source = -log(target_to_source);
-					
 					for (int k = 0; k < target_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
 						target_phrase += elex.getString(target_id[k]) + " ";
 
@@ -177,13 +152,7 @@ int main(int argc, char* argv[]) {
 					double relFreqF = log(singlecount_f) - log(paircount);	//Bestimmen der relativen Wahrscheinlichkeit (negativer Logarithmus)
 					double relFreqE = log(singlecount_e) - log(paircount);
 					
-					double unigram = log(eCount) - log(singlecount_e);
-					
-					std::cout << relFreqF << " " << relFreqE << " # " 
-						<< source_phrase << "# " << target_phrase << "# " 
-						<< singlecount_f << " "<< singlecount_e << " # "
-						<< source_to_target << " " << target_to_source << " # "
-						<< unigram << "\n";	//Ausgabe
+					std::cout << relFreqF << " " << relFreqE << " # " << source_phrase << "# " << target_phrase << "# " << singlecount_f << " "<< singlecount_e <<"\n";	//Ausgabe
 				}
 			}
 		}
