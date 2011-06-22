@@ -15,31 +15,31 @@ void conversion(){
 	Word willkommen = d.flex.getWord("willkommen");
 	Word gruzi = d.flex.getWord("gruzi");
 
-	Word hi = d.elex.getWord("hi");
-	Word howdy = d.elex.getWord("howdy");
-	Word gday = d.elex.getWord("g'day");
-	Word good = d.elex.getWord("good");
-	Word evening = d.elex.getWord("evening");
+	//Word hi = d.elex.getWord("hi");
+	//Word howdy = d.elex.getWord("howdy");
+	//Word gday = d.elex.getWord("g'day");
+	//Word good = d.elex.getWord("good");
+	//Word evening = d.elex.getWord("evening");
 
-	d.fwa[hallo].singlecount = 1e6; //sorgt dafür, dass division kaputt geht, wenn nicht log()-log() gerechnet wird.
+	d.fwa[hallo.wordId()].singlecount = 1e6; //sorgt dafür, dass division kaputt geht, wenn nicht log()-log() gerechnet wird.
 
 	DictionaryC dc(d);
 
-	uint hallosln[] = {hi,howdy,gday,good};
-	uint willkommensln[] = {hi};
-	uint gruzisln[] = {hi};
+	//uint hallosln[] = {hi,howdy,gday,good};
+	//uint willkommensln[] = {hi};
+	//uint gruzisln[] = {hi};
 
-	uint fwords[3] = {hallo,willkommen,gruzi};
-	uint* solutions[3] = {hallosln,willkommensln, gruzisln};
+	Word fwords[3] = {hallo,willkommen,gruzi};
+	//uint* solutions[3] = {hallosln,willkommensln, gruzisln};
 
 	for(uint i = 0; i < 3; i++){
-		assert(dc.fwa[fwords[i]].get_singlecount() == d.fwa[fwords[i]].singlecount);
-		uint* ids = solutions[i];
-		for(std::list<std::pair<double,uint>>::iterator it=dc.fwa[fwords[i]].pairs.begin(); it != dc.fwa[fwords[i]].pairs.end();it++){
+		assert(dc.fwa[fwords[i].wordId()].get_singlecount() == d.fwa[fwords[i].wordId()].singlecount);
+		//uint* ids = solutions[i];
+		for(std::list<std::pair<double,uint>>::iterator it=dc.fwa[fwords[i].wordId()].pairs.begin(); it != dc.fwa[fwords[i].wordId()].pairs.end();it++){
 			/*std::cout << "first: " << it-> first << ", second: " << it -> second << ", foobar: " << d.fwa[fwords[i]].relFreq(it->second)
 				<< "\n\tdelta: " << (it->first - d.fwa[fwords[i]].relFreq(it->second))
 				<< "\n\tdelt2: "<< (it->first - (log(d.fwa[i].singlecount)-log(d.fwa[fwords[i]].pairs[it->second]))) << "\n";*/
-			assert(fabs(it->first - d.fwa[fwords[i]].relFreq(it->second)) < 1e-14); //wieso ist das hier nicht genau?
+			assert(fabs(it->first - d.fwa[fwords[i].wordId()].relFreq(it->second)) < 1e-14); //wieso ist das hier nicht genau?
 		}
 	}
 }
@@ -73,7 +73,7 @@ void readline(){
 
 	{
 		uint i = 0;
-		for(plist::iterator it = dc.fwa[le].pairs.begin(); it != dc.fwa[le].pairs.end(); it++){
+		for(plist::iterator it = dc.fwa[le.wordId()].pairs.begin(); it != dc.fwa[le.wordId()].pairs.end(); it++){
 			assert(fabs(it->first - sln_vals[i]) < 10e-4);
 			assert(it->second == sln_ids[i]);
 			i++;

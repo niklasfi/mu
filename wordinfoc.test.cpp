@@ -1,5 +1,7 @@
 #include "wordinfoc.h"
 
+#include <iostream>
+
 void maxlen(){
 	WordinfoC::set_maxlen(3);
 
@@ -58,7 +60,7 @@ void straightRev(){
 		plist::iterator it;
 		uint i = 0;
 		for(it = winfo1.pairs.begin(); it != winfo1.pairs.end(); it++){
-			assert( i/30.0 == it->first);
+			assert( fabs(i/30.0 - it->first) < 1e-10);
 			assert( 30-i == it->second);
 			i++;
 		}

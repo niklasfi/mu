@@ -2,3 +2,5 @@
 *.exe
 *~
 .*
+gzstream/libgzstream.a
+
