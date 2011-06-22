@@ -19,7 +19,7 @@ void DictionaryC::add_translation(std::string f, std::string e, double rel_freq)
 	}
 	if(!(ewd = elex.getWord(e)))
 		ewd = elex.add(e);
-	fwa[fwd].add_translation(ewd,rel_freq);
+	fwa[fwd.wordId()].add_translation(ewd,rel_freq);
 }
 
 void DictionaryC::add_word(std::string f, std::string e, double rel_freq){
