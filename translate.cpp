@@ -49,6 +49,11 @@ int main (int argc, char* argv[]){
 		cout << "1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" << endl;
 		exit(1);
 	}
+	if (argc<5){
+		cout << "Geben Sie min 1 Model an! z.B. 1 8 9\n"
+		<<"1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" <<endl;
+		exit(1);
+	}
 	
 	//cerr << "ist die Phrasentabelle nach relfreq sortiert? Sonst schmeißen wir gute übersetzungen weg!!"<<endl;
 	
