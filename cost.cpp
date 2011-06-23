@@ -7,9 +7,11 @@ unsigned int Cost:: usedModelCount=0;
 
 typedef unsigned int uint;
 
-void Cost::add_model(Model m){
-	if(lookup[m] == -1)
+void Cost::add_model(Model m, double scale){
+	if(lookup[m] == -1){
 		lookup[m]=usedModelCount++;
+		setScale(m,scale);
+	}
 }
 
 void Cost::select(std::vector<Model> ms){

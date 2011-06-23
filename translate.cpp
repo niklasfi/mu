@@ -44,14 +44,14 @@ int main (int argc, char* argv[]){
 		
 		
 
-		if(argc<4){
-		cout<<"usage: template.exe <pruning-länge> <phrasentabelle> <quelltext> [Modellnr.]\n";
+	if(argc<4){
+		cout<<"usage: template.exe <pruning-länge> <phrasentabelle> <quelltext> [Modellnr. Skalierung ...]\n";
 		cout << " 1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" << endl;
 		exit(1);
 	}
 	if (argc<5){
-		cout << "Geben Sie min 1 Model an! z.B. 1 8 9\n"
-		<<"1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" <<endl;
+		cout << "Geben Sie min 1 Model an! z.B. 1 1.0 8 1.3 9 .3\n"
+		<< "1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" <<endl;
 		exit(1);
 	}
 	
@@ -61,19 +61,33 @@ int main (int argc, char* argv[]){
 	
 	for(int i=4; i<argc;i++){
 		std::string in = argv[i];
-		if     (in == "1") Cost::add_model(Cost::source_to_target_phrase);
-		else if(in == "2") Cost::add_model(Cost::target_to_source_phrase);
-		else if(in == "3") Cost::add_model(Cost::source_to_target_unigram);
-		else if(in == "4") Cost::add_model(Cost::target_to_source_unigram);
-		else if(in == "5") Cost::add_model(Cost::phrase_penalty);
-		else if(in == "6") Cost::add_model(Cost::word_penalty );
-		else if(in == "7") Cost::add_model(Cost::single_count_bit);
-		else if(in == "8") Cost::add_model(Cost::source_to_target_ratio );
-		else if(in == "9") Cost::add_model(Cost::unigram_language_model);
+		Cost::Model selected_model;
+		//Herausfinden, welches Modell ausgesucht wurde
+		if     (in == "1") selected_model = Cost::source_to_target_phrase;
+		else if(in == "2") selected_model = Cost::target_to_source_phrase;
+		else if(in == "3") selected_model = Cost::source_to_target_unigram;
+		else if(in == "4") selected_model = Cost::target_to_source_unigram;
+		else if(in == "5") selected_model = Cost::phrase_penalty;
+		else if(in == "6") selected_model = Cost::word_penalty;
+		else if(in == "7") selected_model = Cost::single_count_bit;
+		else if(in == "8") selected_model = Cost::source_to_target_ratio;
+		else if(in == "9") selected_model = Cost::unigram_language_model;
 		else{
-			cout << "invalid argument!\n";
+			cout << "invalid model seleciton!\n";
 			exit (1);
 		}
+		
+		//Fließkommazahl für die Skalierung einlesen
+		std::stringstream sstream; double scale;
+		sstream << argv[++i];
+		sstream >> scale;
+		
+		if(sstream.bad() || !sstream.eof()){
+			cout << "could not parse floating point number for scale!\n";
+			exit (1);
+		}
+		
+		Cost::add_model(selected_model,scale);
 	}
 	//Cost::select(models_selected);
 	unsigned int prune;

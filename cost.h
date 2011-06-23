@@ -40,7 +40,7 @@ class Cost{
 	
 	//============getter & setter=====================
 	
-	static void add_model(Model m);
+	static void add_model(Model m,double scale = 1);
 	static void select(std::vector<Model>); //select the models you want to use
 	static void setScale(Model, double);
 	static void setScale(std::vector< std::pair<Model,double> >);
