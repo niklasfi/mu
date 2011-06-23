@@ -4,5 +4,5 @@
 struct SentenceInfo{
 	std::vector<uint> sentence;
 	Cost cost;
-	std::vector< std::pair <uint,uint> > bleu // matchcount, gramcount
-}
+	std::vector< std::pair <uint,uint> >* bleu; // matchcount, gramcount
+};
