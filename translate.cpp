@@ -44,12 +44,12 @@ int main (int argc, char* argv[]){
 		
 		
 
-	if(argc<4){
-		cout<<"usage: template.exe <pruning-länge> <phrasentabelle> <quelltext> [Modellnr. Skalierung ...]\n";
+	if(argc<6){
+		cout<<"usage: template.exe <prune-threshold> <prune-count> <sentenceCount> <phrasentabelle> <quelltext> [Modellnr. Skalierung ...]\n";
 		cout << " 1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" << endl;
 		exit(1);
 	}
-	if (argc<5){
+	if (argc<7){
 		cout << "Geben Sie min 1 Model an! z.B. 1 1.0 8 1.3 9 .3\n"
 		<< "1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" <<endl;
 		exit(1);
@@ -59,7 +59,7 @@ int main (int argc, char* argv[]){
 	
 	vector<Cost::Model> models_selected;
 	
-	for(int i=4; i<argc;i++){
+	for(int i=6; i<argc;i++){
 		std::string in = argv[i];
 		Cost::Model selected_model;
 		//Herausfinden, welches Modell ausgesucht wurde
@@ -78,8 +78,7 @@ int main (int argc, char* argv[]){
 		}
 		
 		//Fließkommazahl für die Skalierung einlesen
-		std::stringstream sstream; double scale;
-		sstream << argv[++i];
+		std::stringstream sstream(argv[++i]); double scale;
 		sstream >> scale;
 		
 		if(sstream.bad() || !sstream.eof()){
@@ -87,19 +86,39 @@ int main (int argc, char* argv[]){
 			exit (1);
 		}
 		
-		Cost::add_model(selected_model,scale);
+		Cost::add_model(selected_model,scale); //Modell hinzufügen
 	}
-	//Cost::select(models_selected);
-	unsigned int prune;
+	
+	double prune_threshold;
 	{
 		std::istringstream ist(argv[1]);
-		ist >> prune;
+		ist >> prune_threshold;
 		if(ist.bad()  || !ist.eof()){
-			std::cout << "konnte Argument 1 nicht verarbeiten. (keine nichtnegative Ganzzahl)\n";
+			std::cout << "konnte prune-threshold nicht verarbeiten. (keine nichtnegative Ganzzahl)\n";
 			exit(1);
 		}
 	}
-     igzstream in(argv[2]);
+	unsigned int prune_count;
+	{
+		std::istringstream ist(argv[2]);
+		ist >> prune_count;
+		if(ist.bad()  || !ist.eof()){
+			std::cout << "konnte prune-count nicht verarbeiten. (keine nichtnegative Ganzzahl)\n";
+			exit(1);
+		}
+	}
+	unsigned int sentenceCount;{
+		std::istringstream ist(argv[3]);
+		ist >> sentenceCount;
+		if(ist.bad()  || !ist.eof()){
+			std::cout << "konnte SentenceCount nicht verarbeiten. (keine nichtnegative Ganzzahl)\n";
+			exit(1);
+		}
+	}
+	
+	
+	
+     igzstream in(argv[4]);
      string line,token;
 
 //==================Einlesen der Phrasentabelle============================
@@ -129,7 +148,7 @@ int main (int argc, char* argv[]){
 			
 			pair< unsigned int, double>* pruning_infos=&pruningTree.traverse(fphrase,true,pruningStart)->c;
 			
-			if (kosten_insgesamt > pruning_infos->second+prune || pruning_infos->first >25)	continue; //pruning ergibt, wir wollen es nicht in den Ptree mitaufnehmen
+			if (kosten_insgesamt > pruning_infos->second+prune_threshold || pruning_infos->first >prune_count)	continue; //pruning ergibt, wir wollen es nicht in den Ptree mitaufnehmen
 				
 			//if (kosten_insgesamt< pruning_infos->second)	pruning_infos->second=kosten_insgesamt;  _jetzt irrelevant, da ich von einer geordneten eingabe ausgehe
 			pruning_infos->first++;
@@ -141,6 +160,6 @@ int main (int argc, char* argv[]){
 		}
 		//cerr << " schwarz erstellt" << endl;
 
-     aStar::set_max_SentenceTranslation(prune);
-     aStar::Suchalgorithmus(argv[3],&schwarz,&elex,&flex);
+     aStar::set_max_SentenceTranslation(sentenceCount);
+     aStar::Suchalgorithmus(argv[5],&schwarz,&elex,&flex);
 }
