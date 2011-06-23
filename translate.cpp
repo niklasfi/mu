@@ -46,7 +46,7 @@ int main (int argc, char* argv[]){
 
 		if(argc<4){
 		cout<<"usage: template.exe <pruning-länge> <phrasentabelle> <quelltext> [Modellnr.]\n";
-		cout << "1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" << endl;
+		cout << " 1 source_to_target_phrase,\n 2 target_to_source_phrase, \n 3 source_to_target_unigram,\n 4 target_to_source_unigram, \n 5 phrase_penalty,\n 6 word_penalty,\n 7 single_count_bit, \n 8 source_to_target_ratio, \n 9 unigram_language_model" << endl;
 		exit(1);
 	}
 	
