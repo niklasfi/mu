@@ -8,6 +8,7 @@
 #include "cost.h"
 #include "sentenceinfo.h"
 #include "bleu.cpp"
+#include "global.h"
 
 /* === Strukturtyp StraightLine, um Geraden darzustellen === */
 struct StraightLine {
@@ -28,17 +29,6 @@ struct Global_Section {
 	std::vector<uint> sentences;	//Position der entsprechenden Hypothesen in richtiger Reihenfolge
 };
 
-/*enum Model{ 
-		source_to_target_phrase,
-		target_to_source_phrase,
-		source_to_target_unigram,
-		target_to_source_unigram,
-		phrase_penalty,
-		word_penalty,
-		single_count_bit,
-		source_to_target_ratio,
-		unigram_language_model
-	};*/
 
 
 /* ===== HILFSFUNKTIONEN ===== */
@@ -240,15 +230,13 @@ bool addNewHypothesis(std::vector<std::pair<std::vector<uint>, std::vector<Sente
 		for (int index2 = 0; index2 < nBestList[index1].second.size(); index2++) {		//Iteriere über alle Hypothesen
 
 			bool alreadySeen = false;							//Hält fest, ob neue Hypothese bereits vorhanden ist
-			SentenceInfo sentenceInfo_tmp;
+			SentenceInfo sentenceInfo_tmp = nBestList[index1].second[index2];		//Hilfsvariable
+			for (int index4 = 0; index4 < modelNumber; index4++)				//Skalierungen übernehmen
+				sentenceInfo_tmp.cost.scale[index4] = paramValues[index4];
 
 			for (int index3 = index2+1; index3 < nBestList[index1].second.size(); index3++) {	//Iteriere über alle folgenden Hypothesen
 
-				sentenceInfo_tmp = nBestList[index1].second[index2];			//Hilfsvariable
 				SentenceInfo currentSentenceInfo = nBestList[index1].second[index3];	//Aktuelle VergleichsInfo
-
-				for (int index4 = 0; index4 < modelNumber; index4++)			//Skalierungen übernehmen
-					sentenceInfo_tmp.cost.scale[index4] = paramValues[index4];
 
 				bool equalSentences = true;						//Stellt fest, ob Hypothesen gleich sind
 				if (sentenceInfo_tmp.sentence.size() == currentSentenceInfo.sentence.size())
