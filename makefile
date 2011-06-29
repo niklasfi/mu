@@ -24,7 +24,7 @@ GREEN = \033[32m
 YELLOW = \033[33m
 endif
 default: all
-all: singlewordextract.exe bewertung.exe translate.exe phraseextract.exe
+all: singlewordextract.exe bewertung.exe translate.exe phraseextract.exe optimize.exe
 
 %.test.exe: %.test.o ${OBJECTS}
 	@${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
