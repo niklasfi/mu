@@ -17,10 +17,9 @@ bool great(double i,double j) { return (i>j); }
 		summe+=(vec[i]/vec.size());
 	}
 }*/
-vector< vector<double> > Simplex(vector< pair < vector<uint>, vector <SentenceInfo> > > nBestList){
+vector< vector<double> > Simplex(){
 	vector <vector <double> > x;
 	x.resize(5);
-	
 	
 	double temp[]={0.75,0.75,0.75,0.75,0.25,0.25,0.25,0.7,0.8,-1,
 				0.6,0.5,0.6,0.5,1,0,0,1,0.8,-1,
@@ -29,7 +28,6 @@ vector< vector<double> > Simplex(vector< pair < vector<uint>, vector <SentenceIn
 				0.2,0.2,0.7,4,0.77,0.66,0.22,0.44,1
 				};
 	int tsize = sizeof(temp)/sizeof(temp[0]);
-
 	
 	int vec =0;
 	for(int i=0; i<tsize; i++){
@@ -38,14 +36,20 @@ vector< vector<double> > Simplex(vector< pair < vector<uint>, vector <SentenceIn
 		else if(temp[i]!=-1) x[vec].push_back(temp[i]);
 
 	}	
+	/*for(int i=0;i<x.size();i++){
+		for(int j=0;j<x[i].size();j++){
+			cout<< x[i][j] <<"  ";
+		}	
+		cout<<endl;
+	}*/
 	return x;
 }
 
-vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > nBestList,vector <double> x){
+vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > &nBestList,const vector <double> &x){
 	double summe, min;
 	uint min_id;
 	summe =0;
-	min=0;
+	min=1./0.;
 	vector<uint> result;
 	nBestList[0].second[0].cost.scale=x;
 
@@ -58,27 +62,24 @@ vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > nB
 			summe=0;
 		}	
 		result.push_back(min_id);
-		
+	
 	}		
 	return result;
 }
-	
-vector<double> DownhillSimplex (vector< pair < vector<uint>,vector <SentenceInfo> > > nBestList){
+//vector< pair < vector<uint>,vector <SentenceInfo> > > nBestList	
+vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > > &nBestList){
 	int bigcount=0;
 	int count=0;
 	vector<double> x0 (9,0);
-
-	vector< vector<double> > punkte=Simplex(nBestList);//Punkte angelegt
-
+	vector< vector<double> > punkte=Simplex();//Punkte angelegt
 	vector<double> bleupunkte(punkte.size());
-	
 
 	for(int i =0; i<punkte.size();i++){
 		vector<uint> bestTrans =findtrans(nBestList, punkte[i]);
 		bleupunkte[i]=membleu(nBestList,bestTrans);
 	}	
 	
-	while(bigcount<100){
+	while(bigcount<3){
 		sort(bleupunkte.begin(),bleupunkte.end(),great);
 		
 		for(int i=0;i<x0.size();i++){
@@ -119,7 +120,7 @@ vector<double> DownhillSimplex (vector< pair < vector<uint>,vector <SentenceInfo
 					}
 				}
 		}
-/*		if(count==10){
+		/*if(count==10){
 			translate();
 			count=0;
 		}

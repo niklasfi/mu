@@ -124,9 +124,11 @@ int main(int argc, char* argv[]){
 	aStar::Suchalgorithmus(argv[5],&schwarz,&elex,&flex, nBestList);
 	
 	for (int i=0; i< nBestList.size(); i++){
-		SentenceInfo vec_info=nBestList[i].second[0];
-		for (int j=0; j<vec_info.sentence.size(); j++)
-			cout << elex.getString(vec_info.sentence[j]) << " ";
-		cout << endl;
+		for (int k=0; k< nBestList[i].second.size(); k++){
+			SentenceInfo vec_info=nBestList[i].second[k];
+			for (int j=0; j<vec_info.sentence.size(); j++)
+				cout << elex.getString(vec_info.sentence[j]) << " ";
+			cout << endl;
+		}
 	}
 }

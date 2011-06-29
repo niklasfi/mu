@@ -54,7 +54,7 @@ class aStar {
 
 	void addSentence(const aStarElement& a);   //Ausgabefunktion
 
-	static void Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
+	static void Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
 	static void Suchalgorithmus2(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
      
 };
