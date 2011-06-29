@@ -1,5 +1,5 @@
 CXX = g++
-DEBUG = -DDEBUG -g #-Wall
+DEBUG = -DDEBUG -g -Wall
 ifdef PROFILE
 	PROF = -pg
 endif
@@ -11,8 +11,8 @@ ifdef EECHO
 	E=-e
 endif
 
-CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF} ${OMP}
-LDFLAGS = -L. -lz ${PROF} ${OMP}
+CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF} ${OMP} ${OPTIMIZE}
+LDFLAGS = -L. -lz ${PROF} ${OMP} ${OPTIMIZE}
 OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o ptree.o cost.o
 
 TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe bleu.test.exe ptree.test.exe aStar.test.exe

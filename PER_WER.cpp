@@ -55,7 +55,7 @@ double PER_global(SentencePool& sen){
 //	#pragma omp parallel
 //	{
 //		#pragma omp for
-		for(int i=0; i<sen.reference.size();i++){
+		for(unsigned int i=0; i<sen.reference.size();i++){
 			double tmp=PER2(sen.reference[i], sen.guess[i]);
 //			#pragma omp critical
 			zaehler+=tmp;
@@ -89,7 +89,7 @@ double WER_global(SentencePool& sen){
 //	#pragma omp parallel
 //	{
 //		#pragma omp for
-		for(int i=0; i<sen.reference.size();i++){
+		for(unsigned int i=0; i<sen.reference.size();i++){
 			double tmp=WER2(sen.reference[i], sen.guess[i]);
 //			#pragma omp critical
 			zaehler+=tmp;

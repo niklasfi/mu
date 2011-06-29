@@ -3,12 +3,12 @@
 using namespace std;
 
 void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
-		int knotenid=0;
+		//int knotenid=0;
 		std::cout << "digraph g{\n";
-		for(int i=0; i<Knoten.size(); i++){
+		for(unsigned int i=0; i<Knoten.size(); i++){
 			std::cout << "\t";
 			
-			for (int j=0; j<Knoten[i].getOutbound().size(); j++){
+			for (unsigned int j=0; j<Knoten[i].getOutbound().size(); j++){
 				   
 			      if(i == 0) std::cout << "root";
 			      else{
@@ -20,7 +20,7 @@ void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 			      cout << Knoten[position].getBestcost().cost();
 			      
 			      std::cout << " [label=\"  ";
-				for (int k=0; k< Knoten[i].getOutbound()[j]->getTranslation().size(); k++)
+				for (unsigned int k=0; k< Knoten[i].getOutbound()[j]->getTranslation().size(); k++)
 					cout << elex->getString(Knoten[i].getOutbound()[j]->getTranslation()[k]) << "	";
 				cout << "Kosten: "<< Knoten[i].getOutbound()[j]->getCost().cost() << " ";
 					
@@ -33,7 +33,7 @@ void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement>> stack){
 	while (!stack.empty() ){
 		aStarElement first=stack.top();
-		for (int i=0; i<first.trl.size(); i++)	cout << first.trl[i] << ", ";
+		for (unsigned int i=0; i<first.trl.size(); i++)	cout << first.trl[i] << ", ";
 		cout << first.cost.cost()<<endl;
 		stack.pop();
 	}
@@ -162,7 +162,7 @@ void aStar::Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree
 
 		    
 		    if (blauBaum){
-			 int counter=0; //nur fürs Programmieren, damit alle Fehler ausgemerzt werden 
+			 //int counter=0; //nur fürs Programmieren, damit alle Fehler ausgemerzt werden 
 			 for (PTree<Cost>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
 			      //if (counter++==10)	continue;
 			      vector<unsigned int> ephrase=it->phrase();

@@ -21,7 +21,7 @@ void readTable(
 	Lexicon& elex,
 	const char filename[],
 	double prune_threshold,
-	int prune_count
+	unsigned int prune_count
 ){
 //==================Einlesen der Phrasentabelle============================
 	PTree< pair <unsigned int, double> > pruningTree; //speichert für jede Übersetzung die Anzahl der eingelesenen Übersetzungen und die beste Übersetzung

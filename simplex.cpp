@@ -53,10 +53,8 @@ vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > &n
 	vector<uint> result;
 	Cost::scale=x;
 
-	for(int j=0;j<nBestList.size();j++){
-
-		for(int k=0;k<nBestList[j].second.size();k++){
-
+	for(unsigned int j=0;j<nBestList.size();j++){
+		for(unsigned int k=0;k<nBestList[j].second.size();k++){
 			summe=nBestList[j].second[k].cost.totalize();
 			if(summe<min){ min=summe; min_id=k;}
 			summe=0;
@@ -75,7 +73,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 	vector< vector<double> > punkte=Simplex();//Punkte angelegt
 	vector<double> bleupunkte(punkte.size());
 
-	for(int i =0; i<punkte.size();i++){
+	for(unsigned int i =0; i<punkte.size();i++){
 		vector<uint> bestTrans =findtrans(nBestList, punkte[i]);
 		bleupunkte[i]=membleu(nBestList,bestTrans);
 	}	
@@ -84,6 +82,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 		for (int i=0; i<x0.size(); i++)	x0[i]=0;
 		sort(bleupunkte.begin(),bleupunkte.end(),great);
 		
+
 		for(int i=0;i<x0.size();i++){
 			for(int j=0;j<M;j++){
 				x0[i]+=(punkte[j][i]/M); //berechne Schwerpunkt aller PUnkte außer x_m+1
@@ -92,6 +91,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 		vector<double> xr(9,0);
 		//berechung von x_r= x_0+alpha(x_0-x_M)
 		for(int i=0;i<xr.size();i++) xr[i]=(x0[i] +1.0*(x0[i] - punkte[M][i]));
+
 		
 		double bleu_r=membleu(nBestList,findtrans(nBestList,xr));
 		if(bleupunkte[0]>=bleu_r && temp>=bleupunkte[M]) punkte[M]=xr; //reflektieren
@@ -99,8 +99,10 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 		else if(bleu_r > bleupunkte[0]){
 				
 				vector<double> xe(9,0);
+
 				//berechung von x_e=x_0+gamma(x_0-x_M)
 				for(int i=0;i<xe.size();i++) xe[i]=(x0[i] +2.0*(x0[i] - punkte[M][i]));
+
 
 				double bleu_e=membleu(nBestList,findtrans(nBestList,xe));
 				if(bleu_e>=bleu_r && bleu_r>=bleupunkte[0])  punkte[M]=xe;//expandiere
@@ -111,6 +113,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 			//berechung von x_c=x_M+gamma(x_0-x_M)
 			for(int i=0;i<xc.size();i++) xc[i]=(punkte[M][i] -0.5*(x0[i] - punkte[M][i]));
 
+
 			double bleu_c=membleu(nBestList,findtrans(nBestList,xc));
 
 			if(bleu_c>=bleupunkte[M]) punkte[M]=xc;//kontrahiere
@@ -120,6 +123,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 					//x_j=x_0+sigma(x_j-x_0)
 					for(int i=0;i<(punkte[j].size());i++){
 						punkte[j][i]=punkte[0][i]+0.5*(punkte[j][i] - punkte[0][i]);//komprimiere
+
 					}
 				}
 		}

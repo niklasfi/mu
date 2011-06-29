@@ -4,7 +4,7 @@ using namespace std;
 
 int Levenshtein:: min(int i, int j){ //gibt den Wert für i,j zurück
 	
-	int min=matrix[i-1][j-1]+1;//Kosten für substituieren
+	unsigned int min=matrix[i-1][j-1]+1;//Kosten für substituieren
 	
 	if (matrix[i-1][j]+1 < min)	min = matrix[i-1][j]+1; //Deletion
 	if (matrix[i][j-1]+1 < min)	min = matrix[i][j-1]+1; //Insertion
