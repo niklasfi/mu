@@ -120,7 +120,8 @@ int main(int argc, char* argv[]){
 	
 
      aStar::set_max_SentenceTranslation(sentenceCount);
-     Liste_von_Uebersetzungen nBestList=aStar::Suchalgorithmus(argv[5],&schwarz,&elex,&flex);
+     Liste_von_Uebersetzungen nBestList;
+	aStar::Suchalgorithmus(argv[5],&schwarz,&elex,&flex, nBestList);
 	
 	for (int i=0; i< nBestList.size(); i++){
 		SentenceInfo vec_info=nBestList[i].second[0];
