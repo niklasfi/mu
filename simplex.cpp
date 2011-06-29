@@ -1,4 +1,5 @@
 
+
 #include <vector>
 #include <algorithm>
 #include "bleu.cpp"
@@ -9,7 +10,21 @@
 
 using namespace std;
 
-bool great(double i,double j) { return (i>j); }
+struct BleuAndScale{
+	double bleu;
+	vector<double> x;
+	
+	BleuAndScale(): bleu(), x(){}	
+	BleuAndScale(double bleu, vector<double>& x): bleu(bleu), x(x){}
+	
+	BleuAndScale& operator=(const BleuAndScale& b){
+		bleu=b.bleu;
+		x=b.x;
+		return *this;
+	}
+};
+
+bool great(BleuAndScale i,BleuAndScale j) { return (i.bleu>j.bleu); }
 
 /*double vecnorm(vector<double> vec){
 	double summe=0;
@@ -18,6 +33,14 @@ bool great(double i,double j) { return (i>j); }
 	}
 }*/
 vector< vector<double> > Simplex(){
+	return std::vector<std::vector <double>>{
+		std::vector<double>{0.75, 0.75, 0.75, 0.75, 0.25, 0.25, 0.25, 0.7,  0.8},
+		std::vector<double>{0.6,  0.5,  0.6,  0.5,  1,    0,    0,    1,    0.8},
+		std::vector<double>{0.5,  2,    0.3,  5,    0.6,  0.2,  0.2,  3,    3},
+		std::vector<double>{1,    1,    0,    0,    0.55, 4,    0.3,  0.8,  1},
+		std::vector<double>{0.2,  0.2,  0.7,  4,    0.77, 0.66, 0.22, 0.44, 1}
+	};
+	
 	vector <vector <double> > x;
 	x.resize(5);
 	
@@ -27,6 +50,8 @@ vector< vector<double> > Simplex(){
 				1,1,0,0,0.55,4,0.3,0.8,1,-1,
 				0.2,0.2,0.7,4,0.77,0.66,0.22,0.44,1
 				};
+				
+		
 	int tsize = sizeof(temp)/sizeof(temp[0]);
 	
 	int vec =0;
@@ -66,63 +91,66 @@ vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > &n
 }
 //vector< pair < vector<uint>,vector <SentenceInfo> > > nBestList	
 vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > > &nBestList){
-	int M=punkte.size()-1;
 	int bigcount=0;
 	int count=0;
 	vector<double> x0 (9,0);
 	vector< vector<double> > punkte=Simplex();//Punkte angelegt
-	vector<double> bleupunkte(punkte.size());
+	uint M=punkte.size()-1;
+	vector<BleuAndScale> bleupunkte(punkte.size());
 
-	for(unsigned int i =0; i<punkte.size();i++){
-		vector<uint> bestTrans =findtrans(nBestList, punkte[i]);
-		bleupunkte[i]=membleu(nBestList,bestTrans);
+	for(unsigned int i =0; i<bleupunkte.size();i++){//Bleu der Punkte berechnen
+		bleupunkte[i].x=punkte[i];
+		bleupunkte[i].bleu=membleu(nBestList,findtrans(nBestList, punkte[i]));
 	}	
 	
-	while(bigcount<3){
-		for (int i=0; i<x0.size(); i++)	x0[i]=0;
+	while(bigcount<100){
+		for (unsigned int i=0; i<x0.size(); i++)	x0[i]=0;
 		sort(bleupunkte.begin(),bleupunkte.end(),great);
 		
-
-		for(int i=0;i<x0.size();i++){
-			for(int j=0;j<M;j++){
-				x0[i]+=(punkte[j][i]/M); //berechne Schwerpunkt aller PUnkte außer x_m+1
+		cout << bigcount << endl;
+		for (uint i=0; i<bleupunkte.size(); i++)
+			cout << bleupunkte[i].bleu << " ";
+		cout << endl;
+		
+		for(unsigned int i=0;i<x0.size();i++){
+			for(unsigned int j=0;j<M;j++){
+				x0[i]+=(bleupunkte[j].x[i]/M); //berechne Schwerpunkt aller PUnkte außer x_m+1
 			}
 		}
-		vector<double> xr(9,0);
+		vector<double> xr(9);
 		//berechung von x_r= x_0+alpha(x_0-x_M)
-		for(int i=0;i<xr.size();i++) xr[i]=(x0[i] +1.0*(x0[i] - punkte[M][i]));
-
+		for(uint i=0;i<xr.size();i++) xr[i]=(x0[i] +1.0*(x0[i] - bleupunkte[M].x[i]));
 		
 		double bleu_r=membleu(nBestList,findtrans(nBestList,xr));
-		if(bleupunkte[0]>=bleu_r && temp>=bleupunkte[M]) punkte[M]=xr; //reflektieren
+		if(bleupunkte[0].bleu>=bleu_r && bleu_r>=bleupunkte[M].bleu) bleupunkte[M]=BleuAndScale(bleu_r,xr); //reflektieren
 
-		else if(bleu_r > bleupunkte[0]){
+		else if(bleu_r > bleupunkte[0].bleu){
 				
-				vector<double> xe(9,0);
+				vector<double> xe(9);
 
 				//berechung von x_e=x_0+gamma(x_0-x_M)
-				for(int i=0;i<xe.size();i++) xe[i]=(x0[i] +2.0*(x0[i] - punkte[M][i]));
+				for(uint i=0;i<xe.size();i++) xe[i]=(x0[i] +2.0*(x0[i] - bleupunkte[M].x[i]));
 
 
 				double bleu_e=membleu(nBestList,findtrans(nBestList,xe));
-				if(bleu_e>=bleu_r && bleu_r>=bleupunkte[0])  punkte[M]=xe;//expandiere
-				else  punkte[M]=xr;//reflektiere
+				if(bleu_e>=bleu_r && bleu_r>=bleupunkte[0].bleu)  bleupunkte[M]=BleuAndScale(bleu_e,xe);//expandiere
+				else  bleupunkte[M]=BleuAndScale(bleu_r,xr);//reflektiere
 
 		}else{
-			vector <double> xc (9,0);
+			vector <double> xc (9);
 			//berechung von x_c=x_M+gamma(x_0-x_M)
-			for(int i=0;i<xc.size();i++) xc[i]=(punkte[M][i] -0.5*(x0[i] - punkte[M][i]));
+			for(uint i=0;i<xc.size();i++) xc[i]=(bleupunkte[M].x[i] -0.5*(x0[i] - bleupunkte[M].x[i]));
 
 
 			double bleu_c=membleu(nBestList,findtrans(nBestList,xc));
 
-			if(bleu_c>=bleupunkte[M]) punkte[M]=xc;//kontrahiere
+			if(bleu_c>=bleupunkte[M].bleu) bleupunkte[M]=BleuAndScale(bleu_c,xc);//kontrahiere
 
 			else
-				for(int j=1;j<punkte.size();j++){
+				for(uint j=1;j<punkte.size();j++){
 					//x_j=x_0+sigma(x_j-x_0)
-					for(int i=0;i<(punkte[j].size());i++){
-						punkte[j][i]=punkte[0][i]+0.5*(punkte[j][i] - punkte[0][i]);//komprimiere
+					for(uint i=0;i<(bleupunkte[j].x.size());i++){
+						bleupunkte[j].x[i]=bleupunkte[0].x[i]+0.5*(bleupunkte[j].x[i] - bleupunkte[0].x[i]);//komprimiere
 
 					}
 				}
@@ -136,7 +164,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 		count++;
 	}
 
-	return punkte[0];
+	return bleupunkte[0].x;
 }
 
 

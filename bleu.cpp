@@ -1,3 +1,5 @@
+#pragma once
+
 #include <algorithm>
 #include "sentencepool.h"
 #include "sentenceinfo.h"
@@ -118,7 +120,7 @@ void bleu_sent( std::vector<uint> ref, SentenceInfo& hyp, int N = 4){
 			 * längeren n-gram finden */
 				if(hseq >= gramsize[l]){
 					//matchcount[gramsize[l]]++;
-					hyp.bleu->at(gramsize[k]).first++;
+					hyp.bleu->at(gramsize[l]).first++;
 					gramsize[l]++;
 					rseq = hseq + 1;
 					if(rseq + l >= hyp.sentence.size() || rseq+k >= ref.size())
@@ -147,7 +149,7 @@ double membleu( std::vector< std::pair < std::vector<uint>, std::vector <Sentenc
 	
 	for(uint i = 0; i < nBestList.size(); i++){
 		std::vector<uint>& ref = nBestList[i].first;
-		SentenceInfo hyp = nBestList[i].second[picks[i]];
+		SentenceInfo& hyp = nBestList[i].second[picks[i]];
 		bleu_sent(ref,hyp,N);
 		
 		for(uint k = 0; k < N; k++){

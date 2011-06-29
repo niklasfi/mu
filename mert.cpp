@@ -289,7 +289,7 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 	
 	while(newHypothesis) {
 		
-		bool paramChange = false;
+		bool paramChange = true;
 
 		while(paramChange) {
 
