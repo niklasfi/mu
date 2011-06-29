@@ -69,9 +69,7 @@ void aStar::addSentence(const aStarElement& a){
 }
 
 //Eigentliche A*-Suche
-std::vector<std::vector<uint> > aStar::search() {
-	std::vector< std::vector <uint> > output;
-
+void aStar::search() {
 	int length = vect.size();
 
 	vector<uint> vtemp;
