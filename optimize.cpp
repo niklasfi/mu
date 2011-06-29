@@ -23,12 +23,12 @@ int main (int argc, char* argv[]) {
 	Lexicon flex;
 	PTree<PTree<Cost>> schwarz;
 
-	readTable(schwarz,flex,elex,"small2",2,10);
+	readTable(schwarz,flex,elex,"training/test_singlewordextract",2,10);
 	
 	aStar::set_max_SentenceTranslation(10);
-    aStar::Suchalgorithmus("training/f-test4",&schwarz,&elex,&flex,nBestLists);
+    aStar::Suchalgorithmus("training/franzesatz",&schwarz,&elex,&flex,nBestLists);
 
-	ifstream guess("training/e-test");
+	ifstream guess("training/englischsatz");
 	string line;
 	
 	for(int j=0;j<nBestLists.size();j++){
