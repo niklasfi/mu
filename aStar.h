@@ -50,10 +50,10 @@ class aStar {
 
 	static void set_max_SentenceTranslation(uint size);
 
-	std::vector<std::vector<unsigned int> > search();	//A*-Suche
+	void search();	//A*-Suche
 
 	void addSentence(const aStarElement& a);   //Ausgabefunktion
-
+	//die eigentliche Funktion, die von außen benutzt wird, sie füllt die nbestliste auf (ohne die referenzübersetzungen zu setzen) 
 	static void Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
 	static void Suchalgorithmus2(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
      
