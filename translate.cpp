@@ -123,10 +123,10 @@ int main(int argc, char* argv[]){
      Liste_von_Uebersetzungen nBestList;
 	aStar::Suchalgorithmus(argv[5],&schwarz,&elex,&flex, nBestList);
 	
-	for (int i=0; i< nBestList.size(); i++){
-		for (int k=0; k< nBestList[i].second.size(); k++){
+	for (unsigned int i=0; i< nBestList.size(); i++){
+		for (unsigned int k=0; k< nBestList[i].second.size(); k++){
 			SentenceInfo vec_info=nBestList[i].second[k];
-			for (int j=0; j<vec_info.sentence.size(); j++)
+			for (unsigned int j=0; j<vec_info.sentence.size(); j++)
 				cout << elex.getString(vec_info.sentence[j]) << " ";
 			cout << endl;
 		}

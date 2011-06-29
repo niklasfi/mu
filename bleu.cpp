@@ -10,7 +10,7 @@ double bleu_bp(uint refs, uint hyps){ //Brevity Penalty
 	if(refs <= hyps) return 1.0;
 	return exp(1.0-(1.0*refs)/hyps);
 }
-double bleu(SentencePool& sp, uint N = 4){
+double bleu(SentencePool& sp, int N = 4){
 	//berechnet bleu
 
 	uint* matchcount = new uint[N]; //zählt die Matches wobei der Index für die Länge des n+1-grams steht (0 -> unigram)
@@ -24,18 +24,18 @@ double bleu(SentencePool& sp, uint N = 4){
 	uint refsize = 0;
 	uint hypsize = 0;
 
-	for(int sent = 0; sent < sp.guess.size(); sent++){
+	for(unsigned int sent = 0; sent < sp.guess.size(); sent++){
 		std::vector<uint>& hyp = *sp.guess[sent], ref = *sp.reference[sent];
 
-		char* gramsize = new char[ hyp.size()];
+		int* gramsize = new int[ hyp.size()];
 		std::fill(gramsize, gramsize + hyp.size(), 0);
 		/* gramsize speichert für ein wort in der hypothese, wie lang das Länste
 		 * n-gram bis jetzt war, in dem es verwendet wurde. Dies dient dazu mehr-
 		 * fachverwertungen zu verhindern */
 
-		for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
+		for(unsigned int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
 			int rseq = 0; //speichert für das aktuelle referenzwort, wie groß das beste n-gram ist.
-			for(int l = 0; l < hyp.size() - rseq; l++){ //l index des wortes im Ü-Vorschlag
+			for(unsigned int l = 0; l < hyp.size() - rseq; l++){ //l index des wortes im Ü-Vorschlag
 				int hseq = 0; //speichert für das aktuelle hypothesenwort, wie groß das beste n-gram ist.
 				if(gramsize[l] >= N) goto nextHyp; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
 				if(rseq + k >= ref.size()) goto nextRef;
@@ -49,9 +49,7 @@ double bleu(SentencePool& sp, uint N = 4){
 				 * nur genau einmal bearbeiten müssen und dann gucken, ob wir noch ein
 				 * längeren n-gram finden */
 					if(hseq >= gramsize[l]){
-						#pragma omp critical
 						matchcount[gramsize[l]]++;
-						#pragma omp end critical
 						gramsize[l]++;
 						rseq = hseq + 1;
 						if(rseq + l >= hyp.size() || rseq+k >= ref.size())
@@ -65,7 +63,7 @@ double bleu(SentencePool& sp, uint N = 4){
 			}
 			nextRef: ;
 		}
-		nextSent:
+		//nextSent:
 
 		delete[] gramsize;
 
@@ -91,21 +89,21 @@ double bleu(SentencePool& sp, uint N = 4){
 	return d;
 }
 
-void bleu_sent( std::vector<uint> ref, SentenceInfo& hyp, uint N = 4){
+void bleu_sent( std::vector<uint> ref, SentenceInfo& hyp, int N = 4){
 	if(hyp.bleu) return;
 	
 	hyp.bleu = new std::vector <std::pair <uint, uint>>(N,std::pair<uint,uint>(0,0));
 	//Speicher für matchcount und gramcount alokieren
 	
-	char* gramsize = new char[ hyp.sentence.size()];
+	int* gramsize = new int[ hyp.sentence.size()];
 	std::fill(gramsize, gramsize + hyp.sentence.size(), 0);
 	/* gramsize speichert für ein wort in der hypothese, wie lang das Länste
 	 * n-gram bis jetzt war, in dem es verwendet wurde. Dies dient dazu mehr-
 	 * fachverwertungen zu verhindern */
 
-	for(int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
+	for(unsigned int k = 0; k < ref.size(); k++){ //k index des vergleichwortes in der ref
 		int rseq = 0; //speichert für das aktuelle referenzwort, wie groß das beste n-gram ist.
-		for(int l = 0; l < hyp.sentence.size() - rseq; l++){ //l index des wortes im Ü-Vorschlag
+		for(unsigned int l = 0; l < hyp.sentence.size() - rseq; l++){ //l index des wortes im Ü-Vorschlag
 			int hseq = 0; //speichert für das aktuelle hypothesenwort, wie groß das beste n-gram ist.
 			if(gramsize[l] >= N) goto nextHyp; //wenn wir für dieses wort schon ein n-gram maximaler länge gefunden haben, wissen wir, dass wir nicht weitersuchen müssen
 			if(rseq + k >= ref.size()) goto nextRef;
@@ -134,7 +132,7 @@ void bleu_sent( std::vector<uint> ref, SentenceInfo& hyp, uint N = 4){
 		}
 		nextRef: ;
 	}
-	nextSent:
+	//nextSent:
 
 	delete[] gramsize;
 
@@ -145,7 +143,7 @@ void bleu_sent( std::vector<uint> ref, SentenceInfo& hyp, uint N = 4){
 
 double membleu( std::vector< std::pair < std::vector<uint>, std::vector <SentenceInfo> > > nBestList, std::vector<uint> picks, uint N = 4){
 	std::vector<uint> matchcount(N,0), gramcount(N,0);
-	uint refsize, hypsize;
+	uint refsize = 0, hypsize = 0;
 	
 	for(uint i = 0; i < nBestList.size(); i++){
 		std::vector<uint>& ref = nBestList[i].first;
@@ -162,7 +160,7 @@ double membleu( std::vector< std::pair < std::vector<uint>, std::vector <Sentenc
 	
 	double result = 0;
 	
-	for( int i = 0; i<N; i++)
+	for(unsigned int i = 0; i<N; i++)
 		result += log(((double) matchcount[i])/gramcount[i]);
 
 	result /= N;

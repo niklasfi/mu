@@ -41,6 +41,7 @@ std::vector<double> Cost::cost(std::vector<Model> ms){
 	std::vector<double> res;
 	for(uint i = 0; i < ms.size(); i++)
 		res.push_back(cost(ms[i]));
+	return res;
 }
 
 Cost& Cost::cost(Model m, double v){

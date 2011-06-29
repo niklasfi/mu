@@ -31,6 +31,6 @@ class PartialTranslation{
              void setOrigin(HypothesisNode* Ursprung);
              unsigned int getDestination_pos();
 
-             PartialTranslation operator=(PartialTranslation& original);
+             PartialTranslation& operator=(PartialTranslation& original);
 };
 #endif

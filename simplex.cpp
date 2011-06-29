@@ -53,10 +53,8 @@ vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > &n
 	vector<uint> result;
 	nBestList[0].second[0].cost.scale=x;
 
-	for(int j=0;j<nBestList.size();j++){
-
-		for(int k=0;k<nBestList[j].second.size();k++){
-
+	for(unsigned int j=0;j<nBestList.size();j++){
+		for(unsigned int k=0;k<nBestList[j].second.size();k++){
 			summe=nBestList[j].second[k].cost.totalize();
 			if(summe<min){ min=summe; min_id=k;}
 			summe=0;
@@ -74,7 +72,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 	vector< vector<double> > punkte=Simplex();//Punkte angelegt
 	vector<double> bleupunkte(punkte.size());
 
-	for(int i =0; i<punkte.size();i++){
+	for(unsigned int i =0; i<punkte.size();i++){
 		vector<uint> bestTrans =findtrans(nBestList, punkte[i]);
 		bleupunkte[i]=membleu(nBestList,bestTrans);
 	}	
@@ -82,14 +80,14 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 	while(bigcount<3){
 		sort(bleupunkte.begin(),bleupunkte.end(),great);
 		
-		for(int i=0;i<x0.size();i++){
-			for(int j=0;j<(punkte.size()-1);j++){
+		for(unsigned int i=0;i<x0.size();i++){
+			for(unsigned int j=0;j<(punkte.size()-1);j++){
 				x0[i]+=(punkte[j][i]/(punkte.size()-1));
 			}
 		}
 		vector<double> xr(9,0);
 		//berechung von x_r
-		for(int i=0;i<xr.size();i++) xr[i]=(x0[i] +1.0*(x0[i] - punkte[punkte.size()-1][i]));
+		for(unsigned int i=0;i<xr.size();i++) xr[i]=(x0[i] +1.0*(x0[i] - punkte[punkte.size()-1][i]));
 		
 		double temp=membleu(nBestList,findtrans(nBestList,xr));
 		if(bleupunkte[0]>=temp && temp>=bleupunkte[punkte.size()-1]) bleupunkte[punkte.size()-1]=temp;
@@ -98,7 +96,7 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 
 				vector<double> xe(9,0);
 				//berechung von x_e
-				for(int i=0;i<xe.size();i++) xe[i]=(x0[i] +2.0*(x0[i] - punkte[punkte.size()-1][i]));
+				for(unsigned int i=0;i<xe.size();i++) xe[i]=(x0[i] +2.0*(x0[i] - punkte[punkte.size()-1][i]));
 
 				double temp2=membleu(nBestList,findtrans(nBestList,xe));
 				if(temp2>=temp && temp>=bleupunkte[0])  bleupunkte[punkte.size()-1]=temp2;
@@ -107,15 +105,15 @@ vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::ve
 		}else{
 			vector <double> xc (9,0);
 			//berechung von x_c
-			for(int i=0;i<xc.size();i++) xc[i]=(punkte[punkte.size()-1][i] +0.5*(x0[i] - punkte[punkte.size()-1][i]));
+			for(unsigned int i=0;i<xc.size();i++) xc[i]=(punkte[punkte.size()-1][i] +0.5*(x0[i] - punkte[punkte.size()-1][i]));
 
 			double temp3=membleu(nBestList,findtrans(nBestList,xc));
 
 			if(temp3>=bleupunkte[punkte.size()-1]) bleupunkte[punkte.size()-1]=temp3;
 
 			else
-				for(int j=1;j<punkte.size();j++){
-					for(int i=0;i<(punkte[j].size());i++){
+				for(unsigned int j=1;j<punkte.size();j++){
+					for(unsigned int i=0;i<(punkte[j].size());i++){
 						punkte[j][i]=punkte[0][i]+0.5*(punkte[j][i] - punkte[0][i]);
 					}
 				}

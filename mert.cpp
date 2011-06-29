@@ -41,7 +41,7 @@ std::list<int> randomPermutation(const int &modelNumber) {
 	for (int index = 0; index < modelNumber; index++) vector_tmp.push_back(index);		//der die Zahlen 0 bis (modelnumber-1) enthält
 
 	for (int index = 0; index < modelNumber; index++) {
-		int randomNumber = rand() % vector_tmp.size();					//Bestimme zufällige Zahl in vector_tmp
+		//int randomNumber = rand() % vector_tmp.size();					//Bestimme zufällige Zahl in vector_tmp
 		int integer_tmp = vector_tmp[index];						//Ließ die Zahl aus
 		permutation.push_back(integer_tmp);						//Füge sie ans Ende der Permutation ein			
 		vector_tmp.erase(vector_tmp.begin()+index);					//Lösche sie aus dem Vektor
@@ -79,8 +79,8 @@ int searchLines(const std::deque<StraightLine> &lines, const double &key, const 
 	if (left > right) return lastMid;						//Wenn Binärsuche key nicht findet, gib letzte Mitte zurück
 	int mid = (int) floor( ( (left+right)/2)+0.5);					//Bestimme Mitte der Grenzen left und right
 	if (lines[mid].gradient == key) return mid;					//Key gefunden, gib Position zurück
-	if (lines[mid].gradient > key) return searchLines(lines, key, left, mid-1, mid);	//Rekursiver Aufruf
-	if (lines[mid].gradient < key) return searchLines(lines, key, mid+1, right, mid);	//Rekursiver Aufruf
+	else if (lines[mid].gradient > key) return searchLines(lines, key, left, mid-1, mid);	//Rekursiver Aufruf
+	else /*(lines[mid].gradient < key)*/ return searchLines(lines, key, mid+1, right, mid);	//Rekursiver Aufruf
 }
 
 
@@ -126,13 +126,13 @@ std::deque<Section> findSections (const std::deque<StraightLine> &lines) {
 	
 	sections.push_back(section_tmp);						//Erste Section ist zu Beginn festgelegt
 
-	int index1 = 0;
+	unsigned int index1 = 0;
 	while (index1 != lines.size()-1) {						//Brich bei Erreichen der letzten Gerade ab
 
 		double maxIntersection = 0;						//Speichert den Schnittpunkt mit höchstem y-Wert
-		int index_tmp = index1;							//Merkt sich die zugehörige Gerade
+		unsigned int index_tmp = index1;							//Merkt sich die zugehörige Gerade
 
-		for (int index2 = index1+1; index2 < lines.size(); index2++) {
+		for (unsigned int index2 = index1+1; index2 < lines.size(); index2++) {
 
 			double intersection_tmp = (lines[index2].offset - lines[index1].offset) / (lines[index1].gradient - lines[index2].gradient);
 			double yValue_tmp = lines[index1].gradient * intersection_tmp + lines[index1].offset;
@@ -165,8 +165,8 @@ void mergeSections (std::deque<Global_Section> &globalSections, std::deque<Secti
 			localSections.front().intersection = globalSections.front().begin;
 		else globalSections.front().begin = localSections.front().intersection;
 
-		int index1 = 0;
-		int index2 = 0;
+		unsigned int index1 = 0;
+		unsigned int index2 = 0;
 
 		while ((index1 < localSections.size()) && (index2 < globalSections.size())) {
 
@@ -210,7 +210,7 @@ void mergeSections (std::deque<Global_Section> &globalSections, std::deque<Secti
 		}
 
 	} else {									//Wenn globalSections noch leer ist, kopiere Inhalte aus localSections
-		for (int index1 = 0; index1 < localSections.size(); index1++) {
+		for (unsigned int index1 = 0; index1 < localSections.size(); index1++) {
 			Global_Section globalSection_tmp = { localSections[index1].intersection, std::vector<uint>() };
 			globalSection_tmp.sentences.push_back(localSections[index1].sentence);
 			globalSections.push_back(globalSection_tmp);
@@ -223,24 +223,24 @@ void mergeSections (std::deque<Global_Section> &globalSections, std::deque<Secti
 bool addNewHypothesis(std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > > &nBestList, const std::vector<double> &paramValues, const int &modelNumber) {
 
 	bool newHypothesis = false;
-	for (int index1 = 0; index1 < nBestList.size(); index1++) {					//Iteriere über alle Sätze
+	for (unsigned int index1 = 0; index1 < nBestList.size(); index1++) {					//Iteriere über alle Sätze
 
 		std::vector<SentenceInfo> vec_tmp;							//Hilfsvektor
 
-		for (int index2 = 0; index2 < nBestList[index1].second.size(); index2++) {		//Iteriere über alle Hypothesen
+		for (unsigned int index2 = 0; index2 < nBestList[index1].second.size(); index2++) {		//Iteriere über alle Hypothesen
 
 			bool alreadySeen = false;							//Hält fest, ob neue Hypothese bereits vorhanden ist
 			SentenceInfo sentenceInfo_tmp = nBestList[index1].second[index2];		//Hilfsvariable
 			for (int index4 = 0; index4 < modelNumber; index4++)				//Skalierungen übernehmen
 				sentenceInfo_tmp.cost.scale[index4] = paramValues[index4];
 
-			for (int index3 = index2+1; index3 < nBestList[index1].second.size(); index3++) {	//Iteriere über alle folgenden Hypothesen
+			for (unsigned int index3 = index2+1; index3 < nBestList[index1].second.size(); index3++) {	//Iteriere über alle folgenden Hypothesen
 
 				SentenceInfo currentSentenceInfo = nBestList[index1].second[index3];	//Aktuelle VergleichsInfo
 
 				bool equalSentences = true;						//Stellt fest, ob Hypothesen gleich sind
 				if (sentenceInfo_tmp.sentence.size() == currentSentenceInfo.sentence.size())
-					for (int index4 = 0; index4 < sentenceInfo_tmp.sentence.size(); index4++)
+					for (unsigned int index4 = 0; index4 < sentenceInfo_tmp.sentence.size(); index4++)
 						equalSentences = (equalSentences && (sentenceInfo_tmp.sentence[index4] == currentSentenceInfo.sentence[index4]));
 				else equalSentences = false;
 					
@@ -303,23 +303,23 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 				
 				std::deque<Global_Section> globalSections;			//Enthält später alle Sections (also unterteilte Abschnitte) mit allen im jeweiligen Abschnitt zu betrachtenden Hypothesen
 
-				for (int index1 = 0; index1 < nBestLists.size(); index1++) {	//Iteriere über Anzahl der Sätze im Text
-
+				for (unsigned int index1 = 0; index1 < nBestLists.size(); index1++) {	//Iteriere über Anzahl der Sätze im Text
 						std::deque<StraightLine> lines;			//Beinhaltet alle Geraden (Hypothesen) eines Satzes
 
-					for (int index2 = 0; index2 < nBestLists[index1].second.size(); index2++) {	//Iteriere über die Anzahl der Hypothesen für einen Satz
+					for (unsigned int index2 = 0; index2 < nBestLists[index1].second.size(); index2++) {	//Iteriere über die Anzahl der Hypothesen für einen Satz
 						StraightLine line_tmp;
 						line_tmp.gradient = findGradient(nBestLists[index1].second[index2].cost, currentParam, models);
 						line_tmp.offset = findOffset(nBestLists[index1].second[index2].cost, currentParam, models, modelNumber);
 						line_tmp.sentence = index2;
 
-						int position_tmp = searchLines(lines, line_tmp.gradient, 0, lines.size()-1, lines.size());
+						unsigned int position_tmp = searchLines(lines, line_tmp.gradient, 0, lines.size()-1, lines.size());
 
-						if (lines[position_tmp].gradient == line_tmp.gradient)		//Bei gleicher Steigung:
+						if (lines[position_tmp].gradient == line_tmp.gradient){	//Bei gleicher Steigung:
 							if (lines[position_tmp].offset < line_tmp.offset) {	//Wähle Gerade mit höchstem Offset
 								lines[position_tmp].offset = line_tmp.offset;	
 								lines[position_tmp].sentence = line_tmp.sentence;
 							}
+						}
 						else if (lines[position_tmp].gradient > line_tmp.gradient)	//Ansonsten: An richtiger Stelle einfügen
 							lines.insert(lines.begin()+position_tmp, line_tmp);
 						else lines.insert(lines.begin()+position_tmp+1,line_tmp);
@@ -331,7 +331,7 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 				double currentParamValue;							//Hält den aktuell besten Parameter-Wert fest
 				double currentParamValueBleu = 0;						//BLEU-Wert für aktuellen Parameter-Wert
 				
-				for (int index3 = 0; index3 < globalSections.size()-1; index3++) {		//Iteriere über alle GlobalSections, bis auf die letzte
+				for (unsigned int index3 = 0; index3 < globalSections.size()-1; index3++) {		//Iteriere über alle GlobalSections, bis auf die letzte
 					int mid_tmp = (globalSections[index3].begin + globalSections[index3+1].begin) / 2;	//Bestimme mitte der aktuellen GobalSection
 					double bleu_tmp = membleu(nBestLists, globalSections[index3].sentences);//Bestimme BLEU für aktuellen Parameter-Wert
 					if (bleu_tmp > currentParamValueBleu) {					//Finde aktuell besten Parameter-Wert

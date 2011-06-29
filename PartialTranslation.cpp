@@ -52,8 +52,9 @@ unsigned int PartialTranslation::getDestination_pos(){
 
 
 
-PartialTranslation PartialTranslation::operator=(PartialTranslation& original){
-     this->cost=original.cost;
-     this->origin=original.origin;
-     this->translation=original.translation;
+PartialTranslation& PartialTranslation::operator=(PartialTranslation& original){
+	this->cost=original.cost;
+	this->origin=original.origin;
+	this->translation=original.translation;
+	return *this;
 }

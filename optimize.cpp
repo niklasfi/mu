@@ -1,7 +1,6 @@
 #include <vector>
 #include <iostream>
 
-
 #include "lexicon.h"
 #include "aStar.h"
 #include "readtable.cpp"
