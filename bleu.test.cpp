@@ -9,7 +9,52 @@ using namespace std;
 
 
 int main(){
-
+	/*std::vector<std::pair<
+		std::vector<uint>, 
+		std::vector<SentenceInfo>
+	>*/
+	
+	Cost::add_model(Cost::source_to_target_phrase);
+	
+	SentenceInfo s1(
+		std::vector<uint>{1,3,4,4},
+		Cost(.5),
+		0
+	);
+	SentenceInfo s2(
+		std::vector<uint>{1,3,4,1},
+		Cost(.5),
+		0
+	);
+	
+	std::vector<SentenceInfo> sInfos{
+		s1,s2
+	};
+		
+	std::pair<std::vector<uint>, std::vector<SentenceInfo>> stru(
+		std::vector<uint>{1,2,3,4},
+		sInfos
+	);
+		
+	double b1 = membleu(
+		std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo>>>{stru},
+		std::vector<uint>{0},2
+	);
+		
+	double b2 = membleu(
+		std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo>>>{stru},
+		std::vector<uint>{1},2
+	); 
+		
+	double b3 = membleu(
+		std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo>>>{stru},
+		std::vector<uint>{1},2
+	); 
+		
+	std::cout << b1 << "\n"
+		<< b2 << "\n"
+		<< b3;
+/*
   vector<unsigned int>* vek=new vector<unsigned int> (6);
   vector<unsigned int>* vek2=new vector<unsigned int>(4);
   vector<unsigned int>* vek3=new vector<unsigned int> (3);
@@ -76,6 +121,6 @@ int main(){
 
   //sen.reference.pop_back();
   //sen.guess.pop_back();
-  //assert(bleu(sen,4) ==-(1./0.));//Test auf leeren Pool
+  //assert(bleu(sen,4) ==-(1./0.));//Test auf leeren Pool*/
 
 }
