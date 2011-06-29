@@ -115,7 +115,7 @@ void aStar::search() {
 
 
 
-void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList){
+void aStar::Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList){
      igzstream in(eingabe);
      aStar::flex=fLex;
      elex=eLex;

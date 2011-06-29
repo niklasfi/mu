@@ -53,8 +53,8 @@ class aStar {
 	void search();	//A*-Suche
 
 	void addSentence(const aStarElement& a);   //Ausgabefunktion
-
-	static void Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
+	//die eigentliche Funktion, die von außen benutzt wird, sie füllt die nbestliste auf (ohne die referenzübersetzungen zu setzen) 
+	static void Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
 	static void Suchalgorithmus2(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
      
 };
