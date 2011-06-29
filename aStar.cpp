@@ -30,7 +30,6 @@ void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 
 }
 void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement>> stack){
-	cout << "stack :" << endl;	
 	while (!stack.empty() ){
 		aStarElement first=stack.top();
 		for (int i=0; i<first.trl.size(); i++)	cout << first.trl[i] << ", ";
@@ -46,7 +45,9 @@ PTree< PTree <Cost> >* aStar::schwarz=0;
 double aStar::prune=2;
 
 //Constructor
-aStar::aStar(vector<HypothesisNode>& vect):vect(vect){}
+aStar::aStar(vector<HypothesisNode>& vect):vect(vect){
+	nTranslations= new vector<SentenceInfo>;	
+}
 
 
 void aStar::set_max_SentenceTranslation(uint size){
@@ -55,14 +56,15 @@ void aStar::set_max_SentenceTranslation(uint size){
 }
 
 
-void aStar::print(std::vector< std::vector <unsigned int> > v){
-	for(vector< vector < uint > >::iterator i = v.begin(); i != v.end(); i++){
-		std::cout << lineNumber << " # ";
-		for(vector<uint>::reverse_iterator it = i->rbegin(); it!=i->rend(); it++){
-			std::cout << aStar::elex->getString(*it) << " ";    //ID->Wort
-		}
-		std::cout << "\n";
+void aStar::addSentence(aStarElement& a){
+	vector< unsigned int> v_id;
+	for(vector<uint>::reverse_iterator it = a.trl.rbegin(); it!=a.trl.rend(); it++){
+		v_id.push_back(*it);    //ID->Wort
 	}
+	SentenceInfo tmp;
+	tmp.sentence=v_id;
+	tmp.cost=a.cost;
+	nTranslations->push_back(tmp);
 }
 
 //Eigentliche A*-Suche
@@ -81,7 +83,7 @@ std::vector<std::vector<uint> > aStar::search() {
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
 		if(stack.top().pos->getOutbound().size() ==0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
-			output.push_back(stack.top().trl);
+			print(stack.top());
 			stack.pop();
 			n++;
 		} else {	//Führe einen A*-Schritt für das erste Element im Stack durch
@@ -110,12 +112,12 @@ std::vector<std::vector<uint> > aStar::search() {
 		}
 	}
 	
-	return output;
 }
 
 
 
-void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
+vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
+	vector < pair < vector <unsigned int>, vector < SentenceInfo> > >* nBestList =new vector < pair < vector <unsigned int>, vector < SentenceInfo> > >;
      igzstream in(eingabe);
      aStar::flex=fLex;
      elex=eLex;
@@ -204,16 +206,19 @@ void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexi
 	  //dotGraph(Knoten, elex);
 	  aStar astar(Knoten);
 	  astar.lineNumber = lineNumber;
-	  astar.print(astar.search());
-	  
-	  for(unsigned int i = 0; i < Knoten.size(); i++){
+		pair < vector <unsigned int>, vector < SentenceInfo> > tmp;
+		nBestList->push_back(tmp);
+		nBestList->end()->second=astar.nTranslations;	  
+
+	for(unsigned int i = 0; i < Knoten.size(); i++){
 		 HypothesisNode& hnode = Knoten[i];
 		 for(unsigned int j = 0; j < hnode.getOutbound().size(); j++)
 		 	delete hnode.getOutbound()[j];
 	  }
+	delete[] astar.nTranslations;
 	  
-	  lineNumber ++;
+	  lineNmber ++;
 	  }
-	
+	return nBestList();	
 }
 

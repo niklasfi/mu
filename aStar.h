@@ -12,6 +12,7 @@
 #include "aStarElement.h"
 #include "lexicon.h"
 #include "ptree.h"
+#include "sentenceinfo.h"
 #include "gzstream/gzstream.h"
 #include "global.h"
 #include "cmath"
@@ -20,6 +21,8 @@
 
 
 class aStar {
+
+	vector<SentenceInfo>* nTranslations;
 
 	vector<HypothesisNode> vect;
  	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
@@ -49,9 +52,9 @@ class aStar {
 
 	std::vector<std::vector<unsigned int> > search();	//A*-Suche
 
-	void print(std::vector< std::vector <unsigned int> > v);   //Ausgabefunktion
+	void addSentence(aStarElement& a);   //Ausgabefunktion
 
-	static void Suchalgorithmus(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
+	static vector< pair <unsigned int, vector<SentenceInfo> > >& Suchalgorithmus(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 	static void Suchalgorithmus2(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
      
 };
