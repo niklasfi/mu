@@ -1,5 +1,6 @@
 #include "aStar.h"
 
+using namespace std;
 
 void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 		int knotenid=0;
@@ -56,10 +57,10 @@ void aStar::set_max_SentenceTranslation(uint size){
 }
 
 
-void aStar::addSentence(aStarElement& a){
+void aStar::addSentence(const aStarElement& a){
 	vector< unsigned int> v_id;
-	for(vector<uint>::reverse_iterator it = a.trl.rbegin(); it!=a.trl.rend(); it++){
-		v_id.push_back(*it);    //ID->Wort
+	for(int i=a.trl.size()-1; i>=0; i--){
+		v_id.push_back(a.trl[i]);    //ID->Wort
 	}
 	SentenceInfo tmp;
 	tmp.sentence=v_id;
@@ -83,7 +84,7 @@ std::vector<std::vector<uint> > aStar::search() {
 	while(n<max_SentenceTranslation || max_SentenceTranslation==0){	//Anzahl der (Satz)Übersetzungen, die ausgegeben werden
 		if(stack.empty()) break;
 		if(stack.top().pos->getOutbound().size() ==0) {	//Wenn Satzanfang erreicht, dann gib Übersetzung aus und lösche entsprechendes Element
-			print(stack.top());
+			addSentence(stack.top());
 			stack.pop();
 			n++;
 		} else {	//Führe einen A*-Schritt für das erste Element im Stack durch
@@ -116,8 +117,7 @@ std::vector<std::vector<uint> > aStar::search() {
 
 
 
-vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
-	vector < pair < vector <unsigned int>, vector < SentenceInfo> > >* nBestList =new vector < pair < vector <unsigned int>, vector < SentenceInfo> > >;
+void aStar::Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList){
      igzstream in(eingabe);
      aStar::flex=fLex;
      elex=eLex;
@@ -206,19 +206,19 @@ vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& aStar::Suchal
 	  //dotGraph(Knoten, elex);
 	  aStar astar(Knoten);
 	  astar.lineNumber = lineNumber;
+		astar.search();
 		pair < vector <unsigned int>, vector < SentenceInfo> > tmp;
-		nBestList->push_back(tmp);
-		nBestList->end()->second=astar.nTranslations;	  
-
+		nBestList.push_back(tmp);
+		nBestList.back().second=*astar.nTranslations;	  
+//		SentenceInfo bla=*astar.nTranslations;
 	for(unsigned int i = 0; i < Knoten.size(); i++){
 		 HypothesisNode& hnode = Knoten[i];
 		 for(unsigned int j = 0; j < hnode.getOutbound().size(); j++)
 		 	delete hnode.getOutbound()[j];
 	  }
-	delete[] astar.nTranslations;
+	//delete[] astar.nTranslations;
 	  
-	  lineNmber ++;
+	  lineNumber ++;
 	  }
-	return nBestList();	
 }
 

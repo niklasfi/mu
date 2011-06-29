@@ -52,9 +52,9 @@ class aStar {
 
 	std::vector<std::vector<unsigned int> > search();	//A*-Suche
 
-	void addSentence(aStarElement& a);   //Ausgabefunktion
+	void addSentence(const aStarElement& a);   //Ausgabefunktion
 
-	static vector< pair <unsigned int, vector<SentenceInfo> > >& Suchalgorithmus(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
+	static void Suchalgorithmus(char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
 	static void Suchalgorithmus2(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
      
 };
