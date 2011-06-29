@@ -10,6 +10,8 @@
 
 using namespace std;
 
+int count2;
+
 struct BleuAndScale{
 	double bleu;
 	vector<double> x;
@@ -41,33 +43,6 @@ vector< vector<double> > Simplex(){
 		std::vector<double>{0.2,  0.2,  0.7,  4,    0.77, 0.66, 0.22, 0.44, 1}
 	};
 	
-	vector <vector <double> > x;
-	x.resize(5);
-	
-	double temp[]={0.75,0.75,0.75,0.75,0.25,0.25,0.25,0.7,0.8,-1, //die "zufälligen Anfangsdaten von Simplex
-				0.6,0.5,0.6,0.5,1,0,0,1,0.8,-1,
-				0.5,2,0.3,5,0.6,0.2,0.2,3,3,-1,
-				1,1,0,0,0.55,4,0.3,0.8,1,-1,
-				0.2,0.2,0.7,4,0.77,0.66,0.22,0.44,1
-				};
-				
-		
-	int tsize = sizeof(temp)/sizeof(temp[0]);
-	
-	int vec =0;
-	for(int i=0; i<tsize; i++){
-
-		if(temp[i]==-1) vec++;
-		else if(temp[i]!=-1) x[vec].push_back(temp[i]);
-
-	}	
-	/*for(int i=0;i<x.size();i++){
-		for(int j=0;j<x[i].size();j++){
-			cout<< x[i][j] <<"  ";
-		}	
-		cout<<endl;
-	}*/
-	return x;
 }
 
 vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > &nBestList,const vector <double> &x){
@@ -77,6 +52,7 @@ vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > &n
 	min=1./0.;
 	vector<uint> result;
 	Cost::scale=x;
+	
 
 	for(unsigned int j=0;j<nBestList.size();j++){
 		for(unsigned int k=0;k<nBestList[j].second.size();k++){
@@ -86,12 +62,15 @@ vector<uint> findtrans(vector< pair < vector<uint>, vector <SentenceInfo> > > &n
 		}	
 		result.push_back(min_id);
 	
-	}		
+	}
+
 	return result;
+
 }
 //vector< pair < vector<uint>,vector <SentenceInfo> > > nBestList	
 vector<double> DownhillSimplex (std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > > &nBestList){
 	int bigcount=0;
+	count2=0;
 	int count=0;
 	vector<double> x0 (9,0);
 	vector< vector<double> > punkte=Simplex();//Punkte angelegt

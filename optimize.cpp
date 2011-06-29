@@ -13,7 +13,8 @@ using namespace std;
 
 
 int main (int argc, char* argv[]) {
-
+	for(int i=0;i<9;i++)
+		Cost::add_model((Cost::Model)(i));
 	int mNumber = 1;
 	vector <double> skalierung(9,0);
 	std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > >* nBestLists = new std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > >;
@@ -22,12 +23,12 @@ int main (int argc, char* argv[]) {
 	Lexicon flex;
 	PTree<PTree<Cost>>* schwarz = new PTree<PTree<Cost>>;
 
-	readTable(*schwarz,flex,elex,"training/phraseextract_sorted",2,10);
+	readTable(*schwarz,flex,elex,"training/phraseextract_small_sorted",4,10);
 	
 	aStar::set_max_SentenceTranslation(10);
-    aStar::Suchalgorithmus("training/f-test",schwarz,&elex,&flex,*nBestLists);
+    aStar::Suchalgorithmus("training/f-test4",schwarz,&elex,&flex,*nBestLists);
 
-	ifstream guess("training/englischsatz");
+	ifstream guess("training/e-test4");
 	string line;
 	
 	for(unsigned int j=0;j<nBestLists->size();j++){
@@ -41,8 +42,8 @@ int main (int argc, char* argv[]) {
 	}
 
 
-	/*skalierung=DownhillSimplex (nBestLists);
-	for(unsigned int i=0; i<9;i++) cout<<skalierung[i]<<endl;*/
-	mert(*nBestLists,mNumber);
+	skalierung=DownhillSimplex(*nBestLists);
+	for(unsigned int i=0; i<9;i++) cout<<skalierung[i]<<endl;
+	//mert(*nBestLists,mNumber);
 	return 0;
 }
