@@ -62,9 +62,7 @@ void aStar::addSentence(const aStarElement& a){
 	for(int i=a.trl.size()-1; i>=0; i--){
 		v_id.push_back(a.trl[i]);    //ID->Wort
 	}
-	SentenceInfo tmp;
-	tmp.sentence=v_id;
-	tmp.cost=a.cost;
+	SentenceInfo tmp(v_id, a.cost);
 	nTranslations->push_back(tmp);
 }
 
