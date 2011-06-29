@@ -70,7 +70,7 @@ void readTable(
 
 }
 
-int main (int argc, char* argv[]){
+int main(int argc, char* argv[]){
 	 /*Diese Modelle gibt es:
 	  * source_to_target_phrase,
 		target_to_source_phrase,
