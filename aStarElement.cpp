@@ -9,7 +9,7 @@ void aStarElement::addWord(uint w){
 }
 
 void aStarElement::addWords2(std::vector<uint> w){
-     for (int i=0; i<w.size(); i++)
+	for (unsigned int i=0; i<w.size(); i++)
 	  addWord(w[w.size()-1-i]); //die Phrase muss umgekehrt eingefügt werden!
 }
 

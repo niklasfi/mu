@@ -1,7 +1,6 @@
 #include <vector>
 #include <iostream>
 
-#include "opt_translate.cpp"
 #include "sentenceinfo.h"
 #include "global.h"
 #include "mert.cpp"
