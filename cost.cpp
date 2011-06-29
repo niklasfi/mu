@@ -47,7 +47,6 @@ std::vector<double> Cost::cost(std::vector<Model> ms){
 Cost& Cost::cost(Model m, double v){
 	if(lookup[m]!=-1){
 		modelCosts[lookup[m]]=v;
-		//std::cout << "model " << m << "cost " << v << std::endl;
 	}
 	return *this;
 }
@@ -62,7 +61,7 @@ double Cost::totalize() const {
 	double total = 0;
 	for(uint i = 0; i < lookup.size(); i++)
 		if (lookup[i] != -1)
-			total += modelCosts[lookup[i]]; //falls model nicht existiert rechnet er + 0
+			total += modelCosts[lookup[i]]*scale[i]; //falls model nicht existiert rechnet er + 0
 	return total;
 }
 
