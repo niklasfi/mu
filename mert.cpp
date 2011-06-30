@@ -41,10 +41,10 @@ std::list<int> randomPermutation(const int &modelNumber) {
 	for (int index = 0; index < modelNumber; index++) vector_tmp.push_back(index);		//der die Zahlen 0 bis (modelnumber-1) enthält
 
 	for (int index = 0; index < modelNumber; index++) {
-		//int randomNumber = rand() % vector_tmp.size();					//Bestimme zufällige Zahl in vector_tmp
-		int integer_tmp = vector_tmp[index];						//Ließ die Zahl aus
+		int randomNumber = rand() % vector_tmp.size();					//Bestimme zufällige Zahl in vector_tmp
+		int integer_tmp = vector_tmp[randomNumber];						//Ließ die Zahl aus
 		permutation.push_back(integer_tmp);						//Füge sie ans Ende der Permutation ein			
-		vector_tmp.erase(vector_tmp.begin()+index);					//Lösche sie aus dem Vektor
+		vector_tmp.erase(vector_tmp.begin()+randomNumber);					//Lösche sie aus dem Vektor
 	}
 
 	return permutation;
@@ -87,10 +87,6 @@ int searchLines(const std::deque<StraightLine> &lines, const double &key, const 
 /* === Liefert den Wert des zu currentParam gehörenden Modells zurück zurück === */
 double findGradient ( Cost &cost, const int &currentParam, const std::vector<Cost::Model> &models) {
 
-	/*std::vector<Model> model_tmp;							//Enthält das gesuchte Modell
-	model_tmp.push_back(models[currentParam]);					//Bestimmen des zum aktuellen Parameter gehörenden Modell
-	std::vector<double> gradient_tmp = cost.cost(model_tmp);			//Auslesen des zugehörigen Modellwertes aus cost
-	return gradient_tmp.front();*/
 	Cost::Model model_tmp = models[currentParam];
 	double value_tmp = cost.cost(model_tmp);
 	return value_tmp;
@@ -182,23 +178,26 @@ void mergeSections (std::deque<Global_Section> &globalSections, std::deque<Secti
 				nextGlobalSection = globalSections[index2+1];
 			else nextGlobalSection = { std::max(localSections.back().intersection, globalSections.back().begin)+1, std::vector<uint>() };
 
-			if (currentSection.intersection == currentGlobalSection.begin)		//Füge nur Satz hinzu
-				currentGlobalSection.sentences.push_back(currentSection.sentence);
+			/*if (currentSection.intersection == currentGlobalSection.begin)		//Füge nur Satz hinzu
+				globalSections[index2].sentences.push_back(currentSection.sentence);
 
 			else if (currentSection.intersection > currentGlobalSection.begin) {	//Füge neue global_Section ab currentSection.begin ein
 
 				Global_Section globalSection_tmp = { currentSection.intersection, currentGlobalSection.sentences };
-				globalSection_tmp.sentences.push_back(currentSection.sentence);
+				globalSection_tmp.sentences.back() = currentSection.sentence;
 				globalSections.insert(globalSections.begin()+index2+1, globalSection_tmp);
 				index2++;						//Index anpassen
 				
-			} else {							//Füge neue Global_Section ab currentGlobalSection.begin ein
-
-				Global_Section globalSection_tmp = { currentGlobalSection.begin, currentGlobalSection.sentences };
-				globalSection_tmp.sentences.push_back(currentSection.sentence);
+			} else {							//Füge nur Satz hinzu
+				globalSections[index2].sentences.push_back(currentSection.sentence);
+			}*/
+			if (currentSection.intersection > currentGlobalSection.begin) {		//Füge neue global_Section ab currentSection.intersection ein
+				Global_Section globalSection_tmp = {currentSection.intersection, currentGlobalSection.sentences};
+				globalSection_tmp.sentences.back() = currentSection.sentence;
 				globalSections.insert(globalSections.begin()+index2+1, globalSection_tmp);
 				index2++;						//Index anpassen
 			}
+			else globalSections[index2].sentences.push_back(currentSection.sentence);	//Füge nur neuen Satz hinzu
 
 			//Indizes für nächsten Durchlauf bestimmen
 			if (nextSection.intersection == nextGlobalSection.begin) {
@@ -267,6 +266,7 @@ void printall(const std::vector<double> &paramValues, const int &modelNumber) {
 	std::cout << "Optimierte Parameter-Werte:";
 	for (int index1 = 0; index1 < modelNumber; index1++)
 		std::cout << " " << paramValues[index1];
+	std::cout<<"\n";
 }
 
 
@@ -322,11 +322,13 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 						}
 						else if (lines[position_tmp].gradient > line_tmp.gradient)	//Ansonsten: An richtiger Stelle einfügen
 							lines.insert(lines.begin()+position_tmp, line_tmp);
-						else lines.insert(lines.begin()+position_tmp+1,line_tmp);
+						else if (position_tmp != lines.size())
+							lines.insert(lines.begin()+position_tmp+1,line_tmp);
+						else lines.push_back(line_tmp);
+					}
 						
 						std::deque<Section> localSections = findSections(lines);	//Finde alle relevanten Schnittpunkte (als Sections gespeichert)
 						mergeSections(globalSections, localSections);			//localSection zu globalSection hinzufügen
-					}
 				}
 				double currentParamValue;							//Hält den aktuell besten Parameter-Wert fest
 				double currentParamValueBleu = 0;						//BLEU-Wert für aktuellen Parameter-Wert
@@ -353,4 +355,32 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 		newHypothesis = addNewHypothesis(nBestLists, paramValues, modelNumber);
 	}
 	printall(paramValues, modelNumber);
+}
+
+
+//Kleine Funktion, zum Testen anderer Teilfunktionen aufgerufen in main von testmert.cpp
+void testmert () {
+	
+	std::deque<Section> localSections;
+	std::deque<Global_Section> globalSections;
+	Section sec = {1.0,1};
+	localSections.push_back(sec);
+	sec = {2.0,3};
+	localSections.push_back(sec);
+	sec = {4.0, 2};
+	localSections.push_back(sec);
+	std::vector<unsigned int> vec;
+	Global_Section glob = {0,vec};
+	globalSections.push_back(glob);
+	glob = {1.0, vec};
+	globalSections.push_back(glob);
+	glob = {3.0, vec};
+	globalSections.push_back(glob);
+	mergeSections(globalSections, localSections);
+	for (unsigned int i = 0; i<globalSections.size();i++) {
+		std::cout<<i<<" " <<globalSections[i].begin<<"  ";
+		for (unsigned int i2 = 0; i2<globalSections[i].sentences.size();i2++)
+			std::cout<<" "<<globalSections[i].sentences[i2];
+		std::cout<<"\n";
+	}
 }

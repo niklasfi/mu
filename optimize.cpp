@@ -15,7 +15,7 @@ using namespace std;
 int main (int argc, char* argv[]) {
 	for(int i=0;i<9;i++)
 		Cost::add_model((Cost::Model)(i));
-	int mNumber = 1;
+	int mNumber = 9;
 	vector <double> skalierung(9,0);
 	std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > >* nBestLists = new std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > >;
 
@@ -42,8 +42,8 @@ int main (int argc, char* argv[]) {
 	}
 
 
-	skalierung=DownhillSimplex(*nBestLists);
-	for(unsigned int i=0; i<9;i++) cout<<skalierung[i]<<endl;
-	//mert(*nBestLists,mNumber);
+	//skalierung=DownhillSimplex(*nBestLists);
+	//for(unsigned int i=0; i<9;i++) cout<<skalierung[i]<<endl;
+	mert(*nBestLists,mNumber);
 	return 0;
 }
