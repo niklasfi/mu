@@ -18,6 +18,7 @@
 #include "cmath"
 #include <string>
 #include "cost.h"
+#include "decoder.h"
 
 
 class aStar {
@@ -40,8 +41,6 @@ class aStar {
 
 	public:
 	
-	unsigned int lineNumber;
-
 	static PTree<PTree < Cost> >* schwarz;
 	static Lexicon* elex;
 	static Lexicon* flex;
@@ -55,6 +54,4 @@ class aStar {
 	void addSentence(const aStarElement& a);   //Ausgabefunktion
 	//die eigentliche Funktion, die von außen benutzt wird, sie füllt die nbestliste auf (ohne die referenzübersetzungen zu setzen) 
 	static void Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
-	static void Suchalgorithmus2(char* eingabe, PTree<PTree < Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
-     
 };

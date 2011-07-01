@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
+/*void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 		//int knotenid=0;
 		std::cout << "digraph g{\n";
 		for(unsigned int i=0; i<Knoten.size(); i++){
@@ -37,7 +37,7 @@ void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aSta
 		cout << first.cost.cost()<<endl;
 		stack.pop();
 	}
-}
+}*/
 
 uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
 Lexicon* aStar::elex=0;
@@ -111,9 +111,8 @@ void aStar::search() {
 	
 }
 
-
-
-void aStar::Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList){
+* aStar::Suchalgorithmus(
+	std::vector<unsigned int>line, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
      igzstream in(eingabe);
      aStar::flex=fLex;
      elex=eLex;
@@ -201,7 +200,7 @@ void aStar::Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree
 	  
 	  //dotGraph(Knoten, elex);
 	  aStar astar(Knoten);
-	  astar.lineNumber = lineNumber;
+	  //astar.lineNumber = lineNumber;
 		astar.search();
 		pair < vector <unsigned int>, vector < SentenceInfo> > tmp;
 		nBestList.push_back(tmp);
