@@ -30,7 +30,7 @@ Decoder::hypRefPair::~hypRefPair(){
 }
 
 Decoder::nBestList* Decoder::translate(const std::string& line){
-	return translate(*parseLine(flex, line));
+	//return translate(*parseLine(flex, line));
 }
 
 std::vector<Decoder::nBestList>* Decoder::translate(const char french[]){
@@ -85,10 +85,10 @@ void Decoder::readTable(const char filename[], double prune_threshold,	unsigned 
 		ist >> relfreq_f  >> relfreq_e >>token; // token für "#"
 
 		while(ist>>token && token != "#"){
-			fphrase.push_back(flex->getWord_or_add(token));
+			fphrase.push_back(flex->getWord_or_add(token).wordId());
 		}
 		while(ist>>token && token != "#"){
-			ephrase.push_back(elex->getWord_or_add(token));
+			ephrase.push_back(elex->getWord_or_add(token).wordId());
 		}
 		ist >> singlecf >> singlece >> token >> source_to_target >> target_to_source >> token >> unigram_sprachmodell;
 
