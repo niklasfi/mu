@@ -16,17 +16,28 @@ class Decoder{
 		Lexicon* elex;
 		PTree<PTree<Cost>>* schwarz;
 	
-		Decoder(const char filename[], double prune_threshold, unsigned int prune_count);
+		Decoder(const char filename[], double prune_threshold, 
+			unsigned int prune_count);
 		~Decoder();
 	
+		typedef std::vector<SentenceInfo> nBestList;
+		typedef std::vector<unsigned int> Sentence;
+	
 		struct hypRefPair{
-			std::vector<unsigned int> reference;
-			std::vector<SentenceInfo> nBest;
+			Sentence* reference;
+			nBestList* nBest;  
+			hypRefPair(Sentence*, nBestList*);
+			~hypRefPair();
 		};
 		
-		hypRefPair* translate(std::string line);
-		std::vector<hypRefPair>* translate(const char filename[]);
-	private:
-		void readTable(const char filename[], double prune_threshold, unsigned int prune_count);
+		nBestList* translate(const Sentence&);
+		nBestList* translate(const std::string& line);
+		std::vector<nBestList>* translate(const char french[]);
+		std::vector<hypRefPair>* translate(const char french[],const char ref[]);
 		
+		static std::vector<Sentence>* parseFile(Lexicon* lex, const char file[]);
+	private:
+		void readTable(const char filename[], double prune_threshold, 
+			unsigned int prune_count);
+		static Sentence* parseLine(Lexicon* lex, const std::string&);
 };
