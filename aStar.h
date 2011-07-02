@@ -20,10 +20,11 @@
 #include "cost.h"
 #include "decoder.h"
 
+typedef std::vector<SentenceInfo> nBestList;
 
 class aStar {
 
-	vector<SentenceInfo>* nTranslations;
+	nBestList* nTranslations;
 
 	vector<HypothesisNode> vect;
  	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
@@ -52,6 +53,7 @@ class aStar {
 	void search();	//A*-Suche
 
 	void addSentence(const aStarElement& a);   //Ausgabefunktion
-	//die eigentliche Funktion, die von außen benutzt wird, sie füllt die nbestliste auf (ohne die referenzübersetzungen zu setzen) 
-	static void Suchalgorithmus(const char* eingabe, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex, vector < pair < vector <unsigned int>, vector < SentenceInfo> > >& nBestList);
+	/* die Funktion nach außen(bzw. für den decoder, sie gibt die n übersetzugen für einen satz (vektor aus ID's an) */
+	static nBestList* Suchalgorithmus(
+	std::vector<unsigned int>sentende_id, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 };

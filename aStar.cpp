@@ -1,8 +1,10 @@
 #include "aStar.h"
 
+typedef std::vector<SentenceInfo> nBestList;
+
 using namespace std;
 
-/*void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
+void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 		//int knotenid=0;
 		std::cout << "digraph g{\n";
 		for(unsigned int i=0; i<Knoten.size(); i++){
@@ -37,7 +39,7 @@ void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aSta
 		cout << first.cost.cost()<<endl;
 		stack.pop();
 	}
-}*/
+}
 
 uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
 Lexicon* aStar::elex=0;
@@ -111,78 +113,59 @@ void aStar::search() {
 	
 }
 
-* aStar::Suchalgorithmus(
-	std::vector<unsigned int>line, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
-     igzstream in(eingabe);
-     aStar::flex=fLex;
-     elex=eLex;
-     schwarz=blacktree;
 
+nBestList* aStar::Suchalgorithmus(
+	std::vector<unsigned int>sentence_id, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
+    aStar::flex=fLex;
+    elex=eLex;
+    schwarz=blacktree;
 
-     string token,line;
-
-	  unsigned int lineNumber = 0;
-	
-     while(getline(in,line)){
-	  istringstream ist(line); //Einlesen des Satzes
+	vector<HypothesisNode> Knoten;
+	Knoten.push_back(HypothesisNode());//initialisiert den ersten Knoten
+	Cost startkosten(0);
+	Knoten[0].setBestcost(startkosten);
 	  
-	  vector<unsigned int> sentence_id;
-
-	  vector<HypothesisNode> Knoten;
-	  Knoten.push_back(HypothesisNode());//initialisiert den ersten Knoten
-	  Cost startkosten(0);
-	  Knoten[0].setBestcost(startkosten);
-	  //cout << "start kosten " << Knoten[0].getBestcost().cost() << endl;
+	int aktPos=0; //merkt sich, wieviele Wörter schon eingelesen wurden
 	  
-	  int aktPos=0; //merkt sich, wieviele Wörter schon eingelesen wurden
-	  
-
-	  while ( ist >> token){
-	       Word word_id_french=flex->getWord_or_add(token); // das word zum Wort (mit 2 Bits Sprache)
-	       unsigned int id_french= word_id_french.wordId(); //die id ohne sprachbits
-
-	       sentence_id.push_back(id_french);
-	       aktPos++;
+	for (unsigned int i=0; i<sentence_id.size(); i++){
+		aktPos++;
 	       
-	       HypothesisNode knoten_next= HypothesisNode();//initialisiert den nächsten Knoten mit den bisherigen Kosten
+		HypothesisNode knoten_next= HypothesisNode();//initialisiert den nächsten Knoten mit den bisherigen Kosten
 	       
-	       for (int laengePhrase=1; laengePhrase<5; laengePhrase++){
-		    int posPhraseStart=aktPos-laengePhrase; //gibt die Pos. für den Knoten, auf dem die Phrase beginnt
-		    if (posPhraseStart < 0)	break; //wir befinden uns am Satzanfang und es gibt keine Phrasen
+	    for (int laengePhrase=1; laengePhrase<5; laengePhrase++){
+			int posPhraseStart=aktPos-laengePhrase; //gibt die Pos. für den Knoten, auf dem die Phrase beginnt
+			if (posPhraseStart < 0)	break; //wir befinden uns am Satzanfang und es gibt keine Phrasen
 
-		    vector<unsigned int> fphrase;
-		    for (int i=posPhraseStart; i<aktPos; i++){
-			 fphrase.push_back(sentence_id[i]);
+			vector<unsigned int> fphrase;
+			for (int i=posPhraseStart; i<aktPos; i++){
+				fphrase.push_back(sentence_id[i]);
 		    }
 			PTree<PTree <Cost> >* schwarzRest=schwarz->traverse(fphrase);
 			if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen
 			PTree <Cost>* blauBaum=&schwarzRest->c;
 			
-
-		    
-		    if (blauBaum){
-			 //int counter=0; //nur fürs Programmieren, damit alle Fehler ausgemerzt werden 
-			 for (PTree<Cost>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
-			      //if (counter++==10)	continue;
-			      vector<unsigned int> ephrase=it->phrase();
-			      
-			      Cost relfreq = it->c;
+			if (blauBaum){
+			//int counter=0; //nur fürs Programmieren, damit alle Fehler ausgemerzt werden 
+				for (PTree<Cost>::iterator it=blauBaum->begin(); it!=blauBaum->end(); it++){
+					//if (counter++==10)	continue;
+					vector<unsigned int> ephrase=it->phrase();
+					  
+					Cost relfreq = it->c;
 				
-			      if (relfreq.cost() == 1./0. )	continue;
-			      
-			      double cost_till_aktPos=Knoten[posPhraseStart].getBestcost().cost();
-			      
-			      if (cost_till_aktPos+prune > knoten_next.getBestcost().cost())	continue; //pruning ergibt, das ist eine schlecht Übersetzung
-			      
-			      if(cost_till_aktPos+relfreq.cost() < knoten_next.getBestcost().cost())	knoten_next.setBestcost(Knoten[posPhraseStart].getBestcost()+relfreq.cost());
-			      
-			      PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
-			      Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
-			      knoten_next.add_PartialTranslation_to_Outbound(Kante);   
-			 }
-		    }
-		
-	       }
+					if (relfreq.cost() == 1./0. )	continue;
+					  
+					double cost_till_aktPos=Knoten[posPhraseStart].getBestcost().cost();
+					  
+					if (cost_till_aktPos+prune > knoten_next.getBestcost().cost())	continue; //pruning ergibt, das ist eine schlecht Übersetzung
+					  
+					if(cost_till_aktPos+relfreq.cost() < knoten_next.getBestcost().cost())	knoten_next.setBestcost(Knoten[posPhraseStart].getBestcost()+relfreq.cost());
+					  
+					PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
+					Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
+					knoten_next.add_PartialTranslation_to_Outbound(Kante);   
+				 }
+			}
+		}
 		if (knoten_next.getOutbound().size() == 0){
 			//zuerst in das englische Lexicon einfügen
 			string word_string = flex->getString(sentence_id[aktPos-1]);
@@ -194,26 +177,19 @@ void aStar::search() {
 			knoten_next.add_PartialTranslation_to_Outbound(Kante);
 			Knoten.back().add_PartialTranslation_to_Inbound(Kante);
 		}
-	       Knoten.push_back(knoten_next); //letzter Knoten (node_next) hat keine eingehenden Kanten
+	    Knoten.push_back(knoten_next); //letzter Knoten (node_next) hat keine eingehenden Kanten
 	       
-	  }
+	}
 	  
-	  //dotGraph(Knoten, elex);
-	  aStar astar(Knoten);
-	  //astar.lineNumber = lineNumber;
-		astar.search();
-		pair < vector <unsigned int>, vector < SentenceInfo> > tmp;
-		nBestList.push_back(tmp);
-		nBestList.back().second=*astar.nTranslations;	  
-//		SentenceInfo bla=*astar.nTranslations;
+	//dotGraph(Knoten, elex);
+	aStar astar(Knoten);
+	astar.search();
 	for(unsigned int i = 0; i < Knoten.size(); i++){
-		 HypothesisNode& hnode = Knoten[i];
-		 for(unsigned int j = 0; j < hnode.getOutbound().size(); j++)
-		 	delete hnode.getOutbound()[j];
-	  }
+		HypothesisNode& hnode = Knoten[i];
+		for(unsigned int j = 0; j < hnode.getOutbound().size(); j++)
+			delete hnode.getOutbound()[j];
+	}
 	//delete[] astar.nTranslations;
-	  
-	  lineNumber ++;
-	  }
+	return astar.nTranslations;
 }
 
