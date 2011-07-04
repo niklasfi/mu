@@ -8,7 +8,25 @@
 #include "cost.h"
 #include "sentenceinfo.h"
 
+/* usage: übersetzen einer Textdatei:
+	Decoder decoder(phraseextract, prune_threshold, prune_count);
 
+	std::vector<Decoder::Sentence>* f = parseFile(flex,frenchfile);
+	std::vector<Decoder::Sentence>* e = parseFile(elex,engfile);
+	//kann weggelassen werden, für referenz
+	
+	std::vector<hypRefPair>* translation = decoder.translate(f,e);
+	//für nur übersetzen:
+	std::vector<nBestliste>* translation = decoder.translate(f);
+	
+	//...
+	
+	delete f;
+	delete e;
+	delete translation;
+	
+	//.. nächste übersetzung
+*/
 
 class Decoder{
 	public:
@@ -16,7 +34,8 @@ class Decoder{
 		Lexicon* elex;
 		PTree<PTree<Cost>>* schwarz;
 		/*filename soll der Pfad zur Phrasentabelle sein,
-		 threshold gibt an, wie groß der relative Unterschied von der besten Übersetzung sein darf (geeignete Zahlen zwischen 2 und 5)
+		 threshold gibt an, wie groß der relative Unterschied von der besten 
+		 Übersetzung sein darf (geeignete Zahlen zwischen 2 und 5)
 		 prune_count gibt an, wie viele Übersetzungen absolut zugelassen werden 
 		*/
 		Decoder(const char filename[], double prune_threshold, unsigned int prune_count);
@@ -29,26 +48,26 @@ class Decoder{
 		struct hypRefPair{
 			Sentence* reference;
 			nBestList* nBest;  
-			hypRefPair(Sentence*, nBestList*);
+			hypRefPair(Sentence* ref, nBestList* hyp);
 			~hypRefPair();
 		};
 		//übersetzt einen Satz von ID's
-		nBestList* translate(const Sentence&);
+		nBestList* translate(Sentence&);
+		hypRefPair* translate(Sentence& french, Sentence& ref);
 		
-		//übersetzt einen String und gibt die Übersetzung in ID's aus
-		nBestList* translate(const std::string& line);
+		std::vector<nBestList>* translate(std::vector<Sentence>&);
+		std::vector<hypRefPair>* translate(std::vector<Sentence>& french,
+			std::vector<Sentence>& ref);
 		
-		/*Eingabe ist der Pfad vom zu übersetzenden Text
-		gibt die n besten Übersetzungen aus, n wird mit maxSentenceTranslation aus aStar gesetzt*/
-		std::vector<nBestList>* translate(const char french[]);
-		//gibt die nBestListe für einen ganzen Text zurück und enthält auch für jeden Satz eine Referenzübersetzung
-		std::vector<hypRefPair>* translate(const char french[],const char ref[]);
-		
+		/* parseFile liest die textdatei `file` ein und gibt einen 
+		 * vector<vector<uint>> mit den jeweiligen ids zurück */
 		static std::vector<Sentence>* parseFile(Lexicon* lex, const char file[]);
+		//parseLine macht aus einem String einen Vektor von ID's
+		static Sentence* parseLine(Lexicon* lex, const std::string&);
 	private:
 		//liest die Phrasentabelle ein
 		void readTable(const char filename[], double prune_threshold, 
 			unsigned int prune_count);
-		//parseLine macht aus einem String einen Vektor von ID's
-		static Sentence* parseLine(Lexicon* lex, const std::string&);
 };
+
+

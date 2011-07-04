@@ -55,5 +55,5 @@ class aStar {
 	void addSentence(const aStarElement& a);   //Ausgabefunktion
 	/* die Funktion nach außen(bzw. für den decoder, sie gibt die n übersetzugen für einen satz (vektor aus ID's an) */
 	static nBestList* Suchalgorithmus(
-	std::vector<unsigned int>sentende_id, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
+		std::vector<unsigned int>sentence_id, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 };

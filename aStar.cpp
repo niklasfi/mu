@@ -192,4 +192,3 @@ nBestList* aStar::Suchalgorithmus(
 	//delete[] astar.nTranslations;
 	return astar.nTranslations;
 }
-

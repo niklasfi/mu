@@ -21,48 +21,44 @@ Decoder::~Decoder(){
 	delete schwarz; schwarz = 0;
 }
 
-Decoder::hypRefPair::hypRefPair(std::vector<unsigned int>* ref, std::vector<SentenceInfo>* nBest):
+Decoder::hypRefPair::hypRefPair(Sentence* ref,
+	nBestList* nBest):
 	reference(ref),nBest(nBest){}
 
 Decoder::hypRefPair::~hypRefPair(){
-	delete reference; reference = 0;
-	delete nBest;     nBest     = 0;
+	delete nBest; nBest = 0;
+}
+	
+Decoder::nBestList* Decoder::translate(Decoder::Sentence& sent){
+	return aStar::Suchalgorithmus(sent, schwarz, elex, flex);
+}
+Decoder::hypRefPair* Decoder::translate(Decoder::Sentence& french,
+	Decoder::Sentence& ref)
+{
+	return new hypRefPair(&ref,translate(french));
 }
 
-Decoder::nBestList* Decoder::translate(const std::string& line){
-	//return translate(*parseLine(flex, line));
+std::vector<Decoder::nBestList>* Decoder::translate(std::vector<Decoder::Sentence>& french){
+	std::vector<nBestList>* result = new std::vector<nBestList>();
+	for(unsigned int i = 0; i < french.size(); i++){
+		nBestList* translation = translate(french[i]);
+		result->push_back(*translation);
+		delete translation;
+	}
+	return result;
 }
 
-std::vector<Decoder::nBestList>* Decoder::translate(const char french[]){
-	igzstream figz(french);
-	std::string fline;
-	
-	std::vector<Decoder::nBestList>* translation = new std::vector<Decoder::nBestList>();
-	
-	while(getline(figz,fline))
-		translation->push_back(*translate(fline));
-
-	return translation;
+std::vector<Decoder::hypRefPair>* Decoder::translate(std::vector<Decoder::Sentence>& french,
+ std::vector<Decoder::Sentence>& ref)
+{
+	std::vector<hypRefPair>* result = new std::vector<hypRefPair>();
+	for(unsigned int i = 0; i < french.size(); i++){
+		hypRefPair* translation = translate(french[i], ref[i]);
+		result->push_back(*translation);
+		delete translation;
+	}
+	return result;
 }
-
-std::vector<Decoder::hypRefPair>* Decoder::translate(const char french[],const char ref[]){
-	igzstream figz(french), rigz(ref);
-	std::string fline, rline;
-	
-	std::vector<Decoder::hypRefPair>* translation = new std::vector<Decoder::hypRefPair>();
-	
-	while(getline(figz, fline) && getline(rigz, rline))
-		translation->push_back(
-			Decoder::hypRefPair(
-				parseLine(elex, rline),
-				new std::vector<SentenceInfo>()
-				//translate(parseLine(flex,fline))
-			)	
-		);
-
-	return translation;
-}
-
 void Decoder::readTable(const char filename[], double prune_threshold,	unsigned int prune_count){
 //==================Einlesen der Phrasentabelle============================
 	PTree< pair <unsigned int, double> > pruningTree; //speichert für jede Übersetzung die Anzahl der eingelesenen Übersetzungen und die beste Übersetzung
@@ -119,4 +115,19 @@ Decoder::Sentence* Decoder::parseLine(Lexicon* lex, const std::string& line){
 		sent->push_back(lex->getWord_or_add(token).wordId());
 	}
 	return sent;
+}
+
+std::vector<Decoder::Sentence>* Decoder::parseFile(Lexicon* lex, const char file[]){
+	igzstream igz(file);
+	std::string line;
+	
+	std::vector<Sentence>* result = new std::vector<Sentence>();
+	
+	while(getline(igz,line)){
+		Sentence* parsed_line = parseLine(lex,line);
+		result->push_back(*parsed_line);
+		delete parsed_line;
+	}
+	
+	return result;
 }

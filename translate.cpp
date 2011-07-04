@@ -14,8 +14,6 @@
 
 using namespace std;
 
-typedef vector <pair < vector <unsigned int>, vector< SentenceInfo> > > Liste_von_Uebersetzungen;
-
 int main(int argc, char* argv[]){
 	 /*Diese Modelle gibt es:
 	  * source_to_target_phrase,
@@ -111,24 +109,24 @@ int main(int argc, char* argv[]){
 		}
 	}
 	
-	Lexicon elex;
-	Lexicon flex;
-	PTree<PTree<Cost>> schwarz;
+	aStar::set_max_SentenceTranslation(sentenceCount);
+	
+	Decoder decoder(argv[4], prune_threshold, prune_count);
 
-	readTable(schwarz,flex,elex,argv[4],prune_threshold, prune_count);
+	std::vector<Decoder::Sentence>* f = Decoder::parseFile(decoder.flex,argv[5]);
+	
+	std::vector<Decoder::nBestList>* translation = decoder.translate(*f);
 	
 	
-
-     aStar::set_max_SentenceTranslation(sentenceCount);
-     Liste_von_Uebersetzungen nBestList;
-	aStar::Suchalgorithmus(argv[5],&schwarz,&elex,&flex, nBestList);
-	
-	for (unsigned int i=0; i< nBestList.size(); i++){
-		for (unsigned int k=0; k< nBestList[i].second.size(); k++){
-			SentenceInfo vec_info=nBestList[i].second[k];
-			for (unsigned int j=0; j<vec_info.sentence.size(); j++)
-				cout << elex.getString(vec_info.sentence[j]) << " ";
+	for (unsigned int i=0; i< translation->size(); i++){
+		for (unsigned int k=0; k< (*translation)[i].size(); k++){
+			for (unsigned int j=0; j<(*translation)[i][k].sentence.size(); j++)
+				cout << decoder.elex->getString((*translation)[i][k].sentence[j]) << " ";
+			
 			cout << endl;
 		}
 	}
+	
+	delete f;
+	delete translation;
 }
