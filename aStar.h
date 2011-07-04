@@ -12,13 +12,19 @@
 #include "aStarElement.h"
 #include "lexicon.h"
 #include "ptree.h"
+#include "sentenceinfo.h"
 #include "gzstream/gzstream.h"
 #include "global.h"
 #include "cmath"
 #include <string>
+#include "cost.h"
+#include "decoder.h"
 
+typedef std::vector<SentenceInfo> nBestList;
 
 class aStar {
+
+	nBestList* nTranslations;
 
 	vector<HypothesisNode> vect;
  	priority_queue<aStarElement, vector<aStarElement>, greater<aStarElement> > stack;
@@ -36,9 +42,7 @@ class aStar {
 
 	public:
 	
-	unsigned int lineNumber;
-
-	static PTree<PTree < double> >* schwarz;
+	static PTree<PTree < Cost> >* schwarz;
 	static Lexicon* elex;
 	static Lexicon* flex;
 	//Constructor
@@ -46,11 +50,10 @@ class aStar {
 
 	static void set_max_SentenceTranslation(uint size);
 
-	std::vector<std::vector<unsigned int> > search();	//A*-Suche
+	void search();	//A*-Suche
 
-	void print(std::vector< std::vector <unsigned int> > v);   //Ausgabefunktion
-
-	static void Suchalgorithmus(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
-	static void Suchalgorithmus2(char* eingabe, PTree<PTree < double> >* blacktree, Lexicon* eLex, Lexicon* fLex);
-     
+	void addSentence(const aStarElement& a);   //Ausgabefunktion
+	/* die Funktion nach außen(bzw. für den decoder, sie gibt die n übersetzugen für einen satz (vektor aus ID's an) */
+	static nBestList* Suchalgorithmus(
+		std::vector<unsigned int>sentence_id, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 };

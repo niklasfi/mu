@@ -1,7 +1,7 @@
 #include "dictionaryc.h"
 
 DictionaryC::DictionaryC():flex(french),elex(english){}
-DictionaryC::DictionaryC(const Dictionary& d):flex(d.flex),elex(d.elex),fwa(d.fwa.size()){
+DictionaryC::DictionaryC(const Dictionary& d):fwa(d.fwa.size()),flex(d.flex),elex(d.elex){
 	for(uint i = 0; i < d.fwa.size(); i++){
 		WordinfoC* finfo = &fwa[i];
 		finfo->set_singlecount(d.fwa[i].singlecount);
@@ -19,7 +19,7 @@ void DictionaryC::add_translation(std::string f, std::string e, double rel_freq)
 	}
 	if(!(ewd = elex.getWord(e)))
 		ewd = elex.add(e);
-	fwa[fwd].add_translation(ewd,rel_freq);
+	fwa[fwd.wordId()].add_translation(ewd,rel_freq);
 }
 
 void DictionaryC::add_word(std::string f, std::string e, double rel_freq){
@@ -32,7 +32,8 @@ void DictionaryC::add_translation(Word f, Word e, double rel_freq){
 
 void DictionaryC::read_line_singlewordExtract(std::string line){
 	std::istringstream ist(line);
-	uint f_ind, e_ind; double freq;
+	//uint f_ind, e_ind; 
+	double freq;
 	std::string f, e;
 	std::string trunc;
 	

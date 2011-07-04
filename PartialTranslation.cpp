@@ -3,19 +3,19 @@
 //Constructor
 
 PartialTranslation::PartialTranslation(){
-                                         cost=(1./0.);
+	cost=Cost(1./0.);
 }
 
-PartialTranslation::PartialTranslation(double kosten){
-                                              cost= kosten;
+PartialTranslation::PartialTranslation(Cost kosten){
+  cost= kosten;
 }
 
 
-PartialTranslation::PartialTranslation(double kosten, vector<unsigned int> uebersetzung, HypothesisNode* ursprung, unsigned int destination_pos) {
-     this->cost=kosten;
-     this->origin=ursprung;
-     this->translation=uebersetzung;
-     this->destination_pos=destination_pos;
+PartialTranslation::PartialTranslation(Cost kosten, vector<unsigned int> uebersetzung, HypothesisNode* ursprung, unsigned int destination_pos) {
+	this->cost=kosten;
+	this->origin=ursprung;
+  this->translation=uebersetzung;
+  this->destination_pos=destination_pos;
 }
 
 //Copy-Constructor
@@ -27,16 +27,16 @@ PartialTranslation::PartialTranslation(const PartialTranslation& original){
 }
 
 //getter und setter
-double PartialTranslation::getCost(){
-       return cost;
+Cost PartialTranslation::getCost(){
+  return cost;
 }
-void PartialTranslation::setCost(double kosten){
+void PartialTranslation::setCost(Cost kosten){
      cost=kosten;
 }
  vector<unsigned int>  PartialTranslation::getTranslation(){
     return translation;
 }
-void PartialTranslation::setTranslation ( vector<unsigned int> uebersetzung){
+void PartialTranslation::setTranslation (vector<unsigned int> uebersetzung){
      translation=uebersetzung;
 }
 HypothesisNode* PartialTranslation::getNode(){
@@ -52,8 +52,9 @@ unsigned int PartialTranslation::getDestination_pos(){
 
 
 
-PartialTranslation PartialTranslation::operator=(PartialTranslation& original){
-     this->cost=original.cost;
-     this->origin=original.origin;
-     this->translation=original.translation;
+PartialTranslation& PartialTranslation::operator=(PartialTranslation& original){
+	this->cost=original.cost;
+	this->origin=original.origin;
+	this->translation=original.translation;
+	return *this;
 }
