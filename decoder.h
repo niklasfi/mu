@@ -30,14 +30,18 @@ class Decoder{
 			~hypRefPair();
 		};
 		
-		nBestList* translate(const Sentence&);
-		nBestList* translate(const std::string& line);
-		std::vector<nBestList>* translate(const char french[]);
-		std::vector<hypRefPair>* translate(const char french[],const char ref[]);
+		nBestList* translate(const Sentence&) const;
+		nBestList* translate(const std::string& line) const;
+		std::vector<nBestList>* translate(const char french[]) const;
+		std::vector<hypRefPair>* translate(const char french[],const char ref[]) const;
+		std::vector<nBestList>* translate(const std::vector<Sentence>& french) const;
+		std::vector<hypRefPair>* translate(const std::vector<Sentence>& french, const std::vector<Sentence>& ref);
+		/* die Funktionen können alle const sein, da an den flex, elex, schwarz
+		 * Pointern nichts geändert wird */
 		
 		static std::vector<Sentence>* parseFile(Lexicon* lex, const char file[]);
 	private:
 		void readTable(const char filename[], double prune_threshold, 
-			unsigned int prune_count);
+			unsigned int prune_count) const;
 		static Sentence* parseLine(Lexicon* lex, const std::string&);
 };

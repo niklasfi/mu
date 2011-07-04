@@ -29,14 +29,14 @@ Decoder::hypRefPair::~hypRefPair(){
 	delete nBest;     nBest     = 0;
 }
 
-Decoder::nBestList* Decoder::translate(const std::string& line){
+Decoder::nBestList* Decoder::translate(const std::string& line) const{
 	Sentence* sent = parseLine(flex, line);
 	nBestList* translation = translate(*sent);
 	delete sent;
 	return translation;
 }
 
-std::vector<Decoder::nBestList>* Decoder::translate(const char french[]){
+std::vector<Decoder::nBestList>* Decoder::translate(const char french[]) const{
 	igzstream figz(french);
 	std::string fline;
 	
@@ -50,27 +50,44 @@ std::vector<Decoder::nBestList>* Decoder::translate(const char french[]){
 	return translation;
 }
 
-std::vector<Decoder::hypRefPair>* Decoder::translate(const char french[],const char ref[]){
+std::vector<Decoder::hypRefPair>* Decoder::translate(const char french[],const char ref[]) const{
 	igzstream figz(french), rigz(ref);
 	std::string fline, rline;
 	
 	std::vector<Decoder::hypRefPair>* hypref = new std::vector<Decoder::hypRefPair>();
 	
 	while(getline(figz, fline) && getline(rigz, rline)){
-		Sentence* fsent = parseLine(flex,fline);
 		hypref->push_back(
 			Decoder::hypRefPair(
-				parseLine(elex, rline),
-				translate(*fsent)
+				parseLine(elex,rline),
+				translate(*parseLine(flex,fline);)
 			)
 		);
-		delete fsent;
 	}
 
 	return hypref;
 }
 
-void Decoder::readTable(const char filename[], double prune_threshold,	unsigned int prune_count){
+std::vector<Decoder::nBestList>* Decoder::translate(const std::vector<Decoder::Sentence>& french) const{
+	std::vector<Decoder::nBestList>* translation = new std::vector<Decoder::nBestList>(french.size());
+	for(unsigned int i = 0; i < french.size(); i++){
+		nBestList* sent_translation = translate(french[i]);
+		(*translation)[i] = *sent_translation;
+		delete sent_translation;
+	}
+	return translation;
+}
+std::vector<Decoder::hypRefPair>* Decoder::translate(const std::vector<Decoder::Sentence>& french, const std::vector<Decoder::Sentence>& ref){
+	std::vector<hypRefPair>* hypref = new std::vector<hypRefPair>(french.size());
+	for(unsigned int i = 0; i < french.size(); i++){
+		hypref[i] = hypRefPair(
+			&french[i]
+		)
+	}
+		
+}
+
+void Decoder::readTable(const char filename[], double prune_threshold,	unsigned int prune_count) const{
 //==================Einlesen der Phrasentabelle============================
 	PTree< pair <unsigned int, double> > pruningTree; //speichert für jede Übersetzung die Anzahl der eingelesenen Übersetzungen und die beste Übersetzung
 	pair <unsigned int, double> pruningStart; //die Startkombi für den PruningTree
