@@ -20,7 +20,8 @@ class Cost{
 		word_penalty,
 		single_count_bit,
 		source_to_target_ratio,
-		unigram_language_model
+		unigram_language_model,
+		bigram_language_model
 	};
 	static const unsigned int modelCount = 9; //gibt an, wie viele Modelle verfügt werden können
 	
@@ -98,6 +99,9 @@ class Cost{
 	}
 	Cost& calc_unigram_language_model(double unigram){
 		return cost(unigram_language_model, unigram);
+	}
+	Cost& calc_bigram_language_model(double bigram){
+		return cost(bigram_language_model, bigram);
 	}
 	
 	//================Operatorenüberladung==================
