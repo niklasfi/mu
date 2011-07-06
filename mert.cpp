@@ -345,14 +345,20 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 				int mid_tmp = globalSections.back().begin + 1;
 				double bleu_tmp = membleu(nBestLists, globalSections.back().sentences);
 				if (bleu_tmp > currentParamValueBleu) {						//Betrachte nun auch die letzte GlobalSection
-						currentParamValue = mid_tmp;
-						currentParamValueBleu = bleu_tmp;
+					currentParamValue = mid_tmp;
+					currentParamValueBleu = bleu_tmp;
 				}
+
+
+				printall(paramValues,modelNumber);
+
+
 				paramChange = (paramChange || (paramValues[currentParam] != currentParamValue));//Hat sich der Parameter-Wert verändert?
 				paramValues[currentParam] = currentParamValue;
 			}
 		}
-		newHypothesis = addNewHypothesis(nBestLists, paramValues, modelNumber);
+		//newHypothesis = addNewHypothesis(nBestLists, paramValues, modelNumber);
+		newHypothesis = false;
 	}
 	printall(paramValues, modelNumber);
 }
