@@ -79,8 +79,8 @@ int searchLines(const std::deque<StraightLine> &lines, const double &key, const 
 	if (left > right) return lastMid;						//Wenn Binärsuche key nicht findet, gib letzte Mitte zurück
 	int mid = (int) floor( ( (left+right)/2)+0.5);					//Bestimme Mitte der Grenzen left und right
 	if (lines[mid].gradient == key) return mid;					//Key gefunden, gib Position zurück
-	else if (lines[mid].gradient > key) return searchLines(lines, key, left, mid-1, mid);	//Rekursiver Aufruf
-	else /*(lines[mid].gradient < key)*/ return searchLines(lines, key, mid+1, right, mid);	//Rekursiver Aufruf
+	else if (lines[mid].gradient < key) return searchLines(lines, key, left, mid-1, mid);	//Rekursiver Aufruf
+	else /*(lines[mid].gradient > key)*/ return searchLines(lines, key, mid+1, right, mid);	//Rekursiver Aufruf
 }
 
 
@@ -125,22 +125,22 @@ std::deque<Section> findSections (const std::deque<StraightLine> &lines) {
 	unsigned int index1 = 0;
 	while (index1 != lines.size()-1) {						//Brich bei Erreichen der letzten Gerade ab
 
-		double maxIntersection = 0;						//Speichert den Schnittpunkt mit höchstem y-Wert
+		double minIntersection = 0;						//Speichert den Schnittpunkt mit höchstem y-Wert
 		unsigned int index_tmp = index1;							//Merkt sich die zugehörige Gerade
 
 		for (unsigned int index2 = index1+1; index2 < lines.size(); index2++) {
 
 			double intersection_tmp = (lines[index2].offset - lines[index1].offset) / (lines[index1].gradient - lines[index2].gradient);
 			double yValue_tmp = lines[index1].gradient * intersection_tmp + lines[index1].offset;
-			double yValueMax = lines[index1].gradient * maxIntersection + lines[index1].offset;
-			if (yValue_tmp > yValueMax) {					//Bestimme den höchsten Schnittpunkt
-				maxIntersection = intersection_tmp;			//Speichere diesen
+			double yValueMin = lines[index1].gradient * minIntersection + lines[index1].offset;
+			if (yValue_tmp < yValueMin) {					//Bestimme den niedrigsten Schnittpunkt
+				minIntersection = intersection_tmp;			//Speichere diesen
 				index_tmp = index2;					//Und die zugehörige Gerade
 			}
 		}
 
 		if (index_tmp != index1) {						//Wenn überhaupt ein Schnittpunkt gefunden wurde
-			section_tmp.intersection = maxIntersection;
+			section_tmp.intersection = minIntersection;
 			section_tmp.sentence = lines[index_tmp].sentence;
 			sections.push_back(section_tmp);				//Füge neu begonnene Section zum Vektor hinzu
 			index1 = index_tmp;						//Fahre mit Gerade des aktuellen Schnittpunktes fort
@@ -314,17 +314,17 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 
 						unsigned int position_tmp = searchLines(lines, line_tmp.gradient, 0, lines.size()-1, lines.size());
 
-						if (lines[position_tmp].gradient == line_tmp.gradient){	//Bei gleicher Steigung:
-							if (lines[position_tmp].offset < line_tmp.offset) {	//Wähle Gerade mit höchstem Offset
+						if (position_tmp == lines.size())
+							lines.push_back(line_tmp);
+						else if (lines[position_tmp].gradient == line_tmp.gradient){	//Bei gleicher Steigung:
+							if (lines[position_tmp].offset > line_tmp.offset) {	//Wähle Gerade mit niedrigstem Offset
 								lines[position_tmp].offset = line_tmp.offset;	
 								lines[position_tmp].sentence = line_tmp.sentence;
 							}
 						}
-						else if (lines[position_tmp].gradient > line_tmp.gradient)	//Ansonsten: An richtiger Stelle einfügen
+						else if (lines[position_tmp].gradient > line_tmp.gradient)	//Ansonsten: an richtiger Stelle einfügen
 							lines.insert(lines.begin()+position_tmp, line_tmp);
-						else if (position_tmp != lines.size())
-							lines.insert(lines.begin()+position_tmp+1,line_tmp);
-						else lines.push_back(line_tmp);
+						else	lines.insert(lines.begin()+position_tmp+1,line_tmp);
 					}
 						
 						std::deque<Section> localSections = findSections(lines);	//Finde alle relevanten Schnittpunkte (als Sections gespeichert)
