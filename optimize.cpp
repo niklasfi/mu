@@ -28,6 +28,10 @@ int main (int argc, char* argv[]) {
 		}
 	}
 	
+	for(int i=0;i<modelNumber;i++)
+		Cost::add_model((Cost::Model)(i));
+// 	int mNumber = 9;
+	
 	double prune_threshold;
 	{
 		std::istringstream ist(argv[4]);
