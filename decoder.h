@@ -11,13 +11,13 @@
 /* usage: übersetzen einer Textdatei:
 	Decoder decoder(phraseextract, prune_threshold, prune_count);
 
-	std::vector<Decoder::Sentence>* f = parseFile(flex,frenchfile);
-	std::vector<Decoder::Sentence>* e = parseFile(elex,engfile);
+	std::vector<Decoder::Sentence>* f = Decoder::parseFile(decoder.flex,frenchfile);
+	std::vector<Decoder::Sentence>* e = Decoder::parseFile(decoder.elex,engfile);
 	//kann weggelassen werden, für referenz
 	
-	std::vector<hypRefPair>* translation = decoder.translate(f,e);
+	std::vector<Decoder::hypRefPair>* translation = decoder.translate(*f,*e);
 	//für nur übersetzen:
-	std::vector<nBestliste>* translation = decoder.translate(f);
+	std::vector<Decoder::nBestliste>* translation = decoder.translate(*f);
 	
 	//...
 	
