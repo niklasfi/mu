@@ -1,16 +1,13 @@
 #include <vector>
-#include <map>
 #include <iostream>
 #include <sstream>
 #include <string>
 
-#include "lexicon.h"
+#include <Vocab.h>
 #include "gzstream/gzstream.h"
-#include "global.h"
-#include "ptree.h"
 #include "aStar.h"
 #include "cost.h"
-#include "readtable.cpp"
+
 
 using namespace std;
 
@@ -121,7 +118,7 @@ int main(int argc, char* argv[]){
 	for (unsigned int i=0; i< translation->size(); i++){
 		for (unsigned int k=0; k< (*translation)[i].size(); k++){
 			for (unsigned int j=0; j<(*translation)[i][k].sentence.size(); j++)
-				cout << decoder.elex->getString((*translation)[i][k].sentence[j]) << " ";
+				cout << decoder.elex->getWord((*translation)[i][k].sentence[j]) << " ";
 			
 			cout << endl;
 		}
