@@ -1,19 +1,10 @@
 #include "decoder.h"
-#include <vector>
-#include <map>
-#include <iostream>
-#include <sstream>
-
-#include "lexicon.h"
-#include "gzstream/gzstream.h"
-#include "global.h"
-#include "ptree.h"
-#include "aStar.h"
-#include "cost.h"
 
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count):
-	flex(new Lexicon(french)), elex(new Lexicon(english)), schwarz(new PTree<PTree<Cost>>){
+schwarz(new PTree<PTree<Cost>>){
 	readTable(filename, prune_threshold, prune_count);
+	flex=new Vocab(0,-1);
+//  	elex=new Vocab();
 }
 Decoder::~Decoder(){
 	delete flex;    flex    = 0;
@@ -30,7 +21,7 @@ Decoder::hypRefPair::~hypRefPair(){
 }
 	
 Decoder::nBestList* Decoder::translate(Decoder::Sentence& sent){
-	return aStar::Suchalgorithmus(sent, schwarz, elex, flex);
+	return aStar::Suchalgorithmus(sent, this);
 }
 Decoder::hypRefPair* Decoder::translate(Decoder::Sentence& french,
 	Decoder::Sentence& ref)
@@ -67,8 +58,7 @@ void Decoder::readTable(const char filename[], double prune_threshold,	unsigned 
 	pruningStart.second=(1./0.);
 
 	igzstream in(filename);
-	std::string line,token;
-
+	std::string line, token;
 
 	while(getline(in,line)){
 		std::stringstream ist(line);
@@ -80,11 +70,13 @@ void Decoder::readTable(const char filename[], double prune_threshold,	unsigned 
 		//Ausgabe: relfreq_f relfreq_e # quellphrase # zielphrase # singlecf singlece # source_to_target target_to_source #  unigram-sprachmodell
 		ist >> relfreq_f  >> relfreq_e >>token; // token für "#"
 
+		const char* token_char=token.c_str();
+		
 		while(ist>>token && token != "#"){
-			fphrase.push_back(flex->getWord_or_add(token).wordId());
+			fphrase.push_back(flex->addWord(token_char));
 		}
 		while(ist>>token && token != "#"){
-			ephrase.push_back(elex->getWord_or_add(token).wordId());
+			ephrase.push_back(elex->addWord(token_char));
 		}
 		ist >> singlecf >> singlece >> token >> source_to_target >> target_to_source >> token >> unigram_sprachmodell;
 
@@ -106,18 +98,18 @@ void Decoder::readTable(const char filename[], double prune_threshold,	unsigned 
 
 }
 
-Decoder::Sentence* Decoder::parseLine(Lexicon* lex, const std::string& line){
+Decoder::Sentence* Decoder::parseLine(Vocab* lex, const std::string& line){
 	istringstream ist(line);
 	std::string token;
 	Sentence* sent=new Sentence;
 	
 	while ( ist >> token){
-		sent->push_back(lex->getWord_or_add(token).wordId());
+		sent->push_back(lex->addWord(token.c_str()));
 	}
 	return sent;
 }
 
-std::vector<Decoder::Sentence>* Decoder::parseFile(Lexicon* lex, const char file[]){
+std::vector<Decoder::Sentence>* Decoder::parseFile(Vocab* lex, const char file[]){
 	igzstream igz(file);
 	std::string line;
 	

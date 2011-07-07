@@ -2,11 +2,13 @@
 #include <vector>
 #include <string>
 
-#include "lexicon.h"
+#include <Vocab.h>
 #include "language.h"
 #include "ptree.h"
 #include "cost.h"
 #include "sentenceinfo.h"
+#include "aStar.h"
+#include "gzstream/gzstream.h"
 
 /* usage: übersetzen einer Textdatei:
 	Decoder decoder(phraseextract, prune_threshold, prune_count);
@@ -30,8 +32,8 @@
 
 class Decoder{
 	public:
-		Lexicon* flex;
-		Lexicon* elex;
+		Vocab* flex;
+		Vocab* elex;
 		PTree<PTree<Cost>>* schwarz;
 		/*filename soll der Pfad zur Phrasentabelle sein,
 		 threshold gibt an, wie groß der relative Unterschied von der besten 
@@ -61,9 +63,9 @@ class Decoder{
 		
 		/* parseFile liest die textdatei `file` ein und gibt einen 
 		 * vector<vector<uint>> mit den jeweiligen ids zurück */
-		static std::vector<Sentence>* parseFile(Lexicon* lex, const char file[]);
+		static std::vector<Sentence>* parseFile(Vocab* lex, const char file[]);
 		//parseLine macht aus einem String einen Vektor von ID's
-		static Sentence* parseLine(Lexicon* lex, const std::string&);
+		static Sentence* parseLine(Vocab* lex, const std::string&);
 	private:
 		//liest die Phrasentabelle ein
 		void readTable(const char filename[], double prune_threshold, 
