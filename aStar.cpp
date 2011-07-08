@@ -4,7 +4,7 @@ typedef std::vector<SentenceInfo> nBestList;
 
 using namespace std;
 
-void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
+void dotGraph(vector<HypothesisNode> &Knoten, Vocab* elex){
 		//int knotenid=0;
 		std::cout << "digraph g{\n";
 		for(unsigned int i=0; i<Knoten.size(); i++){
@@ -23,7 +23,7 @@ void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 			      
 			      std::cout << " [label=\"  ";
 				for (unsigned int k=0; k< Knoten[i].getOutbound()[j]->getTranslation().size(); k++)
-					cout << elex->getString(Knoten[i].getOutbound()[j]->getTranslation()[k]) << "	";
+					cout << elex->getWord(Knoten[i].getOutbound()[j]->getTranslation()[k]) << "	";
 				cout << "Kosten: "<< Knoten[i].getOutbound()[j]->getCost().cost() << " ";
 					
 				cout << "\"]\n";
@@ -42,9 +42,7 @@ void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aSta
 }
 
 uint aStar::max_SentenceTranslation=0; //Anzahl der besten(Satz)Übersetzungen
-Lexicon* aStar::elex=0;
-Lexicon* aStar::flex=0;
-PTree< PTree <Cost> >* aStar::schwarz=0;
+Decoder* aStar::decoder=0;
 double aStar::prune=2;
 
 //Constructor
@@ -115,11 +113,9 @@ void aStar::search() {
 
 
 nBestList* aStar::Suchalgorithmus(
-	std::vector<unsigned int>sentence_id, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex){
-    aStar::flex=fLex;
-    elex=eLex;
-    schwarz=blacktree;
-
+	std::vector<unsigned int>sentence_id, Decoder* decoder){
+    aStar::decoder=decoder;
+	
 	vector<HypothesisNode> Knoten;
 	Knoten.push_back(HypothesisNode());//initialisiert den ersten Knoten
 	Cost startkosten(0);
@@ -140,7 +136,7 @@ nBestList* aStar::Suchalgorithmus(
 			for (int i=posPhraseStart; i<aktPos; i++){
 				fphrase.push_back(sentence_id[i]);
 		    }
-			PTree<PTree <Cost> >* schwarzRest=schwarz->traverse(fphrase);
+			PTree<PTree <Cost> >* schwarzRest=decoder->schwarz->traverse(fphrase);
 			if (!schwarzRest)	continue; //wenn es die französische Phrase nicht gibt, nächste überprüfen
 			PTree <Cost>* blauBaum=&schwarzRest->c;
 			
@@ -168,8 +164,8 @@ nBestList* aStar::Suchalgorithmus(
 		}
 		if (knoten_next.getOutbound().size() == 0){
 			//zuerst in das englische Lexicon einfügen
-			string word_string = flex->getString(sentence_id[aktPos-1]);
-			unsigned int id_english=elex->getWord_or_add(word_string);
+			const char* word_string = decoder->flex->getWord(sentence_id[aktPos-1]);
+			unsigned int id_english= decoder->elex->addWord(word_string);
 
 			//dann die Kante anlegen, dabei sollen die Kosten niedrig sein, da sie sowieso genutzt werden muss, kann sie auch direkt exploriert werden
 			PartialTranslation* Kante= new PartialTranslation(Cost(0),vector<unsigned int>{id_english},&Knoten[aktPos],aktPos-1);
