@@ -10,10 +10,7 @@
 #include "HypothesisNode.h"
 #include "PartialTranslation.h"
 #include "aStarElement.h"
-// #include "lexicon.h"
-#include <Vocab.h>
-#include <Ngram.h>
-
+#include "lexicon.h"
 #include "ptree.h"
 #include "sentenceinfo.h"
 #include "gzstream/gzstream.h"
@@ -24,7 +21,6 @@
 #include "decoder.h"
 
 typedef std::vector<SentenceInfo> nBestList;
-class Decoder;
 
 class aStar {
 
@@ -46,8 +42,9 @@ class aStar {
 
 	public:
 	
-	static Decoder* decoder;
-	
+	static PTree<PTree < Cost> >* schwarz;
+	static Lexicon* elex;
+	static Lexicon* flex;
 	//Constructor
 	aStar(vector<HypothesisNode>& vect);
 
@@ -58,5 +55,5 @@ class aStar {
 	void addSentence(const aStarElement& a);   //Ausgabefunktion
 	/* die Funktion nach außen(bzw. für den decoder, sie gibt die n übersetzugen für einen satz (vektor aus ID's an) */
 	static nBestList* Suchalgorithmus(
-		std::vector<unsigned int>sentence_id, Decoder* decoder);
+		std::vector<unsigned int>sentence_id, PTree<PTree <Cost> >* blacktree, Lexicon* eLex, Lexicon* fLex);
 };
