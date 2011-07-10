@@ -1,13 +1,12 @@
 #include <vector>
 #include <iostream>
 
-#include "lexicon.h"
+#include "decoder.h"
 #include "aStar.h"
 #include "readtable.cpp"
 #include "sentenceinfo.h"
 #include "global.h"
-//#include "mert.cpp"
-//#include "simplex.cpp"
+#include "mert2.cpp"
 
 using namespace std;
 
@@ -56,23 +55,16 @@ int main (int argc, char* argv[]) {
 	std::vector<Sentence>* f = Decoder::parseFile(decoder.flex,argv[1]);	//französiche
 	std::vector<Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
 	
-	std::vector<hypRefPair>* translation = decoder.translate(*f,*e);		//und beste Übersetzungen suchen
-
-	std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > > nBestList;
+	Mert mert(decoder, f, e);
+	mert.optimize();
 	
-	for (unsigned int index1 = 0; index1 < translation->size(); index1++) {		//Iteriere über alle Sätze des Quelltextes
-		std::pair<std::vector<uint>, std::vector<SentenceInfo> > pair_tmp;
-		pair_tmp.first = *((*translation)[index1].reference);		//Speichere Referenz (=Satz des Quelltextes)
-		pair_tmp.second = *((*translation)[index1].nBest);		//Speichere Übersetzungshypothesen
-		nBestList.push_back(pair_tmp);
-	}
+	
 
 	//Speicher befreien
 	delete f;
 	delete e;
-	delete translation;
+	//delete mert;
 
-	//mert(nBestList, modelNumber);	//Führe mert mit oben generierter nBestList aus
 
 	return 0;
 }
