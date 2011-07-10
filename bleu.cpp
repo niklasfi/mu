@@ -93,7 +93,7 @@ BleuInfo& BleuInfo::subtract(const BleuInfo& b){
 	return *this;
 }
 
-BleuInfo membleu(std::vector<hypRefPair> hrp,
+BleuInfo BleuInfo::membleu(std::vector<hypRefPair>& hrp,
 	const std::vector<unsigned int>& picks)
 {
 	BleuInfo bi;
