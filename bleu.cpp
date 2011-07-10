@@ -93,6 +93,21 @@ BleuInfo& BleuInfo::subtract(const BleuInfo& b){
 	return *this;
 }
 
+BleuInfo membleu(std::vector<hypRefPair> hrp,
+	const std::vector<unsigned int>& picks)
+{
+	BleuInfo bi;
+	
+	for(unsigned int i = 0; i < hrp.size(); i++){
+		SentenceInfo& si = (*hrp[i].nBest)[picks[i]];
+		if(!si.bleu) si.bleu = new BleuInfo(*hrp[i].reference, si.sentence);
+
+		bi += *si.bleu;
+	}
+
+	return bi;
+}
+
 double BleuInfo::operator()() const{
 	return totalize();
 }
