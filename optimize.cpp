@@ -6,8 +6,8 @@
 #include "readtable.cpp"
 #include "sentenceinfo.h"
 #include "global.h"
-#include "mert.cpp"
-#include "simplex.cpp"
+//#include "mert.cpp"
+//#include "simplex.cpp"
 
 using namespace std;
 
@@ -53,10 +53,10 @@ int main (int argc, char* argv[]) {
 
 	Decoder decoder(argv[3], prune_threshold, prune_count);	//Decoder anlegen
 
-	std::vector<Decoder::Sentence>* f = Decoder::parseFile(decoder.flex,argv[1]);	//französiche
-	std::vector<Decoder::Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
+	std::vector<Sentence>* f = Decoder::parseFile(decoder.flex,argv[1]);	//französiche
+	std::vector<Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
 	
-	std::vector<Decoder::hypRefPair>* translation = decoder.translate(*f,*e);		//und beste Übersetzungen suchen
+	std::vector<hypRefPair>* translation = decoder.translate(*f,*e);		//und beste Übersetzungen suchen
 
 	std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > > nBestList;
 	
@@ -72,7 +72,7 @@ int main (int argc, char* argv[]) {
 	delete e;
 	delete translation;
 
-	mert(nBestList, modelNumber);	//Führe mert mit oben generierter nBestList aus
+	//mert(nBestList, modelNumber);	//Führe mert mit oben generierter nBestList aus
 
 	return 0;
 }

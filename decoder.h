@@ -2,6 +2,10 @@
 #include <vector>
 #include <string>
 
+#include "hyprefpair.h"
+#include "nbestlist.h"
+#include "sentence.h"
+
 #include "lexicon.h"
 #include "language.h"
 #include "ptree.h"
@@ -40,17 +44,7 @@ class Decoder{
 		*/
 		Decoder(const char filename[], double prune_threshold, unsigned int prune_count);
 		~Decoder();
-	
-		typedef std::vector<SentenceInfo> nBestList;
-		typedef std::vector<unsigned int> Sentence;
-	
-		//struct um eine "nBestListe"+Referenzübersetzung für einen ganzen Text zu speichern
-		struct hypRefPair{
-			Sentence* reference;
-			nBestList* nBest;  
-			hypRefPair(Sentence* ref, nBestList* hyp);
-			~hypRefPair();
-		};
+		
 		//übersetzt einen Satz von ID's
 		nBestList* translate(Sentence&);
 		hypRefPair* translate(Sentence& french, Sentence& ref);
