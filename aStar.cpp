@@ -32,11 +32,11 @@ void dotGraph(vector<HypothesisNode> &Knoten, Lexicon* elex){
 		std::cout << "}\n";
 
 }
-void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement>> stack){
+void printstack(priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement> > stack){
 	while (!stack.empty() ){
 		aStarElement first=stack.top();
 		for (unsigned int i=0; i<first.trl.size(); i++)	cout << first.trl[i] << ", ";
-		cout << first.cost.cost()<<endl;
+		cout << "Kosten" <<  first.cost.cost()<<endl;
 		stack.pop();
 	}
 }
@@ -107,7 +107,7 @@ void aStar::search() {
 				stack.push(*anew);
 				delete anew;
 			}
-			priority_queue< aStarElement, vector<aStarElement>, greater<aStarElement> > stack2=stack;
+
 		}
 	}
 	
@@ -158,7 +158,9 @@ nBestList* aStar::Suchalgorithmus(
 					  
 					if (cost_till_aktPos+prune > knoten_next.getBestcost().cost())	continue; //pruning ergibt, das ist eine schlecht Übersetzung
 					  
-					if(cost_till_aktPos+relfreq.cost() < knoten_next.getBestcost().cost())	knoten_next.setBestcost(Knoten[posPhraseStart].getBestcost()+relfreq.cost());
+					if(cost_till_aktPos+relfreq.cost() < knoten_next.getBestcost().cost()){
+						knoten_next.setBestcost(Knoten[posPhraseStart].getBestcost()+relfreq);
+					}
 					  
 					PartialTranslation* Kante= new PartialTranslation(relfreq,ephrase,&knoten_next,posPhraseStart);
 					Knoten[posPhraseStart].add_PartialTranslation_to_Inbound(Kante);
@@ -181,7 +183,7 @@ nBestList* aStar::Suchalgorithmus(
 	       
 	}
 	  
-	//dotGraph(Knoten, elex);
+// 	dotGraph(Knoten, elex);
 	aStar astar(Knoten);
 	astar.search();
 	for(unsigned int i = 0; i < Knoten.size(); i++){
@@ -190,5 +192,6 @@ nBestList* aStar::Suchalgorithmus(
 			delete hnode.getOutbound()[j];
 	}
 	//delete[] astar.nTranslations;
+	
 	return astar.nTranslations;
 }
