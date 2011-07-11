@@ -69,16 +69,13 @@ void Mert::init_lines(){
  ************************************************************/
 
 /* sortiert die Geraden nach Steigung*/
+
+bool gradient_greater(StraightLine* l1, StraightLine* l2){
+	return l1->gradient > l2->gradient;
+}
+
 void Mert::sort(){
-	for (unsigned int i=0; i< lines.size(); i++){ //bubble sort
-		for (unsigned int j= lines.size()-1; j>i; j--){
-			if (lines[j-1]->gradient > lines[j]->gradient){
-				StraightLine* tmp=lines[j-1];
-				lines[j-1]=lines[j];
-				lines[j]=tmp;
-			}
-		}
-	}
+	std::sort(lines.begin(), lines.end(), gradient_greater);
 }
 
 

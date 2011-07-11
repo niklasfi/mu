@@ -24,7 +24,7 @@ struct StraightLine {
 class Mert{
 	
 private:
-	deque<StraightLine*> lines; //alle Geraden und später alle Schnittpunkte
+	std::deque<StraightLine*> lines; //alle Geraden und später alle Schnittpunkte
 	
 	unsigned int	aktParam; //Parameter, der gerade optimiert wird
 	BleuInfo	bleu; //speichert Nenner etc. der Grams
@@ -49,6 +49,6 @@ public:
 		delete translation;
 		for (unsigned int i=0; i< lines.size(); i++)	delete lines[i];
 	}
-	vector<double> optimize();
+	std::vector<double> optimize();
 	
 };
