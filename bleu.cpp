@@ -129,7 +129,7 @@ double BleuInfo::bleu_bp() const{ //Brevity Penalty
 	return exp(1.0-(1.0*ref_len)/hyp_len);
 }
 
-double bleu(SentencePool& sp){
+double BleuInfo::bleu(SentencePool& sp){
 	BleuInfo bi;
 
 	for(unsigned int i = 0; i < sp.guess.size(); i ++)

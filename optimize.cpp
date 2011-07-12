@@ -6,7 +6,7 @@
 #include "readtable.cpp"
 #include "sentenceinfo.h"
 #include "global.h"
-#include "mert2.cpp"
+#include "mert2.h"
 
 using namespace std;
 

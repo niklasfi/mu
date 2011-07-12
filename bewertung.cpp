@@ -2,7 +2,7 @@
 #include <iostream>
 #include "sentencepool.h"
 #include <string>
-#include "bleu.cpp"
+#include "bleu.h"
 #include "PER_WER.cpp"
 #include <sstream>
 #include <fstream>
@@ -35,6 +35,6 @@ int main(int argc, const char* argv[]){
 	cout << "WER für die Übersetzung " << WER_global(sp) << endl;
 	for (int i=1; i<5; i++){
 		BleuInfo::N = i;
-		cout << "Bleu-Score für die Übersetzung mit N= "<< i << " " << bleu(sp) << endl;
+		cout << "Bleu-Score für die Übersetzung mit N= "<< i << " " << BleuInfo::bleu(sp) << endl;
 	}
 }
