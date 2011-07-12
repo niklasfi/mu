@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 		 *==========Führe darauf nun den vorgegebenen Algorithmus aus, um alle Phrasen zu finden und im Präfixbaum zu speichern==========*/
 		
 		for(unsigned int j1 = 0; j1 < f_vec.size(); j1++)
-			for(unsigned int j2 = j1; j2 < std::min(j1+3,f_vec.size()); j2++) {	//Länge der Quellphrase maximal 3
+			for(unsigned int j2 = j1; j2 < std::min(j1+3,(unsigned int)f_vec.size()); j2++) {	//Länge der Quellphrase maximal 3
 				unsigned int i1, i2;
 				bool set_i = false;						//hält mit, ob i1 und i2 gesetzt wurden, oder nicht.
 				for(unsigned int k = j1; k <= j2; k++) 
