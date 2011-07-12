@@ -87,8 +87,7 @@ int searchLines(const std::deque<StraightLine> &lines, const double &key, const 
 /* === Liefert den Wert des zu currentParam gehörenden Modells zurück zurück === */
 double findGradient ( Cost &cost, const int &currentParam, const std::vector<Cost::Model> &models) {
 
-	Cost::Model model_tmp = models[currentParam];
-	double value_tmp = cost.cost(model_tmp);
+	double value_tmp = cost.modelCosts[currentParam] * cost.scale[currentParam];
 	return value_tmp;
 }
 
@@ -100,11 +99,7 @@ double findOffset (Cost &cost, const int &currentParam, const std::vector<Cost::
 	for (int index = 0; index < modelNumber; index++) 
 
 		if(!(index == currentParam)) {						//Zum aktuellen Parameter gehörendes Modell nicht dazurechnen
-			double scale_tmp = cost.scale[models[index]];			//Skalierung auslesen
-			std::vector<Cost::Model> model_tmp;					//Zu index gehörendes Modell auslesen
-			model_tmp.push_back(models[index]);
-				std::vector<double> value_tmp = cost.cost(model_tmp);			//Zugehörigen Modellwert auslesen
-				offset += value_tmp.front() * scale_tmp;			//Offset um Produkt erhöhen
+			offset += cost.modelCosts[index] * cost.scale[index];			//Offset um Produkt erhöhen
 		}
 
 	return offset;
@@ -326,16 +321,22 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 							lines.insert(lines.begin()+position_tmp, line_tmp);
 						else	lines.insert(lines.begin()+position_tmp+1,line_tmp);
 					}
-						
-						std::deque<Section> localSections = findSections(lines);	//Finde alle relevanten Schnittpunkte (als Sections gespeichert)
-						mergeSections(globalSections, localSections);			//localSection zu globalSection hinzufügen
+				
+					/*for (unsigned int index = 0; index<lines.size(); index++) 
+						std::cout<<lines[index].gradient<<" "<<lines[index].offset<<"\n";*/
+							
+					std::deque<Section> localSections = findSections(lines);	//Finde alle relevanten Schnittpunkte (als Sections gespeichert)
+					for (unsigned int index = 0; index<localSections.size(); index++)
+						std::cout<<localSections[index].intersection<<"\n";
+
+					mergeSections(globalSections, localSections);			//localSection zu globalSection hinzufügen
 				}
 				double currentParamValue;							//Hält den aktuell besten Parameter-Wert fest
 				double currentParamValueBleu = 0;						//BLEU-Wert für aktuellen Parameter-Wert
 				
 				for (unsigned int index3 = 0; index3 < globalSections.size()-1; index3++) {		//Iteriere über alle GlobalSections, bis auf die letzte
 					int mid_tmp = (globalSections[index3].begin + globalSections[index3+1].begin) / 2;	//Bestimme mitte der aktuellen GobalSection
-					double bleu_tmp = membleu(nBestLists, globalSections[index3].sentences);//Bestimme BLEU für aktuellen Parameter-Wert
+					double bleu_tmp = membleu(nBestLists, globalSections[index3].sentences, 1);//Bestimme BLEU für aktuellen Parameter-Wert
 					if (bleu_tmp > currentParamValueBleu) {					//Finde aktuell besten Parameter-Wert
 						currentParamValue = mid_tmp;
 						currentParamValueBleu = bleu_tmp;
@@ -343,15 +344,11 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 				}
 
 				int mid_tmp = globalSections.back().begin + 1;
-				double bleu_tmp = membleu(nBestLists, globalSections.back().sentences);
+				double bleu_tmp = membleu(nBestLists, globalSections.back().sentences, 1);
 				if (bleu_tmp > currentParamValueBleu) {						//Betrachte nun auch die letzte GlobalSection
 					currentParamValue = mid_tmp;
 					currentParamValueBleu = bleu_tmp;
 				}
-
-
-				printall(paramValues,modelNumber);
-
 
 				paramChange = (paramChange || (paramValues[currentParam] != currentParamValue));//Hat sich der Parameter-Wert verändert?
 				paramValues[currentParam] = currentParamValue;

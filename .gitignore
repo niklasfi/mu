@@ -4,3 +4,4 @@
 .*
 gzstream/libgzstream.a
 *.gch
+makefile.local

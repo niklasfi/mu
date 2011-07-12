@@ -17,7 +17,7 @@ Decoder::hypRefPair::hypRefPair(Sentence* ref,
 	reference(ref),nBest(nBest){}
 
 Decoder::hypRefPair::~hypRefPair(){
-	delete nBest; nBest = 0;
+	//delete nBest; nBest = 0;
 }
 	
 Decoder::nBestList* Decoder::translate(Decoder::Sentence& sent){
@@ -44,9 +44,9 @@ std::vector<Decoder::hypRefPair>* Decoder::translate(std::vector<Decoder::Senten
 {
 	std::vector<hypRefPair>* result = new std::vector<hypRefPair>();
 	for(unsigned int i = 0; i < french.size(); i++){
-		hypRefPair* translation = translate(french[i], ref[i]);
+		hypRefPair* translation = new hypRefPair(&ref[i],translate(french[i])); //translate(french[i], ref[i]);
 		result->push_back(*translation);
-		delete translation;
+		//delete translation;
 	}
 	return result;
 }
