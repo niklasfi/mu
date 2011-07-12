@@ -2,9 +2,10 @@
 
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count):
 schwarz(new PTree<PTree<Cost>>){
+	flex=new Vocab();
+	elex=new Vocab();
+	
 	readTable(filename, prune_threshold, prune_count);
-// 	flex=new Vocab();
-//   	elex=new Vocab();
 }
 Decoder::~Decoder(){
 	delete flex;    flex    = 0;
@@ -17,7 +18,7 @@ Decoder::hypRefPair::hypRefPair(Sentence* ref,
 	reference(ref),nBest(nBest){}
 
 Decoder::hypRefPair::~hypRefPair(){
-	//delete nBest; nBest = 0;
+	delete nBest; nBest = 0;
 }
 	
 Decoder::nBestList* Decoder::translate(Decoder::Sentence& sent){
@@ -44,18 +45,16 @@ std::vector<Decoder::hypRefPair>* Decoder::translate(std::vector<Decoder::Senten
 {
 	std::vector<hypRefPair>* result = new std::vector<hypRefPair>();
 	for(unsigned int i = 0; i < french.size(); i++){
-		hypRefPair* translation = new hypRefPair(&ref[i],translate(french[i])); //translate(french[i], ref[i]);
+		hypRefPair* translation = translate(french[i], ref[i]);
 		result->push_back(*translation);
-		//delete translation;
+		delete translation;
 	}
 	return result;
 }
 void Decoder::readTable(const char filename[], double prune_threshold,	unsigned int prune_count){
 //==================Einlesen der Phrasentabelle============================
 
-	flex=new Vocab();
-	elex=new Vocab();
-	
+
 	PTree< pair <unsigned int, double> > pruningTree; //speichert für jede Übersetzung die Anzahl der eingelesenen Übersetzungen und die beste Übersetzung
 	pair <unsigned int, double> pruningStart; //die Startkombi für den PruningTree
 	pruningStart.first=0;
