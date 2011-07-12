@@ -11,8 +11,10 @@ ifdef EECHO
 	E=-e
 endif
 
-CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream ${PROF} ${OMP} ${OPTIMIZE}
-LDFLAGS = -L. -lz ${PROF} ${OMP} ${OPTIMIZE}
+include makefile.local #hier bitte die Variable SRILM_DIR setzen
+
+CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream -I${SRILM_DIR}/include ${PROF} ${OMP} ${OPTIMIZE}
+LDFLAGS = -L. -L${SRILM_DIR} -lz ${PROF} ${OMP} ${OPTIMIZE}
 OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o ptree.o cost.o decoder.o
 
 TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe bleu.test.exe ptree.test.exe aStar.test.exe
