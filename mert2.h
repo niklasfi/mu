@@ -40,7 +40,8 @@ private:
 	double bleu_optimize();
 	void findSections ();
 	
-
+	Mert():translation(0){}
+	friend class MertTest;
 public:
 	Mert(Decoder decoder, std::vector<Sentence>* f, std::vector<Sentence>* e){
 		translation = decoder.translate(*f,*e);		//und beste Übersetzungen suchen;
