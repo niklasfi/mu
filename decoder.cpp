@@ -3,8 +3,8 @@
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count):
 schwarz(new PTree<PTree<Cost>>){
 	readTable(filename, prune_threshold, prune_count);
-	flex=new Vocab(0,-1);
-//  	elex=new Vocab();
+// 	flex=new Vocab();
+//   	elex=new Vocab();
 }
 Decoder::~Decoder(){
 	delete flex;    flex    = 0;
@@ -52,6 +52,10 @@ std::vector<Decoder::hypRefPair>* Decoder::translate(std::vector<Decoder::Senten
 }
 void Decoder::readTable(const char filename[], double prune_threshold,	unsigned int prune_count){
 //==================Einlesen der Phrasentabelle============================
+
+	flex=new Vocab();
+	elex=new Vocab();
+	
 	PTree< pair <unsigned int, double> > pruningTree; //speichert für jede Übersetzung die Anzahl der eingelesenen Übersetzungen und die beste Übersetzung
 	pair <unsigned int, double> pruningStart; //die Startkombi für den PruningTree
 	pruningStart.first=0;
@@ -73,9 +77,11 @@ void Decoder::readTable(const char filename[], double prune_threshold,	unsigned 
 		const char* token_char=token.c_str();
 		
 		while(ist>>token && token != "#"){
+			token_char=token.c_str();
 			fphrase.push_back(flex->addWord(token_char));
 		}
 		while(ist>>token && token != "#"){
+			token_char=token.c_str();
 			ephrase.push_back(elex->addWord(token_char));
 		}
 		ist >> singlecf >> singlece >> token >> source_to_target >> target_to_source >> token >> unigram_sprachmodell;
