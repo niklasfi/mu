@@ -11,13 +11,15 @@ ifdef EECHO
 	E=-e
 endif
 
-include makefile.local #hier bitte die Variable SRILM_DIR setzen
+include makefile.local
+#hier SRILM_PATH (pfad zur srilm bib)
+#und MACHINE_TYPE (usually output of uname -m) setzen
 
-CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream -I${SRILM_DIR}/include ${PROF} ${OMP} ${OPTIMIZE}
-LDFLAGS = -L. -L${SRILM_DIR} -lz ${PROF} ${OMP} ${OPTIMIZE}
-OBJECTS = word.o lexicon.o wordinfo.o dictionary.o wordinfoc.o dictionaryc.o HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o levenshtein.o sentencepool.o ptree.o cost.o decoder.o
+CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream -I${SRILM_PATH}/include ${PROF} ${OMP} ${OPTIMIZE}
+LDFLAGS = -L. -lz -loolm -ldstruct -lflm -lmisc -L${SRILM_PATH}/lib/${MACHINE_TYPE} ${PROF} ${OMP} ${OPTIMIZE}
+OBJECTS = HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o ptree.o cost.o decoder.o
 
-TESTS = wordinfoc.test.exe word.test.exe lexicon.test.exe dictionary.test.exe dictionaryc.test.exe levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe bleu.test.exe ptree.test.exe aStar.test.exe
+TESTS = levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe bleu.test.exe ptree.test.exe aStar.test.exe
 
 ifndef NOCOLORS
 BLACK = \033[0m
@@ -26,15 +28,15 @@ GREEN = \033[32m
 YELLOW = \033[33m
 endif
 default: all
-all: singlewordextract.exe bewertung.exe translate.exe phraseextract.exe optimize.exe
+all:  translate.exe 
 
 %.test.exe: %.test.o ${OBJECTS}
-	@${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
+	@${CXX}  -o $@ $< ${OBJECTS} gzstream/gzstream.o ${LDFLAGS}
 	@echo $E -n "${YELLOW}$@${BLACK}"
 	@./$@ && echo $E " ${GREEN}ok${BLACK}"
 
 %.exe: %.o ${OBJECTS}
-	${CXX} ${LDFLAGS} -o $@ $< ${OBJECTS} gzstream/gzstream.o
+	${CXX}  -o $@ $< ${OBJECTS} gzstream/gzstream.o ${LDFLAGS}
 
 .PHONY: tests
 tests: ${TESTS}
