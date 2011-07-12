@@ -12,6 +12,8 @@ ifdef EECHO
 endif
 
 include makefile.local
+#hier SRILM_PATH (pfad zur srilm bib)
+#und MACHINE_TYPE (usually output of uname -m) setzen
 
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream -I${SRILM_PATH}/include ${PROF} ${OMP} ${OPTIMIZE}
 LDFLAGS = -L. -lz -loolm -ldstruct -lflm -lmisc -L${SRILM_PATH}/lib/${MACHINE_TYPE} ${PROF} ${OMP} ${OPTIMIZE}
