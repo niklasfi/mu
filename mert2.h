@@ -17,6 +17,8 @@ struct StraightLine {
 	unsigned int sentence_pos;		//welcher Satz übersetzt wurde
 	unsigned int sentence_best;		//welche Hypothese dazugehört
 	double x; 
+	unsigned int pre_sentence_best;
+	unsigned int pre_sentence_pos;
 	
 	StraightLine(double gradient, double offset, unsigned int sentence_pos, unsigned int sentence_best): gradient(gradient), offset(offset), sentence_pos(sentence_pos), sentence_best(sentence_best){}
 };
@@ -43,6 +45,7 @@ private:
 	Mert():translation(0){}
 	friend class MertTest;
 public:
+	double aktParam_value;
 	Mert(Decoder decoder, std::vector<Sentence>* f, std::vector<Sentence>* e){
 		translation = decoder.translate(*f,*e);		//und beste Übersetzungen suchen;
 	}
