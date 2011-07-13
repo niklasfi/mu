@@ -80,10 +80,13 @@ int main (int argc, char* argv[]) {
 	std::vector<Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
 	
 	Mert mert(decoder, f, e);
-	cout << "mert existiert" <<std::endl;
-	mert.optimize(decoder, f, e);
+	cout << "Die optimierten Parameter sind" <<std::endl;
+	vector<double> res=mert.optimize(decoder, f, e);
 	
-	
+	for (unsigned int i=0; i< res.size(); i++){
+		cout << res[i] << " ";
+	}
+	cout << endl;
 
 	//Speicher befreien
 	delete f;
