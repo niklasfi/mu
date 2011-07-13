@@ -71,10 +71,10 @@ void Mert::init_lines_single(hypRefPair& einSatz, unsigned int sentence_nr){
 	for (unsigned int i = 0; i<einSatz.nBest->size(); i++){ //iteriert über jede Übersetzung
 		Cost::setScale((Cost::Model) aktParam, 1);
 		double gradient = (-1)*((*einSatz.nBest)[i].cost.cost((Cost::Model) aktParam));
-		cout << " Steigung  " << gradient << endl;
+		//cout << " Steigung  " << gradient << endl;
 		Cost::setScale((Cost::Model) aktParam, 0); //den aktuellen Parameter in Cost auf 0 setzen, damit Cost die Kosten ohne diesen Parameter ausrechnet
 		double offset = (-1)*((*einSatz.nBest)[i].cost.cost());
-		cout<< " abstand  " << offset << endl;
+		//cout<< " abstand  " << offset << endl;
 		lines.push_back(new StraightLine(gradient, offset, sentence_nr, i));
 		Cost::setScale((Cost::Model) aktParam, aktParam_value);
 	}
@@ -159,7 +159,7 @@ void Mert::findSections () {
 				l->x=(l->offset) - (lines[j-1]->offset);
 				l->x/=((lines[j-1]->gradient) - (l->gradient));
 				//cout << "schnittpunkt x " << l-> x << " berechnet mit " << (l->offset)<< " - " <<(lines[j-1]->offset) << " / " << (lines[j-1]->gradient)<< " - " << (l->gradient) <<endl;
-				cout << "j " << j << endl;
+				//cout << "j " << j << endl;
 				
 				if ((lines[j-1]->x) < (l->x)){break;}
 				else {j--;}
@@ -197,7 +197,7 @@ double Mert::bleu_optimize(){
 	unsigned int aktline;
 	double scale_aktParam;
 	unsigned int aktParam_picks;
-	cout << " Schnittpunkte  " << lines.size() << endl;
+	//cout << " Schnittpunkte  " << lines.size() << endl;
 	cout << " Bleu  " << bleu() << endl;
 	
 	for (unsigned int i=0; i< lines.size(); i++){
@@ -224,7 +224,7 @@ double Mert::bleu_optimize(){
 		
 		if(!bleu_ptr){	bleu_ptr=new BleuInfo(*(akthypRefPair->reference), (*akthypRefPair->nBest)  	[aktParam_picks].sentence);}
 
-		cout << " Bleu2  " << bleu() << endl;
+		//cout << " Bleu2  " << bleu() << endl;
 		
 		bleu-=*((*akthypRefPair->nBest)[0].bleu); //die übersetzung für diesen satz rausnehmen
 		bleu+=*bleu_ptr; //unsere reinnehmen
@@ -233,7 +233,7 @@ double Mert::bleu_optimize(){
 			best_bleu=bleu();
 			best_scale=scale_aktParam;
 		}
-		cout << " Bleu3  " << bleu() << endl;
+		//cout << " Bleu3  " << bleu() << endl;
 		
 		//veränderungen an bleu rückgängig machen
 		bleu-=*bleu_ptr;
@@ -257,7 +257,7 @@ vector<double> Mert::optimize(){
 	vector<double> res;
 	while (true){
 		//berechne reihenfolge
-list<int> models= models_permutated();
+		list<int> models= models_permutated();
 		
 		//for (int i=0; i<3; i++){ /zum debuggen, dann kennt man die Reihenfolge der Parameter
 		while (!models.empty()){
@@ -269,7 +269,7 @@ list<int> models= models_permutated();
 			print_Schnitt();
 			double opt= bleu_optimize();
 			res.push_back(opt);
-			//cout << i << " " << opt << endl;
+			cout<< "Optimum:    " << opt << endl;
 			//for(unsigned int j =0;j<lines.size(); j++) lines[j]=0;
 		}
 		break;

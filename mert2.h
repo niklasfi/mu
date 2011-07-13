@@ -46,7 +46,7 @@ private:
 	friend class MertTest;
 public:
 	double aktParam_value;
-	Mert(Decoder decoder, std::vector<Sentence>* f, std::vector<Sentence>* e){
+	Mert(Decoder& decoder, std::vector<Sentence>* f, std::vector<Sentence>* e){
 		translation = decoder.translate(*f,*e);		//und beste Übersetzungen suchen;
 	}
 	~Mert(){

@@ -71,8 +71,10 @@ int main (int argc, char* argv[]) {
 		}
 	}
 	aStar::set_max_SentenceTranslation(10);
+	//cout<<prune_threshold<<endl;
+	//cout<<prune_count<<endl;
 
-	Decoder decoder(argv[3], prune_threshold, prune_count);	//Decoder anlegen
+	Decoder decoder(argv[3], prune_threshold, prune_count,argv[6]);	//Decoder anlegen
 
 	std::vector<Sentence>* f = Decoder::parseFile(decoder.flex,argv[1]);	//französiche
 	std::vector<Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
