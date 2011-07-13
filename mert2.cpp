@@ -37,7 +37,24 @@ struct Global_Section {
 	double begin;		//Beginn der Global_Section (also vorderer Schnittpunkt)
 	std::vector<uint> sentences;	//Position der entsprechenden Hypothesen in richtiger Reihenfolge
 };*/
+/* === Gibt eine zufällige Permutation der Model1e zurück === */
+list<int> models_permutated(){
+	vector<int> models; //enthält alle gesetzten Models
+	for (unsigned int i=0; i< 10; i++){
+		if (Cost::set((Cost::Model)(i)))	models.push_back(i);
+	}
+		
+	std::list<int> permutation; //Spätere Rückgabeliste
 
+	for (unsigned int index = 0; index < models.size(); index++) {
+		int randomNumber = rand() % models.size(); //Bestimme zufällige Zahl in models
+		int integer_tmp = models[randomNumber]; //Ließ die Zahl aus
+		permutation.push_back(integer_tmp); //Füge sie ans Ende der Permutation ein
+		models.erase(models.begin()+randomNumber); //Lösche sie aus dem Vektor
+	}
+
+	return permutation;
+}
 /************************************************
  * 												*
  * 		wir initialiseren unsere Geraden		*
@@ -240,15 +257,19 @@ vector<double> Mert::optimize(){
 	vector<double> res;
 	while (true){
 		//berechne reihenfolge
-		for (int i=0; i<3; i++){
-			aktParam=i;
+list<int> models= models_permutated();
+		
+		//for (int i=0; i<3; i++){ /zum debuggen, dann kennt man die Reihenfolge der Parameter
+		while (!models.empty()){
+			aktParam=models.front();
+			models.pop_front();
 			aktParam_value=Cost::getScale((Cost::Model)aktParam);
 			init_lines();
 			findSections();
 			print_Schnitt();
 			double opt= bleu_optimize();
 			res.push_back(opt);
-			cout << i << " " << opt << endl;
+			//cout << i << " " << opt << endl;
 			//for(unsigned int j =0;j<lines.size(); j++) lines[j]=0;
 		}
 		break;

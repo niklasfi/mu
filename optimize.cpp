@@ -1,9 +1,10 @@
 #include <vector>
 #include <iostream>
 
+#include <Vocab.h>
 #include "decoder.h"
 #include "aStar.h"
-#include "readtable.cpp"
+//#include "readtable.cpp"
 #include "sentenceinfo.h"
 #include "global.h"
 #include "mert2.h"
@@ -13,25 +14,43 @@ using namespace std;
 
 int main (int argc, char* argv[]) {
 	
-	if (argc != 7) {
-		std::cout << "Aufruf mit: <französische Daten> <englische Daten> <Phrasentabelle> <prune_threshold> <prune_count> <mNumber>\n";
+	if (argc < 9) {
+		std::cout << "Aufruf mit: <französische Daten> <englische Daten> <Phrasentabelle> <prune_threshold> <prune_count> <bigram_daten> [Modellnr. Skalierung ...]\n";
 		return 0;
 	}
-	double modelNumber;
-	{
-		std::istringstream ist(argv[6]);
-		ist >> modelNumber;
-		if(ist.bad()  || !ist.eof()){
-			std::cout << "konnte mNumber nicht verarbeiten. (kein double)\n";
-			exit(1);
-		}
-	}
+	vector<Cost::Model> models_selected;
 	
-	for(int i=0;i<modelNumber;i++){
-		Cost::add_model((Cost::Model)(i));
-		Cost::setScale((Cost::Model)i, 0.1);
+	for(int i=7; i<argc;i++){
+		std::string in = argv[i];
+		Cost::Model selected_model;
+		//Herausfinden, welches Modell ausgesucht wurde
+		if     (in == "1") selected_model = Cost::source_to_target_phrase;
+		else if(in == "2") selected_model = Cost::target_to_source_phrase;
+		else if(in == "3") selected_model = Cost::source_to_target_unigram;
+		else if(in == "4") selected_model = Cost::target_to_source_unigram;
+		else if(in == "5") selected_model = Cost::phrase_penalty;
+		else if(in == "6") selected_model = Cost::word_penalty;
+		else if(in == "7") selected_model = Cost::single_count_bit;
+		else if(in == "8") selected_model = Cost::source_to_target_ratio;
+		else if(in == "9") selected_model = Cost::unigram_language_model;
+		else if(!in.compare("10"))
+			selected_model = Cost::bigram_language_model;
+		else{
+			cout << "invalid model seleciton!\n";
+			exit (1);
+		}
+		
+		//Fließkommazahl für die Skalierung einlesen
+		std::stringstream sstream(argv[++i]); double scale;
+		sstream >> scale;
+		
+		if(sstream.bad() || !sstream.eof()){
+			cout << "could not parse floating point number for scale!\n";
+			exit (1);
+		}
+		
+		Cost::add_model(selected_model,scale); //Modell hinzufügen
 	}
-// 	int mNumber = 9;
 	
 	double prune_threshold;
 	{
