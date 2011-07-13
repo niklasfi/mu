@@ -51,6 +51,7 @@ int main (int argc, char* argv[]) {
 			exit(1);
 		}
 	}
+	aStar::set_max_SentenceTranslation(10);
 
 	Decoder decoder(argv[3], prune_threshold, prune_count);	//Decoder anlegen
 
