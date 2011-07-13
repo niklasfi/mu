@@ -45,13 +45,16 @@ class Cost{
 	static void select(std::vector<Model>); //select the models you want to use
 	static void setScale(Model, double);
 	static void setScale(std::vector< std::pair<Model,double> >);
+	static double getScale(Model);
 	
 	std::vector<double> cost(std::vector<Model>); //get vector of costs for multiple models
 
 	Cost& cost(Model, double); //alternative way of setting the costs for a model
 	Cost& cost(std::vector<std::pair<Model,double>>); //set multiple costs
+
 	
 	//=============die Funktionen=========================
+
 	double cost() const; //same as totalize
 	double cost(Model); //get (or set, as this is an lvalue) cost for model - geht kaputt, wenn das Model nicht gesetzt ist
 
