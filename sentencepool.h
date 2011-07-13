@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lexicon.h"
+#include <Vocab.h>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -13,7 +13,7 @@ class SentencePool {
 	 * bleu, WER und PER zur verfügung stellen zu können */
 	public:
 	enum target {ref, gue};
-	Lexicon elex;
+	Vocab elex;
 	std::vector< std::vector<uint>* > reference; 
 	std::vector< std::vector<uint>* > guess;
 

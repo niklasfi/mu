@@ -3,6 +3,9 @@
 #include <string>
 
 #include <Vocab.h>
+#include "hyprefpair.h"
+#include "nbestlist.h"
+#include "sentence.h"
 #include "language.h"
 #include "ptree.h"
 #include "cost.h"
@@ -45,7 +48,6 @@ class Decoder{
 		*/
 		Decoder(const char filename[], double prune_threshold, unsigned int prune_count);
 		~Decoder();
-	
 		
 		//übersetzt einen Satz von ID's
 		nBestList* translate(Sentence&);

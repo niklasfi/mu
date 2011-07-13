@@ -1,3 +1,4 @@
+class Decoder;
 #include "decoder.h"
 
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count):
@@ -13,12 +14,10 @@ Decoder::~Decoder(){
 	delete schwarz; schwarz = 0;
 }
 
-	
 nBestList* Decoder::translate(Sentence& sent){
 	return aStar::Suchalgorithmus(sent, this);
 }
-hypRefPair* Decoder::translate(Sentence& french,
-	Sentence& ref)
+hypRefPair* Decoder::translate(Sentence& french, Sentence& ref)
 {
 	return new hypRefPair(&ref,translate(french));
 }
