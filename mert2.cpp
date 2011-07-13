@@ -47,11 +47,16 @@ struct Global_Section {
 
 /* ======= initialisert alle Geraden für einen Satz ==============*/
 void Mert::init_lines_single(hypRefPair& einSatz, unsigned int sentence_nr){
-	double gradient = aktParam;
+	
 	for (unsigned int i = 0; i<einSatz.nBest->size(); i++){ //iteriert über jede Übersetzung
+		Cost::setScale((Cost::Model) aktParam, 1);
+		double gradient = (-1)*((*einSatz.nBest)[i].cost.cost((Cost::Model) aktParam));
+		cout << " Steigung  " << gradient << endl;
 		Cost::setScale((Cost::Model) aktParam, 0); //den aktuellen Parameter in Cost auf 0 setzen, damit Cost die Kosten ohne diesen Parameter ausrechnet
-		double offset = (*einSatz.nBest)[i].cost.cost();
+		double offset = (-1)*((*einSatz.nBest)[i].cost.cost());
+		cout<< " abstand  " << offset << endl;
 		lines.push_back(new StraightLine(gradient, offset, sentence_nr, i));
+		Cost::setScale((Cost::Model) aktParam, aktParam_value);
 	}
 }
 
@@ -133,9 +138,15 @@ void Mert::findSections () {
 				j--;
 			}
 			if (0 == j)	l->x=- 1. / 0.;
+			l->pre_sentence_pos=lines[j]->sentence_pos;
+			l->pre_sentence_best=lines[j]->sentence_best;
 			lines[j++]=l;
 		}
-		else	lines[j++]=l;
+		else{
+			l->pre_sentence_pos=lines[j]->sentence_pos;
+			l->pre_sentence_best=lines[j]->sentence_best;	
+			lines[j++]=l;
+		}
 	}
 	lines.resize(j);
 }
@@ -148,16 +159,37 @@ double Mert::bleu_optimize(){
 	for (unsigned int i=0; i< translation->size(); i++)	picks[i]=0;
 	   
 	BleuInfo bleu=BleuInfo::membleu(*translation, picks);
+
+	unsigned int aktline;
+	double scale_aktParam;
+	unsigned int aktParam_picks;
+	cout << " Bleu  " << bleu() << endl;
 	
-	for (unsigned int i=0; i< lines.size()-1; i++){
-		double scale_aktParam=(lines[i]->x+lines[i+1]->x)/2;
-		unsigned int aktParam_picks=lines[i]->sentence_best;
-		unsigned int aktline=lines[i]->sentence_pos;
-		
+	for (int i=(-1); i<(int) lines.size(); i++){
+
+		if (i==-1){
+			scale_aktParam=((lines[i+1]->x)-1.0);
+			aktParam_picks=lines[i+1]->pre_sentence_best;
+			aktline=lines[i+1]->pre_sentence_pos;
+		}
+		else{
+			if (i==(int)lines.size()-1){
+				scale_aktParam=((lines[i]->x)+1.0);
+				aktParam_picks=lines[i]->sentence_best;
+				aktline=lines[i]->sentence_pos;
+			}
+			else{
+				scale_aktParam=(lines[i]->x+lines[i+1]->x)/2;
+				aktParam_picks=lines[i]->sentence_best;
+				aktline=lines[i]->sentence_pos;
+			}
+		}
 		hypRefPair* akthypRefPair = &(*translation)[aktline];
 		BleuInfo* bleu_ptr=(*akthypRefPair->nBest)[aktParam_picks].bleu;
 		
-		if(!bleu_ptr)	bleu_ptr=new BleuInfo(*(akthypRefPair->reference), (*akthypRefPair->nBest)[aktParam_picks].sentence);
+		if(!bleu_ptr){	bleu_ptr=new BleuInfo(*(akthypRefPair->reference), (*akthypRefPair->nBest)  	[aktParam_picks].sentence);}
+
+		cout << " Bleu2  " << bleu() << endl;
 		
 		bleu-=*((*akthypRefPair->nBest)[0].bleu); //die übersetzung für diesen satz rausnehmen
 		bleu+=*bleu_ptr; //unsere reinnehmen
@@ -170,6 +202,9 @@ double Mert::bleu_optimize(){
 		//veränderungen an bleu rückgängig machen
 		bleu-=*bleu_ptr;
 		bleu+=*((*akthypRefPair->nBest)[0].bleu);
+
+		cout << " Bleu3  " << bleu() << endl;
+
 	}
 	
 	Cost::setScale((Cost::Model) aktParam, best_scale);
@@ -184,11 +219,13 @@ vector<double> Mert::optimize(){
 		//berechne reihenfolge
 		for (int i=0; i<3; i++){
 			aktParam=i;
+			aktParam_value=Cost::getScale((Cost::Model)aktParam);
 			init_lines();
 			findSections();
 			double opt= bleu_optimize();
 			res.push_back(opt);
 			cout << i << " " << opt << endl;
+			//for(unsigned int j =0;j<lines.size(); j++) lines[j]=0;
 		}
 		break;
 	}
