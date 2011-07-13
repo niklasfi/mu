@@ -3,22 +3,16 @@
 #include <string>
 
 #include <Vocab.h>
-<<<<<<< HEAD
 #include <Ngram.h>
 #include <File.h>
-=======
 #include "hyprefpair.h"
 #include "nbestlist.h"
-#include "sentence.h"
->>>>>>> aec30a8b9a132f20ce0522d1eb271e85758f0e67
-#include "language.h"
 #include "ptree.h"
 #include "cost.h"
 #include "sentenceinfo.h"
-#include "aStar.h"
 #include "nbestlist.h"
-#include "sentence.h"
 #include "hyprefpair.h"
+#include "aStar.h"
 #include "gzstream/gzstream.h"
 
 /* usage: übersetzen einer Textdatei:
@@ -53,7 +47,7 @@ class Decoder{
 		 Übersetzung sein darf (geeignete Zahlen zwischen 2 und 5)
 		 prune_count gibt an, wie viele Übersetzungen absolut zugelassen werden 
 		*/
-		Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char* ngramfilename= "nix");
+		Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char* ngramfilename= 0);
 		~Decoder();
 
 	

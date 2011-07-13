@@ -8,12 +8,10 @@ schwarz(new PTree<PTree<Cost>>){
 	
 	readTable(filename, prune_threshold, prune_count);
 
-	
-	if (Cost::set(Cost::bigram_language_model) && ngramfilename != "nix"){//Model wurde gesetzt
+	//ngramfilename = "training/e.lm.gz";
+	if (Cost::set(Cost::bigram_language_model) && ngramfilename){//Model wurde gesetzt
 		ngram= new Ngram(*elex, 2);
-		cout << "vor der file" << endl;
-		File file(fopen(ngramfilename, "r"));
-		cout << "nach der file" <<endl;
+		File file(ngramfilename, "r");
 		ngram->read(file);
 	}
 }

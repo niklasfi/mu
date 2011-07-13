@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
 	
 	vector<Cost::Model> models_selected;
 	
-	for(int i=7; i<argc;i++){
+	for(int i=8; i<argc;i++){
 		std::string in = argv[i];
 		Cost::Model selected_model;
 		//Herausfinden, welches Modell ausgesucht wurde
