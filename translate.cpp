@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
 	
 	vector<Cost::Model> models_selected;
 	
-	for(int i=8; i<argc;i++){
+	for(int i=7; i<argc;i++){
 		std::string in = argv[i];
 		Cost::Model selected_model;
 		//Herausfinden, welches Modell ausgesucht wurde
@@ -62,7 +62,8 @@ int main(int argc, char* argv[]){
 		else if(in == "7") selected_model = Cost::single_count_bit;
 		else if(in == "8") selected_model = Cost::source_to_target_ratio;
 		else if(in == "9") selected_model = Cost::unigram_language_model;
-		else if(in == "10") selected_model = Cost::bigram_language_model;
+		else if(!in.compare("10"))
+			selected_model = Cost::bigram_language_model;
 		else{
 			cout << "invalid model seleciton!\n";
 			exit (1);
@@ -109,7 +110,7 @@ int main(int argc, char* argv[]){
 	
 	aStar::set_max_SentenceTranslation(sentenceCount);
 	
-	Decoder decoder(argv[4], prune_threshold, prune_count,argv[7]);
+	Decoder decoder(argv[4], prune_threshold, prune_count,argv[6]);
 
 	std::vector<Sentence>* f = Decoder::parseFile(decoder.flex,argv[5]);
 	

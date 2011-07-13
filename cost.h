@@ -24,7 +24,7 @@ class Cost{
 		unigram_language_model,
 		bigram_language_model
 	};
-	static const unsigned int modelCount = 9; //gibt an, wie viele Modelle verfügt werden können
+	static const unsigned int modelCount = 10; //gibt an, wie viele Modelle verfügt werden können
 	
 	static std::vector<double> scale; //speichert die skalierungsfaktoren für die einzelnen Modelle
 	
@@ -116,13 +116,14 @@ class Cost{
 	
 	Cost& operator+=(const Cost& c);
 	Cost& operator+=(const std::pair<Model, double> p); //addiert die double auf die Modelkosten drauf
-	Cost operator+ (const Cost& c);
+	Cost operator+ (const Cost& c) const;
 	
 	Cost& operator-=(const Cost& c);
-	Cost operator- (const Cost& c);
+	Cost operator- (const Cost& c) const;
 	
-	bool operator==(const Cost& c);
-	bool operator!=(const Cost& c);
-
+	bool operator==(const Cost& c) const;
+	bool operator!=(const Cost& c) const;
+	
+	bool operator<(const Cost& c) const;
 
 };

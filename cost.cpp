@@ -114,7 +114,7 @@ Cost& Cost::operator+=(const std::pair<Model, double> p){
 	return *this;
 }
 	
-Cost Cost::operator+(const Cost& c){
+Cost Cost::operator+(const Cost& c) const{
 	Cost z=*this;
 	z+=c;
 	return z;
@@ -127,8 +127,12 @@ Cost& Cost::operator-=(const Cost& c){
 	return *this;
 }
 
-Cost Cost::operator-(const Cost& c){
+Cost Cost::operator-(const Cost& c) const{
 	Cost z=*this;
 	z-=c;
 	return z;
+}
+
+bool Cost::operator<(const Cost& c) const{
+	return totalize() < c.totalize();
 }

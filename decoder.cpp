@@ -1,5 +1,6 @@
 class Decoder;
 #include "decoder.h"
+#include <algorithm>
 
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char * ngramfilename):
 schwarz(new PTree<PTree<Cost>>){
@@ -23,7 +24,11 @@ Decoder::~Decoder(){
 }
 
 typedef VocabIndex* VocabBuffer;
-	
+
+bool cost_less(SentenceInfo s1, SentenceInfo s2){
+	return s2.cost < s1.cost;
+}
+
 void Decoder::add_bigram(nBestList* nbestlist){
 	for (unsigned int i=0; i< nbestlist->size(); i++){
 		
@@ -44,17 +49,15 @@ void Decoder::add_bigram(nBestList* nbestlist){
 			(*nbestlist)[i].cost+=(tmp);
 		}
 	}
+	std::sort(nbestlist->begin(), nbestlist->end(), cost_less);
 }
 
 nBestList* Decoder::translate(Sentence& sent){
-	double bigram_scale=(double)Cost::set(Cost::bigram_language_model);
-	
-	if (bigram_scale){
-		bigram_scale = Cost::getScale(Cost::bigram_language_model);
-		Cost::setScale(Cost::bigram_language_model,0); //wir setzen im Scale Vektor auf 0 damit es in der aStar-Search unbeachtet bleibt
-	}
 	nBestList* result = aStar::Suchalgorithmus(sent,this);
-	if (bigram_scale)	add_bigram(result);
+	if (Cost::set(Cost::bigram_language_model))	add_bigram(result);
+	
+	double scale = Cost::getScale(Cost::bigram_language_model);
+	
 	return result;
 }
 
