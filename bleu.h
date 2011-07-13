@@ -28,7 +28,7 @@ public:
 		const std::vector<unsigned int>& picks
 	);
 
-	double operator()() const; //ruft totalize auf
+	double operator()() const; //ruft totalize auf //gibt den BLEU-Wert zurück
 	double totalize() const;
 
 	static double bleu(SentencePool& sp);
