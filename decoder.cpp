@@ -79,7 +79,7 @@ nBestList* Decoder::translate(Sentence& sent){
 	nBestList* result = aStar::Suchalgorithmus(sent,this);
 	
 // 	print_nBestList(result);
-	cout << "jetzt wird geaddet" << endl;
+// 	cout << "jetzt wird geaddet" << endl;
 	
 	if (bigram_scale){
 		Cost::setScale(Cost::bigram_language_model,bigram_scale);
