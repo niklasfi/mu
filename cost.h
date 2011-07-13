@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 
+
 class Cost{
 	private:
 	static std::vector<int> lookup; // falls das modell gesetzt ist, dann wird hier die stelle im vektor des Modells angegeben sonst -1 
@@ -46,6 +47,9 @@ class Cost{
 	static void setScale(Model, double);
 	static void setScale(std::vector< std::pair<Model,double> >);
 	static double getScale(Model);
+	static bool set(Model); //gibt zurück, ob das Model gesetzt wurde 
+	
+	
 	
 	std::vector<double> cost(std::vector<Model>); //get vector of costs for multiple models
 
@@ -111,6 +115,7 @@ class Cost{
 	Cost& operator=(const Cost& c);
 	
 	Cost& operator+=(const Cost& c);
+	Cost& operator+=(const std::pair<Model, double> p); //addiert die double auf die Modelkosten drauf
 	Cost operator+ (const Cost& c);
 	
 	Cost& operator-=(const Cost& c);

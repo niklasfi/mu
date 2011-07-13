@@ -32,6 +32,10 @@ double Cost::getScale(Model m){
 	return scale[m];
 }
 
+bool Cost::set(Model m){
+	return (lookup[m] != -1);
+}
+
 double Cost::cost() const {
 	return totalize();
 }
@@ -104,6 +108,12 @@ Cost& Cost::operator+=(const Cost& c){
 	return *this;
 }
 
+Cost& Cost::operator+=(const std::pair<Model, double> p){
+	if (lookup[p.first] != -1)
+		modelCosts[lookup[p.first]]+=p.second;
+	return *this;
+}
+	
 Cost Cost::operator+(const Cost& c){
 	Cost z=*this;
 	z+=c;
