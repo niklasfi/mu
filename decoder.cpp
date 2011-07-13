@@ -2,6 +2,22 @@ class Decoder;
 #include "decoder.h"
 #include <algorithm>
 
+void Decoder::print_nBestList(nBestList* nbestlist){
+	for (unsigned int k=0; k< nbestlist->size(); k++){
+	for (unsigned int j=0; j<(*nbestlist)[k].sentence.size(); j++)
+		cout << elex->getWord((*nbestlist)[k].sentence[j]) << " ";
+	
+	cout << endl;
+	Cost kosten=(*nbestlist)[k].cost;
+	for (unsigned int j=0; j< 10; j++)
+		cout << "Modelnr: " << j << " Kosten: " << kosten.cost((Cost::Model)j) << endl;
+	cout << "gesamtkosten: " << kosten.cost() << endl;
+		
+	cout << endl;
+	}
+}
+
+
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char * ngramfilename):
 schwarz(new PTree<PTree<Cost>>){
 	flex=new Vocab();
@@ -45,7 +61,7 @@ void Decoder::add_bigram(nBestList* nbestlist){
 		for (unsigned int pos=0;  pos<= (*nbestlist)[i].sentence.size(); pos++){
 			pair<Cost::Model, double> tmp;
 			tmp.first=Cost::bigram_language_model;
-			tmp.second=ngram->wordProb(buf[pos], &buf[pos+1]);
+			tmp.second=-ngram->wordProb(buf[pos], &buf[pos+1]);
 			(*nbestlist)[i].cost+=(tmp);
 		}
 	}
@@ -53,10 +69,23 @@ void Decoder::add_bigram(nBestList* nbestlist){
 }
 
 nBestList* Decoder::translate(Sentence& sent){
-	nBestList* result = aStar::Suchalgorithmus(sent,this);
-	if (Cost::set(Cost::bigram_language_model))	add_bigram(result);
+	double bigram_scale=(double)Cost::set(Cost::bigram_language_model);
+
+	if (bigram_scale){
+		bigram_scale = Cost::getScale(Cost::bigram_language_model);
+		Cost::setScale(Cost::bigram_language_model,0); //wir setzen im Scale Vektor auf 0 damit es in der aStar-Search unbeachtet bleibt
+	} 
 	
-	double scale = Cost::getScale(Cost::bigram_language_model);
+	nBestList* result = aStar::Suchalgorithmus(sent,this);
+	
+// 	print_nBestList(result);
+	cout << "jetzt wird geaddet" << endl;
+	
+	if (bigram_scale){
+		Cost::setScale(Cost::bigram_language_model,bigram_scale);
+		add_bigram(result);
+	}
+	
 	
 	return result;
 }
