@@ -17,7 +17,7 @@ include makefile.local
 
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream -I${SRILM_PATH}/include ${PROF} ${OMP} ${OPTIMIZE}
 LDFLAGS = -L. -lz -loolm -ldstruct -lflm -lmisc -L${SRILM_PATH}/lib/${MACHINE_TYPE} ${PROF} ${OMP} ${OPTIMIZE}
-OBJECTS = HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o ptree.o cost.o decoder.o hyprefpair.o bleu.o mert2.o
+OBJECTS = HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o ptree.o cost.o decoder.o hyprefpair.o bleu.o mert2.o wordinfo.o
 
 TESTS = levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe bleu.test.exe ptree.test.exe aStar.test.exe mert2.test.exe
 
@@ -28,7 +28,7 @@ GREEN = \033[32m
 YELLOW = \033[33m
 endif
 default: all
-all:  translate.exe 
+all:  translate.exe phraseextract.exe
 
 %.test.exe: %.test.o ${OBJECTS}
 	@${CXX}  -o $@ $< ${OBJECTS} gzstream/gzstream.o ${LDFLAGS}

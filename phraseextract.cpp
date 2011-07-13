@@ -1,12 +1,10 @@
 #include "global.h"
-#include "language.h"
-#include "lexicon.h"
-#include "word.h"
 #include "ptree.h"
-#include "wordinfo.h"
 
 #include "gzstream/gzstream.h"
 
+#include "wordinfo.h"
+#include <Vocab.h>
 #include <sstream>
 #include <string>
 #include <iostream>
@@ -22,8 +20,8 @@ int main(int argc, char* argv[]) {
 			<< "Folgende Ausgabe: relfreq_f relfreq_e # quellphrase # zielphrase # singlecf singlece # source_to_target target_to_source # unigram-sprachmodell\n";
 		return 0;
 	}
-	Lexicon flex(french);
-	Lexicon elex(english);
+	Vocab flex(0,-1);
+	Vocab elex(0,-1);
 	PTree<std::pair<int, PTree<int> > > pTree;
 	PTree<unsigned int> eSinglecount;
 
@@ -43,7 +41,7 @@ int main(int argc, char* argv[]) {
 		
 		//Füge alle französichen Wörter in ein Lexicon ein und schreibe ihre IDs in einen Vektor
 		while(f_ist >> token) {
-			uint id = flex.getWord_or_add(token);
+			uint id = flex.addWord(token.c_str());
 			std::pair<uint, std::vector<unsigned int> > pair_tmp;
 			pair_tmp.first = id;
 			f_vec.push_back(pair_tmp);
@@ -51,7 +49,7 @@ int main(int argc, char* argv[]) {
 
 		//Füge alle englischen Wörter in ein Lexicon ein und schreibe ihre IDs in einen Vektor
 		while (e_ist >> token) {
-			uint id = elex.getWord_or_add(token);
+			uint id = elex.addWord(token.c_str());
 			std::pair<uint, std::vector<unsigned int> > pair_tmp;
 			pair_tmp.first = id;
 			e_vec.push_back(pair_tmp);
@@ -153,7 +151,7 @@ int main(int argc, char* argv[]) {
 			std::vector<uint> source_id = (&*itor1) -> phrase();//Quellphrase (in IDs) auslesen
 			std::string source_phrase = "";
 			for (unsigned int k = 0; k < source_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
-				source_phrase += flex.getString(source_id[k]) + " ";
+				source_phrase += std::string(flex.getWord(source_id[k])) + " ";
 			
 			for(PTree<int>::iterator itor2 = (&*itor1) -> c.second.begin(); itor2 != (&*itor1) -> c.second.end(); itor2++) {	//Durchlaufe den "Unter-Baum"
 
@@ -162,7 +160,7 @@ int main(int argc, char* argv[]) {
 					std::vector<uint> target_id = (&*itor2) -> phrase();//Zielphrase (in IDs) auslesen
 					std::string target_phrase = "";
 					for (unsigned int k = 0; k < target_id.size(); k++)	//ID-Phrase in Stringphrase umwandeln
-						target_phrase += elex.getString(target_id[k]) + " ";
+						target_phrase += std::string(elex.getWord(target_id[k])) + " ";
 
 					double source_to_target = 1;
 					for (unsigned int k = 0; k < target_id.size(); k++) {
