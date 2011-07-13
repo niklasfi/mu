@@ -33,7 +33,7 @@ double Cost::getScale(Model m){
 }
 
 bool Cost::set(Model m){
-	return (lookup[m] != -1)
+	return (lookup[m] != -1);
 }
 
 double Cost::cost() const {
@@ -108,11 +108,12 @@ Cost& Cost::operator+=(const Cost& c){
 	return *this;
 }
 
-Cost& operator+=(const Model m, double d){
-	if (lookup[i] != -1)
-		modelCosts[lookup[i]]+=d;
+Cost& Cost::operator+=(const std::pair<Model, double> p){
+	if (lookup[p.first] != -1)
+		modelCosts[lookup[p.first]]+=p.second;
 	return *this;
-
+}
+	
 Cost Cost::operator+(const Cost& c){
 	Cost z=*this;
 	z+=c;
