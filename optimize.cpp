@@ -27,8 +27,10 @@ int main (int argc, char* argv[]) {
 		}
 	}
 	
-	for(int i=0;i<modelNumber;i++)
+	for(int i=0;i<modelNumber;i++){
 		Cost::add_model((Cost::Model)(i));
+		Cost::setScale((Cost::Model)i, 0.1);
+	}
 // 	int mNumber = 9;
 	
 	double prune_threshold;
@@ -57,6 +59,7 @@ int main (int argc, char* argv[]) {
 	std::vector<Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
 	
 	Mert mert(decoder, f, e);
+	cout << "mert existiert" <<std::endl;
 	mert.optimize();
 	
 	

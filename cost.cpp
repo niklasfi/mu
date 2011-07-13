@@ -28,6 +28,10 @@ void Cost::setScale(std::vector <std::pair<Model, double>> pairVec){
 		setScale(pairVec[i].first, pairVec[i].second);
 }
 
+double Cost::getScale(Model m){
+	return scale[m];
+}
+
 double Cost::cost() const {
 	return totalize();
 }
