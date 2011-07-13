@@ -46,6 +46,9 @@ class Cost{
 	static void setScale(Model, double);
 	static void setScale(std::vector< std::pair<Model,double> >);
 	static double getScale(Model);
+	static bool set(Model); //gibt zurück, ob das Model gesetzt wurde 
+	
+	
 	
 	std::vector<double> cost(std::vector<Model>); //get vector of costs for multiple models
 
@@ -111,6 +114,7 @@ class Cost{
 	Cost& operator=(const Cost& c);
 	
 	Cost& operator+=(const Cost& c);
+	Cost& operator+=(const Model, double); //addiert die double auf die Modelkosten drauf
 	Cost operator+ (const Cost& c);
 	
 	Cost& operator-=(const Cost& c);
