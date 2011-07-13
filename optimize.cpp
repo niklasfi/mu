@@ -69,7 +69,7 @@ int main (int argc, char* argv[]) {
 	delete e;
 	//delete mert;
 
-
+	cout<< "Hallo" << endl;
 	return 0;
 }
 

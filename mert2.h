@@ -54,5 +54,6 @@ public:
 		for (unsigned int i=0; i< lines.size(); i++)	delete lines[i];
 	}
 	std::vector<double> optimize();
+	void print_Schnitt();
 	
 };
