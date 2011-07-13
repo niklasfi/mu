@@ -10,15 +10,19 @@ list<int> models_permutated(){
 	for (unsigned int i=0; i< 10; i++){
 		if (Cost::set((Cost::Model)(i)))	models.push_back(i);
 	}
-		
+//  	cout << "gesetzte Modelle: ";
+//  	for (unsigned int i=0; i< models.size(); i++)	cout << models[i] << " ";
+//  	cout << endl;
+	
 	std::list<int> permutation; //Spätere Rückgabeliste
 
-	for (unsigned int index = 0; index < models.size(); index++) {
+	for (unsigned int index = models.size(); index >0; index--) {
 		int randomNumber = rand() % models.size(); //Bestimme zufällige Zahl in models
 		int integer_tmp = models[randomNumber]; //Ließ die Zahl aus
 		permutation.push_back(integer_tmp); //Füge sie ans Ende der Permutation ein
 		models.erase(models.begin()+randomNumber); //Lösche sie aus dem Vektor
 	}
+// 	cout << "size: " << permutation.size()<< endl; 
 
 	return permutation;
 }
@@ -142,7 +146,7 @@ double Mert::bleu_optimize(){
 	double scale_aktParam;
 	unsigned int aktParam_picks;
 	//cout << " Schnittpunkte  " << lines.size() << endl;
-	cout << " Bleu  " << bleu() << endl;
+// 	cout << " Bleu  " << bleu() << endl;
 	
 	for (unsigned int i=0; i< lines.size(); i++){
 
@@ -173,7 +177,7 @@ double Mert::bleu_optimize(){
 		bleu-=*((*akthypRefPair->nBest)[0].bleu); //die übersetzung für diesen satz rausnehmen
 		bleu+=*bleu_ptr; //unsere reinnehmen
 		
-		if (bleu() > best_bleu){
+		if (bleu() > best_bleu && scale_aktParam > 0){
 			best_bleu=bleu();
 			best_scale=scale_aktParam;
 		}
@@ -200,16 +204,16 @@ void Mert::print_Schnitt(){
 vector<double> Mert::optimize(Decoder& decoder,vector<Sentence>* f, vector<Sentence>* e){
 	vector<double> res;
 	unsigned int count=0;
-	while (count<3){
+	while (count<10){
 		//berechne reihenfolge
 		list<int> models= models_permutated();
 		list<int>::iterator it;
-		cout<<"Modele  ";
-
-		for ( it=models.begin() ; it != models.end(); it++ ){
-    		cout << " " << *it;
-		}
-		cout<<endl;
+// 		cout<<"Modele  ";
+		res.resize(10);
+// 		for ( it=models.begin() ; it != models.end(); it++ ){
+//     		cout << " " << *it;
+// 		}
+// 		cout<<endl;
 		//for (int i=0; i<3; i++){ /zum debuggen, dann kennt man die Reihenfolge der Parameter
 		while (!models.empty()){
 			aktParam=models.front();
@@ -217,14 +221,14 @@ vector<double> Mert::optimize(Decoder& decoder,vector<Sentence>* f, vector<Sente
 			aktParam_value=Cost::getScale((Cost::Model)aktParam);
 			init_lines();
 			findSections();
-			print_Schnitt();
+// 			print_Schnitt();
 			double opt= bleu_optimize();
-			res.push_back(opt);
-			cout<< "Optimum:    " << opt << endl;
+			res[aktParam]=opt;
+// 			cout<< "Optimum:    " << opt << endl;
 			//for(unsigned int j =0;j<lines.size(); j++) lines[j]=0;
 		}
 		translation = decoder.translate(*f,*e);
-		cout<< "count   "<<count<<endl;
+// 		cout<< "count   "<<count<<endl;
 		count++;
 		//break;
 	}
