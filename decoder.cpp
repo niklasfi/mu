@@ -1,3 +1,4 @@
+class Decoder;
 #include "decoder.h"
 
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char * ngramfilename):
@@ -59,8 +60,7 @@ nBestList* Decoder::translate(Sentence& sent){
 	return result;
 }
 
-hypRefPair* Decoder::translate(Sentence& french,
-	Sentence& ref)
+hypRefPair* Decoder::translate(Sentence& french, Sentence& ref)
 {
 	return new hypRefPair(&ref,translate(french));
 }

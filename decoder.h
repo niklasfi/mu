@@ -3,8 +3,14 @@
 #include <string>
 
 #include <Vocab.h>
+<<<<<<< HEAD
 #include <Ngram.h>
 #include <File.h>
+=======
+#include "hyprefpair.h"
+#include "nbestlist.h"
+#include "sentence.h"
+>>>>>>> aec30a8b9a132f20ce0522d1eb271e85758f0e67
 #include "language.h"
 #include "ptree.h"
 #include "cost.h"
@@ -49,8 +55,11 @@ class Decoder{
 		*/
 		Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char* ngramfilename= "nix");
 		~Decoder();
+
 	
 		void add_bigram(nBestList* nbestlist); //fügt bigram in die Kosten ein
+
+		
 		//übersetzt einen Satz von ID's
 		nBestList* translate(Sentence&);
 		hypRefPair* translate(Sentence& french, Sentence& ref);

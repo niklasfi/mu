@@ -1,13 +1,12 @@
 #include <vector>
 #include <iostream>
 
-#include "lexicon.h"
+#include "decoder.h"
 #include "aStar.h"
 #include "readtable.cpp"
 #include "sentenceinfo.h"
 #include "global.h"
-#include "mert.cpp"
-#include "simplex.cpp"
+#include "mert2.h"
 
 using namespace std;
 
@@ -28,8 +27,10 @@ int main (int argc, char* argv[]) {
 		}
 	}
 	
-	for(int i=0;i<modelNumber;i++)
+	for(int i=0;i<modelNumber;i++){
 		Cost::add_model((Cost::Model)(i));
+		Cost::setScale((Cost::Model)i, 0.1);
+	}
 // 	int mNumber = 9;
 	
 	double prune_threshold;
@@ -50,29 +51,24 @@ int main (int argc, char* argv[]) {
 			exit(1);
 		}
 	}
+	aStar::set_max_SentenceTranslation(10);
 
 	Decoder decoder(argv[3], prune_threshold, prune_count);	//Decoder anlegen
 
-	std::vector<Decoder::Sentence>* f = Decoder::parseFile(decoder.flex,argv[1]);	//französiche
-	std::vector<Decoder::Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
+	std::vector<Sentence>* f = Decoder::parseFile(decoder.flex,argv[1]);	//französiche
+	std::vector<Sentence>* e = Decoder::parseFile(decoder.elex,argv[2]);	//und englische Daten einlesen
 	
-	std::vector<Decoder::hypRefPair>* translation = decoder.translate(*f,*e);		//und beste Übersetzungen suchen
-
-	std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo> > > nBestList;
+	Mert mert(decoder, f, e);
+	cout << "mert existiert" <<std::endl;
+	mert.optimize();
 	
-	for (unsigned int index1 = 0; index1 < translation->size(); index1++) {		//Iteriere über alle Sätze des Quelltextes
-		std::pair<std::vector<uint>, std::vector<SentenceInfo> > pair_tmp;
-		pair_tmp.first = *((*translation)[index1].reference);		//Speichere Referenz (=Satz des Quelltextes)
-		pair_tmp.second = *((*translation)[index1].nBest);		//Speichere Übersetzungshypothesen
-		nBestList.push_back(pair_tmp);
-	}
+	
 
 	//Speicher befreien
 	delete f;
 	delete e;
-	delete translation;
+	//delete mert;
 
-	mert(nBestList, modelNumber);	//Führe mert mit oben generierter nBestList aus
 
 	return 0;
 }

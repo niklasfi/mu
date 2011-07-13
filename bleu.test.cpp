@@ -3,17 +3,12 @@
 #include <math.h>
 #include "sentencepool.h"
 #include "math.h"
-#include "bleu.cpp"
+#include "bleu.h"
+#include <cmath>
 
 using namespace std;
 
-
 int main(){
-	/*std::vector<std::pair<
-		std::vector<uint>, 
-		std::vector<SentenceInfo>
-	>*/
-	
 	Cost::add_model(Cost::source_to_target_phrase);
 	
 	SentenceInfo s1(
@@ -26,34 +21,45 @@ int main(){
 		Cost(.5),
 		0
 	);
-	
+
 	std::vector<SentenceInfo> sInfos{
 		s1,s2
 	};
-		
-	std::pair<std::vector<uint>, std::vector<SentenceInfo>> stru(
-		std::vector<uint>{1,2,3,4},
-		sInfos
+
+	Sentence ref{1,2,3,4};
+
+	hypRefPair stru(
+		&ref,
+		&sInfos
 	);
+
+	std::vector<hypRefPair> vec{stru};
+	BleuInfo::N = 2;
+	
+	double b1 = BleuInfo::membleu(
+		vec,
+		std::vector<uint>{0}
+	)();
 		
-	double b1 = membleu(
-		std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo>>>{stru},
-		std::vector<uint>{0},2
-	);
+	double b2 = BleuInfo::membleu(
+		vec,
+		std::vector<uint>{1}
+	)(); 
 		
-	double b2 = membleu(
-		std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo>>>{stru},
-		std::vector<uint>{1},2
-	); 
-		
-	double b3 = membleu(
-		std::vector<std::pair<std::vector<uint>, std::vector<SentenceInfo>>>{stru},
-		std::vector<uint>{1},2
-	); 
+	double b3 = BleuInfo::membleu(
+		vec,
+		std::vector<uint>{1}
+	)();
 		
 	std::cout << b1 << "\n"
 		<< b2 << "\n"
-		<< b3;
+		<< b3 << "\n";
+
+	assert(abs(b1 - 1.0/2.0) < 1e-10);
+	assert(abs(b2 - 1.0/2.0) < 1e-10);
+	assert(abs(b3 - 1.0/2.0) < 1e-10);
+	
+	std::cout << BleuInfo(std::vector<uint>{1,3,4,4}, std::vector<uint>{1,2,3,4})() << "\n";
 /*
   vector<unsigned int>* vek=new vector<unsigned int> (6);
   vector<unsigned int>* vek2=new vector<unsigned int>(4);
