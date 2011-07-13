@@ -13,24 +13,17 @@ Decoder::~Decoder(){
 	delete schwarz; schwarz = 0;
 }
 
-Decoder::hypRefPair::hypRefPair(Sentence* ref,
-	nBestList* nBest):
-	reference(ref),nBest(nBest){}
-
-Decoder::hypRefPair::~hypRefPair(){
-	delete nBest; nBest = 0;
-}
 	
-Decoder::nBestList* Decoder::translate(Decoder::Sentence& sent){
+nBestList* Decoder::translate(Sentence& sent){
 	return aStar::Suchalgorithmus(sent, this);
 }
-Decoder::hypRefPair* Decoder::translate(Decoder::Sentence& french,
-	Decoder::Sentence& ref)
+hypRefPair* Decoder::translate(Sentence& french,
+	Sentence& ref)
 {
 	return new hypRefPair(&ref,translate(french));
 }
 
-std::vector<Decoder::nBestList>* Decoder::translate(std::vector<Decoder::Sentence>& french){
+std::vector<nBestList>* Decoder::translate(std::vector<Sentence>& french){
 	std::vector<nBestList>* result = new std::vector<nBestList>();
 	for(unsigned int i = 0; i < french.size(); i++){
 		nBestList* translation = translate(french[i]);
@@ -40,8 +33,8 @@ std::vector<Decoder::nBestList>* Decoder::translate(std::vector<Decoder::Sentenc
 	return result;
 }
 
-std::vector<Decoder::hypRefPair>* Decoder::translate(std::vector<Decoder::Sentence>& french,
- std::vector<Decoder::Sentence>& ref)
+std::vector<hypRefPair>* Decoder::translate(std::vector<Sentence>& french,
+ std::vector<Sentence>& ref)
 {
 	std::vector<hypRefPair>* result = new std::vector<hypRefPair>();
 	for(unsigned int i = 0; i < french.size(); i++){
@@ -103,7 +96,7 @@ void Decoder::readTable(const char filename[], double prune_threshold,	unsigned 
 
 }
 
-Decoder::Sentence* Decoder::parseLine(Vocab* lex, const std::string& line){
+Sentence* Decoder::parseLine(Vocab* lex, const std::string& line){
 	istringstream ist(line);
 	std::string token;
 	Sentence* sent=new Sentence;
@@ -114,7 +107,7 @@ Decoder::Sentence* Decoder::parseLine(Vocab* lex, const std::string& line){
 	return sent;
 }
 
-std::vector<Decoder::Sentence>* Decoder::parseFile(Vocab* lex, const char file[]){
+std::vector<Sentence>* Decoder::parseFile(Vocab* lex, const char file[]){
 	igzstream igz(file);
 	std::string line;
 	

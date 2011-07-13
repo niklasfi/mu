@@ -110,9 +110,9 @@ int main(int argc, char* argv[]){
 	
 	Decoder decoder(argv[4], prune_threshold, prune_count);
 
-	std::vector<Decoder::Sentence>* f = Decoder::parseFile(decoder.flex,argv[5]);
+	std::vector<Sentence>* f = Decoder::parseFile(decoder.flex,argv[5]);
 	
-	std::vector<Decoder::nBestList>* translation = decoder.translate(*f);
+	std::vector<nBestList>* translation = decoder.translate(*f);
 	
 	
 	for (unsigned int i=0; i< translation->size(); i++){

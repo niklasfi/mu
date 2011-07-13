@@ -17,7 +17,7 @@ include makefile.local
 
 CPPFLAGS = ${DEBUG} -std=c++0x -c -I. -Igzstream -I${SRILM_PATH}/include ${PROF} ${OMP} ${OPTIMIZE}
 LDFLAGS = -L. -lz -loolm -ldstruct -lflm -lmisc -L${SRILM_PATH}/lib/${MACHINE_TYPE} ${PROF} ${OMP} ${OPTIMIZE}
-OBJECTS = HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o ptree.o cost.o decoder.o
+OBJECTS = HypothesisNode.o PartialTranslation.o aStar.o aStarElement.o ptree.o cost.o decoder.o hyprefpair.o
 
 TESTS = levenshtein.test.exe sentencepool.test.exe PER_WER.test.exe bleu.test.exe ptree.test.exe aStar.test.exe
 
