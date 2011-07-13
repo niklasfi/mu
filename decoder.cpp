@@ -1,22 +1,64 @@
 #include "decoder.h"
 
-Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count):
+Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char * ngramfilename):
 schwarz(new PTree<PTree<Cost>>){
 	flex=new Vocab();
 	elex=new Vocab();
 	
 	readTable(filename, prune_threshold, prune_count);
+
+	
+	if (Cost::set(Cost::bigram_language_model) && ngramfilename != "nix"){//Model wurde gesetzt
+		ngram= new Ngram(*elex, 2);
+		cout << "vor der file" << endl;
+		File file(fopen(ngramfilename, "r"));
+		cout << "nach der file" <<endl;
+		ngram->read(file);
+	}
 }
 Decoder::~Decoder(){
 	delete flex;    flex    = 0;
 	delete elex;    elex    = 0;
 	delete schwarz; schwarz = 0;
+	if (ngram)	delete ngram; ngram=0;
 }
 
+typedef VocabIndex* VocabBuffer;
 	
-nBestList* Decoder::translate(Sentence& sent){
-	return aStar::Suchalgorithmus(sent, this);
+void Decoder::add_bigram(nBestList* nbestlist){
+	for (unsigned int i=0; i< nbestlist->size(); i++){
+		
+		//zuerst in einen Buffer umschreiben
+		VocabBuffer buf (new VocabIndex[(*nbestlist)[i].sentence.size()+3]); //vocabbuffer der richtigen länge initialisieren (+3 für satzanfang und satzende)
+		buf[0]=elex->seIndex(); //satzanfangsmarkierer
+		unsigned int buf_index=1;
+		for (int j=(*nbestlist)[i].sentence.size()-1; j >= 0; j--)
+			buf[buf_index++]=(*nbestlist)[i].sentence[j];
+		buf[buf_index++]=elex->ssIndex(); //satzendemarkierer
+		buf[buf_index++]=Vocab_None;
+		
+		//jetzt Kosten ausrechnen
+		for (unsigned int pos=0;  pos<= (*nbestlist)[i].sentence.size(); pos++){
+			pair<Cost::Model, double> tmp;
+			tmp.first=Cost::bigram_language_model;
+			tmp.second=ngram->wordProb(buf[pos], &buf[pos+1]);
+			(*nbestlist)[i].cost+=(tmp);
+		}
+	}
 }
+
+nBestList* Decoder::translate(Sentence& sent){
+	double bigram_scale=(double)Cost::set(Cost::bigram_language_model);
+	
+	if (bigram_scale){
+		bigram_scale = Cost::getScale(Cost::bigram_language_model);
+		Cost::setScale(Cost::bigram_language_model,0); //wir setzen im Scale Vektor auf 0 damit es in der aStar-Search unbeachtet bleibt
+	}
+	nBestList* result = aStar::Suchalgorithmus(sent,this);
+	if (bigram_scale)	add_bigram(result);
+	return result;
+}
+
 hypRefPair* Decoder::translate(Sentence& french,
 	Sentence& ref)
 {

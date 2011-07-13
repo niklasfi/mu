@@ -3,6 +3,8 @@
 #include <string>
 
 #include <Vocab.h>
+#include <Ngram.h>
+#include <File.h>
 #include "language.h"
 #include "ptree.h"
 #include "cost.h"
@@ -38,15 +40,17 @@ class Decoder{
 		Vocab* flex;
 		Vocab* elex;
 		PTree<PTree<Cost>>* schwarz;
+		Ngram* ngram;
+		
 		/*filename soll der Pfad zur Phrasentabelle sein,
 		 threshold gibt an, wie groß der relative Unterschied von der besten 
 		 Übersetzung sein darf (geeignete Zahlen zwischen 2 und 5)
 		 prune_count gibt an, wie viele Übersetzungen absolut zugelassen werden 
 		*/
-		Decoder(const char filename[], double prune_threshold, unsigned int prune_count);
+		Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char* ngramfilename= "nix");
 		~Decoder();
 	
-		
+		void add_bigram(nBestList* nbestlist); //fügt bigram in die Kosten ein
 		//übersetzt einen Satz von ID's
 		nBestList* translate(Sentence&);
 		hypRefPair* translate(Sentence& french, Sentence& ref);
