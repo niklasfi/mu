@@ -4,39 +4,6 @@ class BleuInfo;
 
 using namespace std;
 
-/* Strukturen aus dem Decoder
- * 
- * typedef std::vector<SentenceInfo> nBestList;
- * 
- * struct hypRefPair{
-			Sentence* reference;
-			nBestList* nBest;  
-			hypRefPair(Sentence* ref, nBestList* hyp);
-			~hypRefPair();
-		};
-
- === Strukturtyp StraightLine, um Geraden darzustellen === 
-struct StraightLine {
-	double gradient;	//Steigung
-	double offset;		//Achsen-Abstand
-	uint sentence_pos;		//Position der entsprechenden Hypothese
-	double bleu;
-	
-	StraightLine(double gradient, double offset, uint sentence): gradient(gradient), offset(offset), sentence(sentence_pos){}
-};
-
- === Strukturtyp Section, um Schnittpunkt und den im folgenden benutzten Satz zu speichern === 
-struct Section {
-	double intersection;	//Beginn der Section (also vorderer Schnittpunkt)
-	vector<uint> translation;		//Position der entsprechenden Hypothesen
-	double bleu;
-};
-
- === wie Section, speichert aber nicht nur Position einer Hypothese, sondern mehrere === 
-struct Global_Section {
-	double begin;		//Beginn der Global_Section (also vorderer Schnittpunkt)
-	std::vector<uint> sentences;	//Position der entsprechenden Hypothesen in richtiger Reihenfolge
-};*/
 /* === Gibt eine zufällige Permutation der Model1e zurück === */
 list<int> models_permutated(){
 	vector<int> models; //enthält alle gesetzten Models
@@ -120,30 +87,7 @@ struct Schnittpunkt{
 void Mert::findSections () {
 	
 	sort();
-	/*for (list<StraightLine>::iterator it=lines.begin(); it != lines.end(); it++){
-		StraightLine currentLine = *it;								//Hilfs-Section
-		
-		
-		//schnittpunkte mit der aktuellen gerade berechnen
-		priority_queue<Schnittpunkt, vector<Schnittpunkt> > schnittpunkteSammlung; 
-		for (list<Straighline>::iterator it2=lines.begin(); it2 != lines.end(); it2++){
-			Schnittpunkt schnittpunkt;
-			
-			schnittpunkt.x= it->offset - it2->offset;
-			schnittpunkt.x/=(it2->gradient-it->gradient);
-			schnittpunkt.y=it->gradient*schnittpunkt.x+it->offset;
-			schnittpunkt.gradient=it2->gradient;
-			
-			schnittpunkteSammlung.push(schnittpunkt);
-		}
-		
-		double gradient_best=schnittpunkteSammlung.top().gradient; //die Steigung der Geraden mit dem besten Schnittpunkt
-		
-		//Lösche alle Geraden mit niedrigerer Steigung als gradient_best
-		for (list<Straightline>::iterator it2=lines.begin(); it2->gradient < gradient_best; it2++){
-		lines.remove_if(
-	}
-		*/
+
 	
 	int j=0, K=lines.size();
 	for (int i=0; i< K; i++){
@@ -253,12 +197,19 @@ void Mert::print_Schnitt(){
 	
 
 
-vector<double> Mert::optimize(){
+vector<double> Mert::optimize(Decoder& decoder,vector<Sentence>* f, vector<Sentence>* e){
 	vector<double> res;
-	while (true){
+	unsigned int count=0;
+	while (count<3){
 		//berechne reihenfolge
 		list<int> models= models_permutated();
-		
+		list<int>::iterator it;
+		cout<<"Modele  ";
+
+		for ( it=models.begin() ; it != models.end(); it++ ){
+    		cout << " " << *it;
+		}
+		cout<<endl;
 		//for (int i=0; i<3; i++){ /zum debuggen, dann kennt man die Reihenfolge der Parameter
 		while (!models.empty()){
 			aktParam=models.front();
@@ -272,7 +223,10 @@ vector<double> Mert::optimize(){
 			cout<< "Optimum:    " << opt << endl;
 			//for(unsigned int j =0;j<lines.size(); j++) lines[j]=0;
 		}
-		break;
+		translation = decoder.translate(*f,*e);
+		cout<< "count   "<<count<<endl;
+		count++;
+		//break;
 	}
 // 	delete translation;
 // 	for (unsigned int i=0; i< lines.size(); i++)	delete lines[i];

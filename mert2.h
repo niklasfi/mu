@@ -53,7 +53,7 @@ public:
 		delete translation;
 		for (unsigned int i=0; i< lines.size(); i++)	delete lines[i];
 	}
-	std::vector<double> optimize();
+	std::vector<double> optimize(Decoder& decoder,std::vector<Sentence>* f, std::vector<Sentence>* e);
 	void print_Schnitt();
 	
 };

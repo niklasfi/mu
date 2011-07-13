@@ -81,7 +81,7 @@ int main (int argc, char* argv[]) {
 	
 	Mert mert(decoder, f, e);
 	cout << "mert existiert" <<std::endl;
-	mert.optimize();
+	mert.optimize(decoder, f, e);
 	
 	
 
