@@ -138,8 +138,8 @@ std::deque<Section> findSections (const std::deque<StraightLine> &lines) {
 			section_tmp.intersection = minIntersection;
 			section_tmp.sentence = lines[index_tmp].sentence;
 			sections.push_back(section_tmp);				//Füge neu begonnene Section zum Vektor hinzu
-			index1 = index_tmp;						//Fahre mit Gerade des aktuellen Schnittpunktes fort
-		}
+			index1 = index_tmp;
+		} else index1 = lines.size()-1;
 	}
 
 	sections[0].intersection = sections[1].intersection-1;				//Stelle sicher, dass Beginn der ersten Section vor der zweiten liegt
@@ -281,7 +281,7 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 	models = selectModels(modelNumber);							//Wähle alle betrachteten Modelle aus
 
 	bool newHypothesis = true;								//Speichert, ob im letzten Durchgang, neue Hypothesen gefunden wurden, initialisiert mit true, damit Schleife überhaupt betreten wird
-	
+
 	while(newHypothesis) {
 		
 		bool paramChange = true;
@@ -295,13 +295,14 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 
 				int currentParam = paramPermutation.front();			//Wähle ersten Parameter in der Reihenfolge
 				paramPermutation.pop_front();					//Entferne ihn aus der Reihenfolge
-				
+
 				std::deque<Global_Section> globalSections;			//Enthält später alle Sections (also unterteilte Abschnitte) mit allen im jeweiligen Abschnitt zu betrachtenden Hypothesen
 
 				for (unsigned int index1 = 0; index1 < nBestLists.size(); index1++) {	//Iteriere über Anzahl der Sätze im Text
 						std::deque<StraightLine> lines;			//Beinhaltet alle Geraden (Hypothesen) eines Satzes
 
 					for (unsigned int index2 = 0; index2 < nBestLists[index1].second.size(); index2++) {	//Iteriere über die Anzahl der Hypothesen für einen Satz
+
 						StraightLine line_tmp;
 						line_tmp.gradient = findGradient(nBestLists[index1].second[index2].cost, currentParam, models);
 						line_tmp.offset = findOffset(nBestLists[index1].second[index2].cost, currentParam, models, modelNumber);
@@ -321,14 +322,7 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 							lines.insert(lines.begin()+position_tmp, line_tmp);
 						else	lines.insert(lines.begin()+position_tmp+1,line_tmp);
 					}
-				
-					/*for (unsigned int index = 0; index<lines.size(); index++) 
-						std::cout<<lines[index].gradient<<" "<<lines[index].offset<<"\n";*/
-							
 					std::deque<Section> localSections = findSections(lines);	//Finde alle relevanten Schnittpunkte (als Sections gespeichert)
-					for (unsigned int index = 0; index<localSections.size(); index++)
-						std::cout<<localSections[index].intersection<<"\n";
-
 					mergeSections(globalSections, localSections);			//localSection zu globalSection hinzufügen
 				}
 				double currentParamValue;							//Hält den aktuell besten Parameter-Wert fest
@@ -352,6 +346,11 @@ void mert(std::vector<std::pair<std::vector<uint>,std::vector<SentenceInfo> > > 
 
 				paramChange = (paramChange || (paramValues[currentParam] != currentParamValue));//Hat sich der Parameter-Wert verändert?
 				paramValues[currentParam] = currentParamValue;
+
+
+				printall(paramValues, modelNumber);
+
+
 			}
 		}
 		//newHypothesis = addNewHypothesis(nBestLists, paramValues, modelNumber);
