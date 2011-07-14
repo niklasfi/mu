@@ -69,7 +69,8 @@ double Cost::totalize() const {
 	double total = 0;
 	for(uint i = 0; i < lookup.size(); i++)
 		if (lookup[i] != -1)
-			total += modelCosts[lookup[i]]*scale[i]; //falls model nicht existiert rechnet er + 0
+			if (scale[i] != 0)
+				total += modelCosts[lookup[i]]*scale[i]; //falls model nicht existiert rechnet er + 0
 	return total;
 }
 
@@ -93,7 +94,8 @@ double Cost::calc(
 	calc_word_penalty(e_phrase).
 	calc_single_count_bit(f_singlecount, e_singlecount).
 	calc_source_to_target_ratio(f_phrase, e_phrase).
-	calc_unigram_language_model(unigram).totalize();
+	calc_unigram_language_model(unigram).
+	calc_bigram_language_model(0).totalize();
 }
 
 Cost& Cost::operator=(const Cost& c){

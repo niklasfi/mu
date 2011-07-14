@@ -2,6 +2,22 @@ class Decoder;
 #include "decoder.h"
 #include <algorithm>
 
+void Decoder::print_nBestList(nBestList* nbestlist){
+	for (unsigned int k=0; k< nbestlist->size(); k++){
+	for (unsigned int j=0; j<(*nbestlist)[k].sentence.size(); j++)
+		cout << elex->getWord((*nbestlist)[k].sentence[j]) << " ";
+	
+	cout << endl;
+	Cost kosten=(*nbestlist)[k].cost;
+	for (unsigned int j=0; j< 10; j++)
+		cout << "Modelnr: " << j << " Kosten: " << kosten.cost((Cost::Model)j) << endl;
+	cout << "gesamtkosten: " << kosten.cost() << endl;
+		
+	cout << endl;
+	}
+}
+
+
 Decoder::Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char * ngramfilename):
 schwarz(new PTree<PTree<Cost>>){
 	flex=new Vocab();
@@ -25,7 +41,7 @@ Decoder::~Decoder(){
 typedef VocabIndex* VocabBuffer;
 
 bool cost_less(SentenceInfo s1, SentenceInfo s2){
-	return s2.cost < s1.cost;
+	return s1.cost < s2.cost;
 }
 
 void Decoder::add_bigram(nBestList& nbestlist){

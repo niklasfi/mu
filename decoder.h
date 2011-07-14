@@ -49,6 +49,8 @@ class Decoder{
 		*/
 		Decoder(const char filename[], double prune_threshold, unsigned int prune_count, const char* ngramfilename= 0);
 		~Decoder();
+		
+		void print_nBestList(nBestList* nbestlist);
 
 	
 		void add_bigram(nBestList& nbestlist); //fügt bigram in die Kosten ein

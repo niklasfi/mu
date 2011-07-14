@@ -31,6 +31,9 @@ class Mert{
 private:
 	std::deque<StraightLine> lines; //alle Geraden und später alle Schnittpunkte
 	
+	double optimum_bleu;
+	vector<double> optimum_scale;
+	
 	unsigned int	aktParam; //Parameter, der gerade optimiert wird
 	BleuInfo	bleu; //speichert Nenner etc. der Grams
 

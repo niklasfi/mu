@@ -70,7 +70,7 @@ int main (int argc, char* argv[]) {
 			exit(1);
 		}
 	}
-	aStar::set_max_SentenceTranslation(10);
+	aStar::set_max_SentenceTranslation(1000);
 	//cout<<prune_threshold<<endl;
 	//cout<<prune_count<<endl;
 

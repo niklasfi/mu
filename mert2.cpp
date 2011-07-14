@@ -146,7 +146,15 @@ double Mert::bleu_optimize(){
 	double scale_aktParam;
 	unsigned int aktParam_picks;
 	//cout << " Schnittpunkte  " << lines.size() << endl;
-// 	cout << " Bleu  " << bleu() << endl;
+	
+	double b = bleu();
+	
+	if(b > optimum_bleu){
+		optimum_bleu = b;
+		optimum_scale = Cost::scale;
+	}
+	
+ 	cout << " Bleu  " << b << " (" << optimum_bleu << ")"<< endl;
 	
 	for (unsigned int i=0; i< lines.size(); i++){
 
@@ -179,8 +187,10 @@ double Mert::bleu_optimize(){
 		bleu-=*((akthypRefPair->nBest)[0].bleu); //die übersetzung für diesen satz rausnehmen
 		bleu+=*bleu_ptr; //unsere reinnehmen
 		
-		if (bleu() > best_bleu && scale_aktParam > 0){
-			best_bleu=bleu();
+		double b = bleu();
+		
+		if (b> best_bleu && scale_aktParam > 0 && b > optimum_bleu){
+			best_bleu=b;
 			best_scale=scale_aktParam;
 		}
 		//cout << " Bleu3  " << bleu() << endl;
@@ -231,13 +241,14 @@ vector<double> Mert::optimize(Decoder& decoder,vector<Sentence>* f, vector<Sente
 		}
 		
 		translation = decoder.translate(*f,*e);
-		double sum = 0;
+		double max = 0;
 
 		for (unsigned int i = 0; i < res.size(); i++)
-			sum += res[i];
+			if(res[i] > max)
+				 max = res[i];
 		
 		for (unsigned int i=0; i< res.size(); i++){
-			res[i] /= sum;
+			res[i] /= max;
 			cout << res[i] << " ";
 		}
 		cout << endl;
