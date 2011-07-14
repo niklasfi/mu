@@ -204,7 +204,7 @@ void Mert::print_Schnitt(){
 vector<double> Mert::optimize(Decoder& decoder,vector<Sentence>* f, vector<Sentence>* e){
 	vector<double> res;
 	unsigned int count=0;
-	while (count<10){
+	while (count<3){
 		//berechne reihenfolge
 		list<int> models= models_permutated();
 		list<int>::iterator it;
