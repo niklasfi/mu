@@ -81,7 +81,7 @@ int main (int argc, char* argv[]) {
 	
 	Mert mert(decoder, f, e);
 	cout << "Die optimierten Parameter sind" <<std::endl;
-	vector<double> res=mert.optimize(decoder, f, e);
+	vector<double> res = mert.optimize(decoder, f, e);
 	
 	for (unsigned int i=0; i< res.size(); i++){
 		cout << res[i] << " ";
@@ -91,9 +91,7 @@ int main (int argc, char* argv[]) {
 	//Speicher befreien
 	delete f;
 	delete e;
-	//delete mert;
 
-	cout<< "Hallo" << endl;
 	return 0;
 }
 

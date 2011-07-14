@@ -206,7 +206,7 @@ void Mert::print_Schnitt(){
 vector<double> Mert::optimize(Decoder& decoder,vector<Sentence>* f, vector<Sentence>* e){
 	vector<double> res;
 	unsigned int count=0;
-	while (count < 12){
+	while (count < 1000){
 		//berechne reihenfolge
 		list<int> models= models_permutated();
 		list<int>::iterator it;
@@ -230,9 +230,18 @@ vector<double> Mert::optimize(Decoder& decoder,vector<Sentence>* f, vector<Sente
 			//for(unsigned int j =0;j<lines.size(); j++) lines[j]=0;
 		}
 		
-		if(count % 3 == 0){
-			translation = decoder.translate(*f,*e);
+		translation = decoder.translate(*f,*e);
+		double sum = 0;
+
+		for (unsigned int i = 0; i < res.size(); i++)
+			sum += res[i];
+		
+		for (unsigned int i=0; i< res.size(); i++){
+			res[i] /= sum;
+			cout << res[i] << " ";
 		}
+		cout << endl;
+		
 // 		cout<< "count   "<<count<<endl;
 		count++;
 		//break;
