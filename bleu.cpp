@@ -99,7 +99,7 @@ BleuInfo BleuInfo::membleu(std::vector<hypRefPair>& hrp,
 	BleuInfo bi;
 	
 	for(unsigned int i = 0; i < hrp.size(); i++){
-		SentenceInfo& si = (*hrp[i].nBest)[picks[i]];
+		SentenceInfo& si = hrp[i].nBest[picks[i]];
 		if(!si.bleu) si.bleu = new BleuInfo(*hrp[i].reference, si.sentence);
 
 		bi += *si.bleu;

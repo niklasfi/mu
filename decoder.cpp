@@ -20,7 +20,6 @@ Decoder::~Decoder(){
 	delete flex;    flex    = 0;
 	delete elex;    elex    = 0;
 	delete schwarz; schwarz = 0;
-	if (ngram)	delete ngram; ngram=0;
 }
 
 typedef VocabIndex* VocabBuffer;
@@ -29,61 +28,62 @@ bool cost_less(SentenceInfo s1, SentenceInfo s2){
 	return s2.cost < s1.cost;
 }
 
-void Decoder::add_bigram(nBestList* nbestlist){
-	for (unsigned int i=0; i< nbestlist->size(); i++){
+void Decoder::add_bigram(nBestList& nbestlist){
+	for (unsigned int i=0; i< nbestlist.size(); i++){
 		
 		//zuerst in einen Buffer umschreiben
-		VocabBuffer buf (new VocabIndex[(*nbestlist)[i].sentence.size()+3]); //vocabbuffer der richtigen länge initialisieren (+3 für satzanfang und satzende)
+		VocabBuffer buf (new VocabIndex[nbestlist[i].sentence.size()+3]); //vocabbuffer der richtigen länge initialisieren (+3 für satzanfang und satzende)
 		buf[0]=elex->seIndex(); //satzanfangsmarkierer
 		unsigned int buf_index=1;
-		for (int j=(*nbestlist)[i].sentence.size()-1; j >= 0; j--)
-			buf[buf_index++]=(*nbestlist)[i].sentence[j];
+		for (int j=nbestlist[i].sentence.size()-1; j >= 0; j--)
+			buf[buf_index++]=nbestlist[i].sentence[j];
 		buf[buf_index++]=elex->ssIndex(); //satzendemarkierer
 		buf[buf_index++]=Vocab_None;
 		
 		//jetzt Kosten ausrechnen
-		for (unsigned int pos=0;  pos<= (*nbestlist)[i].sentence.size(); pos++){
+		for (unsigned int pos=0;  pos<= nbestlist[i].sentence.size(); pos++){
 			pair<Cost::Model, double> tmp;
 			tmp.first=Cost::bigram_language_model;
 			tmp.second=ngram->wordProb(buf[pos], &buf[pos+1]);
-			(*nbestlist)[i].cost+=(tmp);
+			nbestlist[i].cost+=(tmp);
 		}
+		
+		delete[] buf;
 	}
-	std::sort(nbestlist->begin(), nbestlist->end(), cost_less);
+	std::sort(nbestlist.begin(), nbestlist.end(), cost_less);
 }
 
-nBestList* Decoder::translate(Sentence& sent){
-	nBestList* result = aStar::Suchalgorithmus(sent,this);
+nBestList Decoder::translate(Sentence& sent){
+	nBestList* result_ptr = aStar::Suchalgorithmus(sent,this);
+	nBestList result = *result_ptr;
+	delete result_ptr;
 	if (Cost::set(Cost::bigram_language_model))	add_bigram(result);
 	
-	double scale = Cost::getScale(Cost::bigram_language_model);
-	
 	return result;
 }
 
-hypRefPair* Decoder::translate(Sentence& french, Sentence& ref)
+hypRefPair Decoder::translate(Sentence& french, Sentence& ref)
 {
-	return new hypRefPair(&ref,translate(french));
+	return hypRefPair(&ref,translate(french));
 }
 
-std::vector<nBestList>* Decoder::translate(std::vector<Sentence>& french){
-	std::vector<nBestList>* result = new std::vector<nBestList>();
+std::vector<nBestList> Decoder::translate(std::vector<Sentence>& french){
+	std::vector<nBestList> result;
+	result.reserve(french.size());
 	for(unsigned int i = 0; i < french.size(); i++){
-		nBestList* translation = translate(french[i]);
-		result->push_back(*translation);
-		delete translation;
+		nBestList translation = translate(french[i]);
+		result.push_back(translation);
 	}
 	return result;
 }
 
-std::vector<hypRefPair>* Decoder::translate(std::vector<Sentence>& french,
+std::vector<hypRefPair> Decoder::translate(std::vector<Sentence>& french,
  std::vector<Sentence>& ref)
 {
-	std::vector<hypRefPair>* result = new std::vector<hypRefPair>();
+	std::vector<hypRefPair> result;
+	result.reserve(french.size());
 	for(unsigned int i = 0; i < french.size(); i++){
-		hypRefPair* translation = translate(french[i], ref[i]);
-		result->push_back(*translation);
-		delete translation;
+		result.push_back(translate(french[i], ref[i]));
 	}
 	return result;
 }

@@ -114,18 +114,17 @@ int main(int argc, char* argv[]){
 
 	std::vector<Sentence>* f = Decoder::parseFile(decoder.flex,argv[5]);
 	
-	std::vector<nBestList>* translation = decoder.translate(*f);
+	std::vector<nBestList> translation = decoder.translate(*f);
 	
 	
-	for (unsigned int i=0; i< translation->size(); i++){
-		for (unsigned int k=0; k< (*translation)[i].size(); k++){
-			for (unsigned int j=0; j<(*translation)[i][k].sentence.size(); j++)
-				cout << decoder.elex->getWord((*translation)[i][k].sentence[j]) << " ";
+	for (unsigned int i=0; i< translation.size(); i++){
+		for (unsigned int k=0; k< translation[i].size(); k++){
+			for (unsigned int j=0; j<translation[i][k].sentence.size(); j++)
+				cout << decoder.elex->getWord(translation[i][k].sentence[j]) << " ";
 			
 			cout << endl;
 		}
 	}
 	
 	delete f;
-	delete translation;
 }

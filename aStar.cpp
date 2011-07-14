@@ -50,7 +50,6 @@ aStar::aStar(vector<HypothesisNode>& vect):vect(vect){
 	nTranslations= new vector<SentenceInfo>;	
 }
 
-
 void aStar::set_max_SentenceTranslation(uint size){
 	//if(aStar::max_SentenceTranslation != 0) throw max_SentenceTranslationAlreadySetException();
 	aStar::max_SentenceTranslation = size;

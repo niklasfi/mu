@@ -1,3 +1,5 @@
+struct hypRefPair;
+
 #pragma once
 
 #include <vector>
@@ -7,7 +9,9 @@
 //struct um eine "nBestListe"+Referenzübersetzung für einen ganzen Text zu speichern
 struct hypRefPair{
 	Sentence* reference;
-	nBestList* nBest;  
-	hypRefPair(Sentence* ref, nBestList* hyp);
-	~hypRefPair();
+	nBestList nBest;  
+	hypRefPair(Sentence* ref, nBestList hyp);
+	hypRefPair(){
+		assert(false);
+	}
 };

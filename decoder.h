@@ -51,15 +51,15 @@ class Decoder{
 		~Decoder();
 
 	
-		void add_bigram(nBestList* nbestlist); //fügt bigram in die Kosten ein
+		void add_bigram(nBestList& nbestlist); //fügt bigram in die Kosten ein
 
 		
 		//übersetzt einen Satz von ID's
-		nBestList* translate(Sentence&);
-		hypRefPair* translate(Sentence& french, Sentence& ref);
+		nBestList translate(Sentence&);
+		hypRefPair translate(Sentence& french, Sentence& ref);
 		
-		std::vector<nBestList>* translate(std::vector<Sentence>&);
-		std::vector<hypRefPair>* translate(std::vector<Sentence>& french,
+		std::vector<nBestList> translate(std::vector<Sentence>&);
+		std::vector<hypRefPair> translate(std::vector<Sentence>& french,
 			std::vector<Sentence>& ref);
 		
 		/* parseFile liest die textdatei `file` ein und gibt einen 
