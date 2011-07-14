@@ -42,7 +42,7 @@ Decoder::~Decoder(){
 typedef VocabIndex* VocabBuffer;
 
 bool cost_less(SentenceInfo s1, SentenceInfo s2){
-	return s2.cost < s1.cost;
+	return s1.cost < s2.cost;
 }
 
 void Decoder::add_bigram(nBestList* nbestlist){
